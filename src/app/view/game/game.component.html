@@ -1,0 +1,9 @@
+<app-section title="First Presidency" [openPanels]="openPanels">
+  <app-section-card [openPanels]="openPanels">
+    <app-question
+      text="Who is speaking Sunday Morning Session?"
+      answerType="typeahead"
+      [answers]="answersService.firstPresidency()"
+    ></app-question>
+  </app-section-card>
+</app-section>
