@@ -3,7 +3,7 @@ import { isDevMode } from '@angular/core';
 
 export const customRxStompConfig: InjectableRxStompConfig = {
   // Which server?
-  brokerURL: `ws://${location.hostname}:8080/game-ws`,
+  brokerURL: `ws://${location.hostname}:${location.port}/game-ws`,
 
   // Headers
   // Typical keys: login, passcode, host
@@ -17,7 +17,11 @@ export const customRxStompConfig: InjectableRxStompConfig = {
   // Wait in milliseconds before attempting auto reconnect
   // Set to 0 to disable
   // Typical value 500 (500 milli seconds)
-  reconnectDelay: 200
+  reconnectDelay: 200,
+
+  beforeConnect: () => {
+    return Promise.resolve();
+  }
 };
 
 if (isDevMode()) {

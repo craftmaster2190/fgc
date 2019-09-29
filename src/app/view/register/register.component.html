@@ -1,0 +1,35 @@
+<form>
+  <div class="form-group">
+    <label for="username">Pick a Username</label>
+    <input
+      type="text"
+      class="form-control"
+      id="username"
+      placeholder="username"
+    />
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      type="new-password"
+      class="form-control"
+      id="password"
+      placeholder="Password"
+    />
+    <small id="passwordHelp" class="form-text text-muted"
+      >Do <b>not</b> use the same password as your bank.</small
+    >
+  </div>
+  <div class="form-group">
+    <label for="confirm-password">Confirm password</label>
+    <input
+      type="new-password"
+      class="form-control"
+      id="confirm-password"
+      placeholder="Password"
+    />
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+  <br />
+  <a routerLink="/login">I already have a login</a>
+</form>

@@ -1,6 +1,7 @@
 package com.craftmaster.lds.fgc.answer;
 
 import com.craftmaster.lds.fgc.user.User;
+import java.security.Principal;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class AnswerController {
   private final AnswerRepository answerRepository;
 
   @MessageMapping("/answer")
-  public void markAnswer(@Valid @Payload Answer answer, @AuthenticationPrincipal User user) {
+  public void markAnswer(@Valid @Payload Answer answer, @AuthenticationPrincipal User user, Principal principal) {
     log.debug("Received answer {} {}", answer, user);
     answer.getAnswerPk().setUserId(user.getId());
     answerRepository.save(answer);

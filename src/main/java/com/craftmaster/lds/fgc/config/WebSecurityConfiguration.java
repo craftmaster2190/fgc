@@ -12,7 +12,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable()
-      .authorizeRequests().anyRequest().authenticated()
+      .authorizeRequests()
+      .antMatchers("/api/**").authenticated()
+      .antMatchers("/game-ws").authenticated()
+      .antMatchers("/register/**").anonymous()
+      .anyRequest().permitAll()
       .and().httpBasic();
 //				.antMatchers("/", "/home").permitAll()
 //				.anyRequest().authenticated()

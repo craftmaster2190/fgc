@@ -2,16 +2,23 @@ import { AnswerBusService } from './model/messaging/answer-bus.service';
 import { AnswersService } from './model/answers/answers.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AuthGuard } from './view/auth/auth-guard.service';
+import { AuthInterceptor } from './view/auth/auth-interceptor.service';
+import { AuthService } from './view/auth/auth.service';
 import { customRxStompConfig } from './config/custom-rx-stomp.config';
 import { GameComponent } from './view/game/game.component';
 import { LoginComponent } from './view/login/login.component';
+import { NavHeaderComponent } from './view/nav-header/nav-header.component';
 import { QuestionComponent } from './model/question/question.component';
+import { RegisterComponent } from './view/register/register.component';
 import { SectionComponent } from './model/section/section.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
+
 
 @NgModule({
   declarations: [
@@ -19,12 +26,22 @@ import { NgModule } from '@angular/core';
     QuestionComponent,
     GameComponent,
     LoginComponent,
-    SectionComponent
+    SectionComponent,
+    RegisterComponent,
+    NavHeaderComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule, HttpClientModule],
   providers: [
     AnswersService,
     AnswerBusService,
+    AuthService,
+    AuthGuard,
+    AuthInterceptor,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     {
       provide: InjectableRxStompConfig,
       useValue: customRxStompConfig
