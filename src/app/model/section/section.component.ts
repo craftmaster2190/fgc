@@ -7,7 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class SectionComponent implements OnInit {
   @Input() title: string;
-  @Input() openPanels: Record<string, boolean> = {};
+  @Input() isOpen: boolean;
+
   constructor() {}
 
   ngOnInit() {}

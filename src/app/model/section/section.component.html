@@ -1,15 +1,12 @@
-<div class="accordion">
-    <div class="card">
-      <div class="card-header">
-        <h2
-          class="mb-0"
-          (click)="openPanels.firstPresidency = !openPanels.firstPresidency"
-        >
-          {{title}}
-        </h2>
-      </div>
-
-      <ng-content></ng-content>
-
-    </div>
+<div class="card">
+  <div class="card-header">
+    <h2 class="mb-0">
+      {{ title }}
+      <i
+        class="chevron fa fas"
+        [class.fa-chevron-down]="isOpen"
+        [class.fa-chevron-left]="!isOpen"
+      ></i>
+    </h2>
   </div>
+</div>

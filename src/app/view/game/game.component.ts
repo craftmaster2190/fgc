@@ -7,11 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ["./game.component.sass"]
 })
 export class GameComponent implements OnInit {
+  openPanels: {[key: string]: boolean} = {};
+
   constructor(public readonly answersService: AnswersService) {}
 
-  openPanels: Record<string, boolean> = {};
-
-  ngOnInit() {
-    console.log(this.answersService);
-  }
+  ngOnInit() {}
 }

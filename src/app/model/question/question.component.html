@@ -1,8 +1,31 @@
-<label for="typeahead-basic">{{ text }}</label>
+<label for="typeahead-basic">
+  {{ text }}<br>
+  <small>Maximum number of guesses: {{ countOfAnswers }}</small>
+</label>
 <input
   id="typeahead-basic"
   type="search"
   class="form-control"
   [(ngModel)]="value"
+  (selectItem)="updateAnswer($event)"
+  (keydown.enter)="updateAnswer()"
+  (keydown.escape)="value = ''"
   [ngbTypeahead]="search"
+  (focus)="focus$.next($event.target.value)"
+  (click)="click$.next($event.target.value)"
+  #instance="ngbTypeahead"
+  [disabled]="selectedAnswers.size >= countOfAnswers"
+  [placeholder]="randomPlaceholder"
 />
+
+<ng-template ngFor let-answer [ngForOf]="selectedAnswers">
+  <div>
+    <span
+      class="badge"
+      (click)="removeAnswer(answer)"
+      [class.badge-primary]="enabled"
+    >
+      {{ answer }} <i class="fa fas fa-trash"></i>
+    </span>
+  </div>
+</ng-template>

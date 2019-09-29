@@ -4,11 +4,15 @@ import { Injectable } from '@angular/core';
 export class AnswersService {
   constructor() {}
 
-  firstPresidency = () => [
-    "Russell M. Nelson"
-  ];
+  firstPresidency = () => ["Russell M. Nelson"];
 
-  quorumOfTheTwelve = () => [
+  quorumOfTheTwelve = () => [];
 
+  conferenceSessions = () => [
+    "Saturday Morning Session",
+    "Saturday Afternoon Session",
+    "General Women's Session",
+    "Sunday Morning Session",
+    "Sunday Afternoon Session"
   ];
 }
