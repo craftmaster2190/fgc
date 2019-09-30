@@ -3,7 +3,6 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private readonly authService: AuthService) {}
@@ -13,11 +12,12 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (this.authService.getBasicAuth()) {
-    request = request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${this.authService.getBasicAuth()}`
-      }
-    });
+      request = request.clone({
+        setHeaders: {
+          "X-Requested-With": "XMLHttpRequest",
+          Authorization: `Basic ${this.authService.getBasicAuth()}`
+        }
+      });
     }
     return next.handle(request);
   }

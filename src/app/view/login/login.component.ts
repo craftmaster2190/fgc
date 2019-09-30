@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ["./login.component.sass"]
 })
 export class LoginComponent implements OnInit {
-  username: string;
-  password: string;
+  username: string = "";
+  password: string = "";
   loading: boolean = false;
   loginFailed: boolean = false;
 
@@ -37,7 +37,10 @@ export class LoginComponent implements OnInit {
     this.authService
       .fetchMe()
       .then(() => this.router.navigate(["game"]))
-      .catch(() => (this.loginFailed = true))
+      .catch(() => {
+        this.loginFailed = true;
+        this.authService.logOut();
+      })
       .then(() => (this.loading = false));
   }
 }

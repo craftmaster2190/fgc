@@ -4,8 +4,10 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AuthService {
+  private static readonly LOCAL_STORAGE_KEY = "basicAuthToken"
+
   private user: User;
-  private basicAuth: string = localStorage.getItem("basicAuthToken");
+  private basicAuth: string = localStorage.getItem(AuthService.LOCAL_STORAGE_KEY);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -20,7 +22,7 @@ export class AuthService {
 
   applyCredentials(username: string, password: string) {
     this.basicAuth = window.btoa(username + ':' + password);
-    localStorage.setItem("basicAuthToken", this.basicAuth);
+    localStorage.setItem(AuthService.LOCAL_STORAGE_KEY, this.basicAuth);
   }
 
   getBasicAuth() {
@@ -34,5 +36,6 @@ export class AuthService {
   logOut() {
     delete this.user;
     delete this.basicAuth;
+    localStorage.removeItem(AuthService.LOCAL_STORAGE_KEY);
   }
 }
