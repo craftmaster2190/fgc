@@ -38,7 +38,7 @@ export class QuestionComponent implements OnInit {
       "I won't type for you",
       "Press enter when you're done",
       "A guess goes here",
-      "Guess correcly for points"
+      "Guess correctly for points"
     ];
     return placeholders[Math.floor(Math.random() * placeholders.length)];
   })();
