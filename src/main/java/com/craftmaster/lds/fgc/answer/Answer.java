@@ -1,23 +1,25 @@
 package com.craftmaster.lds.fgc.answer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Entity
 @Data
 @Accessors(chain = true)
-public class Answer implements Serializable {
+public class Answer {
 
   @JsonUnwrapped
   @EmbeddedId

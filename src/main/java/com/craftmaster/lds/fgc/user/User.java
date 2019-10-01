@@ -3,7 +3,6 @@ package com.craftmaster.lds.fgc.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -22,7 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Data
 @Accessors(chain = true)
-public class User implements UserDetails, Serializable {
+public class User implements UserDetails {
+	private static final long serialVersionUID = 20190930L;
 
   @Transient
   private final boolean accountNonExpired = true;

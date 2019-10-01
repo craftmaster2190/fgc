@@ -37,3 +37,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile 'com.github.ben-manes.caffeine:caffeine:2.8.0'
 }
+
+// if using sub-project with eclipse
+apply plugin: 'eclipse'
+
+eclipse {
+    project {
+    // this is the name of the parent dir
+        name = 'repo'
+    }
+}
