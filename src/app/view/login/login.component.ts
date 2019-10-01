@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
           this.authService.logout();
         });
     } else {
-
       this.loading = false;
     }
   }

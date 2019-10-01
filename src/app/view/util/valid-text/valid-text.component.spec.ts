@@ -1,16 +1,15 @@
+import { ValidTextComponent } from './valid-text.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ValidTextComponent } from './valid-text.component';
 
-describe('ValidTextComponent', () => {
+describe("ValidTextComponent", () => {
   let component: ValidTextComponent;
   let fixture: ComponentFixture<ValidTextComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ValidTextComponent ]
-    })
-    .compileComponents();
+      declarations: [ValidTextComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('ValidTextComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

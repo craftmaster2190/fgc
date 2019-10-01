@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 @Entity
 @Accessors(chain = true)
 public class Family {
+
   @Id
   @GeneratedValue
   private Long id;

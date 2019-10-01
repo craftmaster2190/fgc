@@ -1,21 +1,17 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.craftmaster.lds.fgc.user.User;
 import java.security.Principal;
 import java.util.List;
-
 import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.craftmaster.lds.fgc.user.User;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController("/api/answer")
@@ -33,7 +29,7 @@ public class AnswerController {
   }
 
   @GetMapping("mine")
-  public List<Answer> getAllMine( @AuthenticationPrincipal User user) {
+  public List<Answer> getAllMine(@AuthenticationPrincipal User user) {
     return answerRepository.findByAnswerPk_UserId(user.getId());
   }
 }

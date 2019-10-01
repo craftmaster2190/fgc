@@ -82,9 +82,13 @@ export class RegisterComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged(),
       filter(term => term && term.length >= 2),
-      tap(() => this.searchingFamilies = true),
-      switchMap(term => this.familySearchService.search(term)
-      .pipe(map(family => family.map(f => f.name)))),
-      tap(() => this.searchingFamilies = false));
+      tap(() => (this.searchingFamilies = true)),
+      switchMap(term =>
+        this.familySearchService
+          .search(term)
+          .pipe(map(family => family.map(f => f.name)))
+      ),
+      tap(() => (this.searchingFamilies = false))
+    );
   };
 }

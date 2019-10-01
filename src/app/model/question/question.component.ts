@@ -11,7 +11,6 @@ import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-boot
   styleUrls: ["./question.component.sass"]
 })
 export class QuestionComponent implements OnInit {
-
   constructor(private readonly answersBus: AnswerBusService) {}
   @Input() text: string;
   @Input() answerType: "typeahead" | "text";
@@ -87,5 +86,5 @@ export class QuestionComponent implements OnInit {
 
   persistAnswer = () => {
     this.answersBus.answer(this.id, Array.from(this.selectedAnswers));
-  }
+  };
 }

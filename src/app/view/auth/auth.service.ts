@@ -40,8 +40,6 @@ export class AuthService {
   }
 
   registerUser(user: User) {
-    return this.http
-      .post<never>("/register", user)
-      .toPromise();
+    return this.http.post<never>("/register", user).toPromise();
   }
 }

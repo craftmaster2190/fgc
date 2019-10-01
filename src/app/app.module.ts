@@ -22,7 +22,6 @@ import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +33,13 @@ import { NgModule } from '@angular/core';
     NavHeaderComponent,
     ValidTextComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    NgbModule,
+    HttpClientModule
+  ],
   providers: [
     AnswersService,
     AnswerBusService,
