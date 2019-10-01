@@ -10,7 +10,12 @@
     "logLevel": "debug",
     "ws": true
   },
-  "/regsiter/*": {
+  "/register": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/register/*": {
     "target": "http://localhost:8080",
     "secure": false,
     "logLevel": "debug"

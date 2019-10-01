@@ -30,7 +30,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
       .antMatchers("/api/**").authenticated()
       .antMatchers("/game-ws").authenticated()
-      .antMatchers("/register/**").anonymous()
+      .antMatchers("/register", "register/*").anonymous()
       .anyRequest().permitAll()
       .and().httpBasic();
   }

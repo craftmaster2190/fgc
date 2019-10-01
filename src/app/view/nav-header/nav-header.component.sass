@@ -1,5 +1,4 @@
 :host
-  font-family: 'Great Vibes', cursive
   display: flex
   justify-content: space-between
   border-bottom: 1px solid black
@@ -7,7 +6,30 @@
 
 img
   max-height: 50px
-  cursor: pointer
 
 p
+  font-family: 'Great Vibes', cursive
   font-size: 36px
+
+.right-side
+  display: flex
+  justify-content: space-between
+  align-items: center
+  cursor: pointer
+
+  .logout
+    margin-right: 5px
+
+  &:not(:hover) .logout
+    display: none
+
+
+  .autheticated-user
+    margin-right: 5px
+    text-align: center
+
+    .username
+      font-size: 25px
+
+    .family-name
+      font-size: 15px

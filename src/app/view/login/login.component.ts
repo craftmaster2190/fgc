@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   username: string = "";
   password: string = "";
-  loading: boolean = false;
+  loading: boolean = true;
   loginFailed: boolean = false;
 
   constructor(
@@ -20,15 +20,26 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.authService.getBasicAuth()) {
-      this.loading = true;
       this.authService
         .fetchMe()
         .then(() => this.router.navigate(["game"]))
         .catch(() => {
           this.loading = false;
-          this.authService.logOut();
+          this.authService.logout();
         });
+    } else {
+
+      this.loading = false;
     }
+  }
+
+  validCredentials() {
+    return (
+      !!this.username &&
+      this.username.length >= 4 &&
+      !!this.password &&
+      this.password.length >= 4
+    );
   }
 
   login() {
@@ -39,7 +50,7 @@ export class LoginComponent implements OnInit {
       .then(() => this.router.navigate(["game"]))
       .catch(() => {
         this.loginFailed = true;
-        this.authService.logOut();
+        this.authService.logout();
       })
       .then(() => (this.loading = false));
   }

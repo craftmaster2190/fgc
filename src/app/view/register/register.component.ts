@@ -1,59 +1,90 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { timingSafeEqual } from 'crypto';
+import { FamilySearchService } from './family-search.service';
 import { AuthService } from '../auth/auth.service';
-
+import { ToastService } from '../util/toast/toast.service';
+import { User } from '../auth/user';
+import { Component, OnInit } from '@angular/core';
+import { debounceTime, distinctUntilChanged, every, filter, map, switchMap, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.sass']
+  selector: "app-register",
+  templateUrl: "./register.component.html",
+  styleUrls: ["./register.component.sass"]
 })
 export class RegisterComponent implements OnInit {
+  username: string;
+  family: string;
+  password: string;
+  confirmPassword: string;
+  loading: boolean;
+  searchingFamilies: boolean;
 
-  private password: string;
-  private confirmPassword: string;
-  private username: string;
-  private regFailed: boolean;
-  private nameFailed: boolean;
-  constructor(private auth: AuthService) { }
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly toastService: ToastService,
+    private readonly familySearchService: FamilySearchService
+  ) {}
 
-  ngOnInit(): void {
-    this.regFailed = false;
-    this.nameFailed = false;
+  ngOnInit() {}
+
+  usernameValid() {
+    return !!this.username && this.username.length >= 4;
   }
 
-  register(): void {
-    if (this.hasValidPassword() && this.hasValidUsername()) {
-      this.auth.register(this.username, this.password);
-      this.regFailed = false;
-      this.nameFailed = false;
-    } else {
-      if (!this.hasValidPassword()) {
-        this.regFailed = true;
-      }
-      if (!this.hasValidUsername()) {
-        this.nameFailed = false;
-      }
-    }
+  familyValid() {
+    return !!this.family && this.family.length >= 4;
   }
-  setPassword(password: string) {
-    this.regFailed = false;
-    this.password = password;
+
+  passwordValid() {
+    return !!this.password && this.password.length >= 4;
   }
-  setConfirmPassword(confirmPassword: string) {
-    this.regFailed = false;
-    this.confirmPassword = confirmPassword;
+
+  confirmPasswordValid() {
+    return this.passwordValid() && this.confirmPassword === this.password;
   }
-  setUsername(username: string) {
-    this.nameFailed = false;
-    this.username = username;
+
+  formValid() {
+    return (
+      this.usernameValid() &&
+      this.familyValid() &&
+      this.passwordValid() &&
+      this.confirmPasswordValid()
+    );
   }
-  hasValidPassword(): boolean {
-    return this.password
-      && this.confirmPassword
-      && this.password === this.confirmPassword;
+
+  registerUser() {
+    const user: User = {
+      username: this.username,
+      password: this.password,
+      family: { name: this.family }
+    };
+    this.authService
+      .registerUser(user)
+      .then(() => {
+        this.authService.applyCredentials(this.username, this.password);
+        this.router.navigate(["login"]);
+      })
+      .catch(err => {
+        this.loading = false;
+        this.toastService.create({
+          header: "Unable to complete registration",
+          message: "Error: " + err.message,
+          classname: "bg-danger text-light"
+        });
+        console.error(err);
+      });
   }
-  hasValidUsername(): boolean {
-    return this.username && this.username.length > 0;
-  }
+
+  searchFamilies = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      filter(term => term && term.length >= 2),
+      tap(() => this.searchingFamilies = true),
+      switchMap(term => this.familySearchService.search(term)
+      .pipe(map(family => family.map(f => f.name)))),
+      tap(() => this.searchingFamilies = false));
+  };
 }
