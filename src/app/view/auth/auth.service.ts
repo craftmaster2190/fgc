@@ -37,6 +37,7 @@ export class AuthService {
     delete this.user;
     delete this.basicAuth;
     localStorage.removeItem(AuthService.LOCAL_STORAGE_KEY);
+    this.http.get("/logout").toPromise();
   }
 
   registerUser(user: User) {

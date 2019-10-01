@@ -10,6 +10,7 @@ import { FamilySearchService } from './view/register/family-search.service';
 import { GameComponent } from './view/game/game.component';
 import { LoginComponent } from './view/login/login.component';
 import { NavHeaderComponent } from './view/nav-header/nav-header.component';
+import { NotAuthGuard } from './view/auth/not-auth-guard.service';
 import { QuestionComponent } from './model/question/question.component';
 import { RegisterComponent } from './view/register/register.component';
 import { SectionComponent } from './model/section/section.component';
@@ -45,6 +46,7 @@ import { NgModule } from '@angular/core';
     AnswerBusService,
     AuthService,
     AuthGuard,
+    NotAuthGuard,
     AuthInterceptor,
     FamilySearchService,
     ToastService,

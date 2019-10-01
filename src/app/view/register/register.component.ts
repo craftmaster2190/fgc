@@ -27,7 +27,9 @@ export class RegisterComponent implements OnInit {
     private readonly familySearchService: FamilySearchService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.authService.logout();
+  }
 
   usernameValid() {
     return !!this.username && this.username.length >= 4;
@@ -68,9 +70,13 @@ export class RegisterComponent implements OnInit {
       })
       .catch(err => {
         this.loading = false;
+        let message = err.error && err.error.message;
+        message = message || err.message;
+        message = message || "Unable to complete request!";
+
         this.toastService.create({
           header: "Unable to complete registration",
-          message: "Error: " + err.message,
+          message: "Error: " + message,
           classname: "bg-danger text-light"
         });
         console.error(err);
