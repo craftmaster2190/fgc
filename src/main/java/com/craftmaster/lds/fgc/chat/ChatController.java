@@ -24,7 +24,7 @@ public class ChatController {
   private final Cache<Instant, Chat> chatStore = Caffeine.newBuilder().maximumSize(100).build();
 
   @MessageMapping("/chat")
-  @SendTo
+  @SendTo("/topic/chat")
   public Chat markAnswer(@NotBlank @Payload String chatString, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     Chat chat = new Chat().setValue(chatString).setUser(user);
