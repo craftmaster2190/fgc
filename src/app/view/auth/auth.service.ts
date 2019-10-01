@@ -1,6 +1,7 @@
 import { User } from './user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -8,8 +9,10 @@ export class AuthService {
 
   private user: User;
   private basicAuth: string = localStorage.getItem(AuthService.LOCAL_STORAGE_KEY);
-
-  constructor(private readonly http: HttpClient) {}
+  private apiUrl: string;
+  constructor(private readonly http: HttpClient) {
+    this.apiUrl = environment.apiUrl;
+  }
 
 
 
@@ -20,6 +23,11 @@ export class AuthService {
       .then(user => (this.user = user));
   }
 
+  register(username: string, password: string) {
+    return this.http
+    .post<User>(this.apiUrl + "/register/player", {"username" : username, "password" : password})
+    .subscribe(data => console.log("reg", data));
+  }
   applyCredentials(username: string, password: string) {
     this.basicAuth = window.btoa(username + ':' + password);
     localStorage.setItem(AuthService.LOCAL_STORAGE_KEY, this.basicAuth);

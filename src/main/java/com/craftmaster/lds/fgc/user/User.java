@@ -24,33 +24,32 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 	private static final long serialVersionUID = 20190930L;
 
-  @Transient
-  private final boolean accountNonExpired = true;
-  @Transient
-  private final boolean accountNonLocked = true;
-  @Transient
-  private final boolean credentialsNonExpired = true;
-  @Transient
-  private final boolean enabled = true;
-  @Id
-  @GeneratedValue
-  @NotNull
-  private Long id;
-  @NotBlank
-  @JsonDeserialize(using = StringTrimDeserializer.class)
-  private String username;
-  @NotBlank
-  @JsonProperty(access = Access.WRITE_ONLY)
-  private String password;
-  @JsonProperty(access = Access.READ_ONLY)
-  private Boolean isAdmin;
+	@Transient
+	private final boolean accountNonExpired = true;
+	@Transient
+	private final boolean accountNonLocked = true;
+	@Transient
+	private final boolean credentialsNonExpired = true;
+	@Transient
+	private final boolean enabled = true;
+	@Id
+	@GeneratedValue
+	@NotNull
+	private Long id;
+	@NotBlank
+	@JsonDeserialize(using = StringTrimDeserializer.class)
+	private String username;
+	@NotBlank
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
+	@JsonProperty(access = Access.READ_ONLY)
+	private Boolean isAdmin;
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (Objects.equals(getIsAdmin(), Boolean.TRUE)) {
-      return Set.of(new SimpleGrantedAuthority("ADMIN"));
-    }
-    return Set.of();
-  }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		if (Objects.equals(getIsAdmin(), Boolean.TRUE)) {
+			return Set.of(new SimpleGrantedAuthority("ADMIN"));
+		}
+		return Set.of();
+	}
 }
-
