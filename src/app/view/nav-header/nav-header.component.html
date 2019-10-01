@@ -1,2 +1,9 @@
-<p>Fantasy General Conference {{getUsername()}}</p>
-<img src="assets/logo.png" />
+<p>Fantasy General Conference</p>
+<div class="right-side" (click)="logout()">
+  <div class="logout text-muted">Log out</div>
+  <div class="autheticated-user">
+    <div class="username">{{ getUsername() }}</div>
+    <div class="family-name text-muted">{{ getFamilyName() }}</div>
+  </div>
+  <img src="assets/logo.png" />
+</div>

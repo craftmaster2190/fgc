@@ -1,4 +1,16 @@
 <app-nav-header></app-nav-header>
+<div class="toast-container">
+  <ngb-toast
+    *ngFor="let toast of toasts; index as index"
+    (hide)="toasts.splice(index, 1)"
+    [autohide]="true"
+    [delay]="toast.delay || 7500"
+    [class]="toast.classname"
+    [header]="toast.header"
+  >
+    {{ toast.message }}
+  </ngb-toast>
+</div>
 <div class="h-100">
   <router-outlet></router-outlet>
 </div>

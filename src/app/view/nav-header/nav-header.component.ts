@@ -15,8 +15,8 @@ export class NavHeaderComponent implements OnInit {
 
   ngOnInit() {}
 
-  logOut() {
-    this.authService.logOut();
+  logout() {
+    this.authService.logout();
     this.router.navigate(["/login"]);
   }
 
@@ -27,5 +27,14 @@ export class NavHeaderComponent implements OnInit {
     }
 
     return user.username;
+  }
+
+  getFamilyName() {
+    const user = this.authService.getLoggedInUser();
+    if (!user) {
+      return "";
+    }
+
+    return user.family.name;
   }
 }

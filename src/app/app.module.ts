@@ -6,12 +6,15 @@ import { AuthGuard } from './view/auth/auth-guard.service';
 import { AuthInterceptor } from './view/auth/auth-interceptor.service';
 import { AuthService } from './view/auth/auth.service';
 import { customRxStompConfig } from './config/custom-rx-stomp.config';
+import { FamilySearchService } from './view/register/family-search.service';
 import { GameComponent } from './view/game/game.component';
 import { LoginComponent } from './view/login/login.component';
 import { NavHeaderComponent } from './view/nav-header/nav-header.component';
 import { QuestionComponent } from './model/question/question.component';
 import { RegisterComponent } from './view/register/register.component';
 import { SectionComponent } from './model/section/section.component';
+import { ToastService } from './view/util/toast/toast.service';
+import { ValidTextComponent } from './view/util/valid-text/valid-text.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -28,7 +31,8 @@ import { NgModule } from '@angular/core';
     LoginComponent,
     SectionComponent,
     RegisterComponent,
-    NavHeaderComponent
+    NavHeaderComponent,
+    ValidTextComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule, HttpClientModule],
   providers: [
@@ -37,6 +41,8 @@ import { NgModule } from '@angular/core';
     AuthService,
     AuthGuard,
     AuthInterceptor,
+    FamilySearchService,
+    ToastService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
