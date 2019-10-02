@@ -16,7 +16,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.chatBusService.getAll().then(chats => {
       // this.chats = chats;
-      debugger;
     })
     .catch(() => {
       console.log("Unable to load chats.");

@@ -3,7 +3,7 @@ import { isDevMode } from '@angular/core';
 
 export const customRxStompConfig: InjectableRxStompConfig = {
   // Which server?
-  brokerURL: `ws://${location.hostname}:${location.port}/game-ws/websocket`,
+  brokerURL: `ws://${location.hostname}:${location.port}/game-ws`,
 
   // Headers
   // Typical keys: login, passcode, host
