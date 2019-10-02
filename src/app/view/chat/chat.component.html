@@ -8,10 +8,29 @@
 
 <ng-template #notLoading>
   <div class="chat-container">
-    <div *ngFor="let chat of chats">
-      <b
-        >{{ chat.user.username }} <span>{{ chat.user.family.name }}</span></b
-      >&nbsp;{{ chat.message }}
+    <h1><i class="far fa-comments"></i>&nbsp;Chat</h1>
+
+    <div class="chat-values" #chatValues>
+      <div *ngFor="let chat of chats">
+        <b
+          >{{ chat.user.username }} <small class="text-mutes">({{ chat.user.family.name }})</small></b
+        >:&nbsp;{{ chat.value }}
+      </div>
     </div>
+    <form class="chat-controls" (ngSubmit)="sendChat()">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          name="chatValue"
+          [(ngModel)]="chatValue"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button">
+            <i class="far fa-comment-dots"></i>
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </ng-template>

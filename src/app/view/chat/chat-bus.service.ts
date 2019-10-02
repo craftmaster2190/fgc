@@ -10,19 +10,26 @@ import { Subscription } from 'rxjs';
 export class ChatBusService {
   private readonly chatSender: JSONMessageSender;
 
-  constructor(private readonly messageBusService: MessageBusService, private readonly httpClient: HttpClient) {
+  constructor(
+    private readonly messageBusService: MessageBusService,
+    private readonly httpClient: HttpClient
+  ) {
     this.chatSender = messageBusService.messageSender("chat");
   }
 
   getAll() {
-    return this.httpClient.get("/api/chat").toPromise();
+    return this.httpClient
+      .get<{ [time: string]: Chat }>("/api/chat")
+      .toPromise();
   }
 
   send(message: string) {
     this.chatSender.send(message);
   }
 
-  listen(next: (message: IMessage) => void) {
-    return this.messageBusService.topicWatcher("chat").subscribe(next);
+  listen(next: (chat: Chat) => void) {
+    return this.messageBusService
+      .topicWatcher("chat")
+      .subscribe(message => next(JSON.parse(message.body) as Chat));
   }
 }
