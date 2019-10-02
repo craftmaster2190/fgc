@@ -1,3 +1,4 @@
+import { Chat } from './chat';
 import { HttpClient } from '@angular/common/http';
 import { IMessage } from '@stomp/stompjs';
 import { Injectable, OnDestroy } from '@angular/core';

@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController("/api/chat")
+// @RestController("/api/chat")
 public class ChatController {
 
   private final Cache<Instant, Chat> chatStore = Caffeine.newBuilder().maximumSize(100).build();
 
   @MessageMapping("/chat")
   @SendTo("/topic/chat")
-  public Chat markAnswer(@NotBlank @Payload String chatString, Principal principal) {
+  public Chat sendChat(@NotBlank @Payload String chatString, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     Chat chat = new Chat().setValue(chatString).setUser(user);
     chatStore.put(Instant.now(), chat);
