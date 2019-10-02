@@ -25,7 +25,7 @@ public class ChatController {
 
   @MessageMapping("/chat")
   @SendTo("/topic/chat")
-  public Chat markAnswer(@NotBlank @Payload String chatString, Principal principal) {
+  public Chat sendChat(@NotBlank @Payload String chatString, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     Chat chat = new Chat().setValue(chatString).setUser(user);
     chatStore.put(Instant.now(), chat);
