@@ -5,10 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './view/auth/auth-guard.service';
 import { AuthInterceptor } from './view/auth/auth-interceptor.service';
 import { AuthService } from './view/auth/auth.service';
+import { ChatBusService } from './view/chat/chat-bus.service';
+import { ChatComponent } from './view/chat/chat.component';
 import { customRxStompConfig } from './config/custom-rx-stomp.config';
 import { FamilySearchService } from './view/register/family-search.service';
 import { GameComponent } from './view/game/game.component';
 import { LoginComponent } from './view/login/login.component';
+import { MessageBusService } from './model/messaging/message-bus.service';
 import { NavHeaderComponent } from './view/nav-header/nav-header.component';
 import { NotAuthGuard } from './view/auth/not-auth-guard.service';
 import { QuestionComponent } from './model/question/question.component';
@@ -32,7 +35,8 @@ import { NgModule } from '@angular/core';
     SectionComponent,
     RegisterComponent,
     NavHeaderComponent,
-    ValidTextComponent
+    ValidTextComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,9 @@ import { NgModule } from '@angular/core';
     AuthGuard,
     NotAuthGuard,
     AuthInterceptor,
+    ChatBusService,
     FamilySearchService,
+    MessageBusService,
     ToastService,
     {
       provide: HTTP_INTERCEPTORS,

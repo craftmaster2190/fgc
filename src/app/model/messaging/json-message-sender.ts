@@ -1,5 +1,5 @@
 import { RxStompService } from '@stomp/ng2-stompjs';
-export class AnswerSender {
+export class JSONMessageSender {
   constructor(
     private readonly topic: string,
     private readonly rxStompService: RxStompService
