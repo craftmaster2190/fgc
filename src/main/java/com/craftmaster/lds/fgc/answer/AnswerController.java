@@ -1,7 +1,5 @@
 package com.craftmaster.lds.fgc.answer;
 
-import com.craftmaster.lds.fgc.question.Question;
-import com.craftmaster.lds.fgc.question.QuestionRepository;
 import com.craftmaster.lds.fgc.question.QuestionService;
 import com.craftmaster.lds.fgc.user.User;
 import java.security.Principal;

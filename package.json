@@ -6,8 +6,8 @@
     "start": "ng serve --proxy-config proxy-conf.json",
     "build": "ng build",
     "postbuild": "npm run deploy",
-    "predeploy": "rimraf ../resources/static/ && mkdirp ../resources/static",
-    "deploy": "copyfiles -f dist/** ../resources/static",
+    "predeploy": "rimraf src/main/resources/static/ && mkdirp src/main/resources/static/",
+    "deploy": "cp -r dist/fgc/* src/main/resources/static/",
     "test": "ng test",
     "lint": "ng lint --fix=true --files src/app",
     "e2e": "ng e2e"
@@ -40,6 +40,7 @@
     "@types/node": "~8.9.4",
     "@types/ramda": "github:types/npm-ramda",
     "codelyzer": "^5.0.0",
+    "copyfiles": "^2.1.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -47,7 +48,9 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "mkdirp": "^0.5.1",
     "protractor": "~5.4.0",
+    "rimraf": "^3.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"

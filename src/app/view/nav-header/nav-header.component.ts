@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class NavHeaderComponent implements OnInit {
   constructor(
-    private readonly authService: AuthService,
+    public readonly authService: AuthService,
     private readonly router: Router
   ) {}
 

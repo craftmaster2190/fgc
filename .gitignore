@@ -52,3 +52,5 @@ out/
 
 .nb-gradle/
 bin/
+
+src/main/resources/static/
