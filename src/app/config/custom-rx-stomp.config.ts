@@ -1,5 +1,4 @@
 import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
-import { isDevMode } from '@angular/core';
 
 export const customRxStompConfig: InjectableRxStompConfig = {
   // Which server?
@@ -23,9 +22,3 @@ export const customRxStompConfig: InjectableRxStompConfig = {
     return Promise.resolve();
   }
 };
-
-if (isDevMode()) {
-  customRxStompConfig.debug = (msg: string): void => {
-    console.log(new Date(), msg);
-  };
-}

@@ -1243,6 +1243,7 @@ export class AnswersService {
     "Saturday Afternoon Session",
     "General Women's Session",
     "Sunday Morning Session",
-    "Sunday Afternoon Session"
+    "Sunday Afternoon Session",
+    "None"
   ];
 }
