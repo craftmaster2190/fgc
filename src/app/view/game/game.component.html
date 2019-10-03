@@ -144,6 +144,13 @@
     [countOfAnswers]="10"
   ></app-question>
   <app-question
+    text="Who of the Presidency of the Seventy will be speaking in any session?"
+    id="32"
+    answerType="typeahead"
+    [answers]="answersService.presidencyOfTheSeventy()"
+    [countOfAnswers]="2"
+  ></app-question>
+  <app-question
     text="Who of the Presiding Bishopric will be speaking in any session?"
     id="32"
     answerType="typeahead"
