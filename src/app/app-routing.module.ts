@@ -1,10 +1,10 @@
-import { AuthGuard } from './view/auth/auth-guard.service';
-import { GameComponent } from './view/game/game.component';
-import { LoginComponent } from './view/login/login.component';
-import { NotAuthGuard } from './view/auth/not-auth-guard.service';
-import { RegisterComponent } from './view/register/register.component';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from "./view/auth/auth-guard.service";
+import { GameComponent } from "./view/game/game.component";
+import { LoginComponent } from "./view/login/login.component";
+import { NotAuthGuard } from "./view/auth/not-auth-guard.service";
+import { RegisterComponent } from "./view/register/register.component";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
 const routes: Routes = [
   { path: "login", component: LoginComponent, canActivate: [NotAuthGuard] },

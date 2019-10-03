@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class AnswersService {
@@ -14,5 +14,5 @@ export class AnswersService {
     "General Women's Session",
     "Sunday Morning Session",
     "Sunday Afternoon Session"
-  ];
+  ]
 }

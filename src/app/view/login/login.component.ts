@@ -1,6 +1,6 @@
-import { AuthService } from '../auth/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { AuthService } from "../auth/auth.service";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -8,10 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ["./login.component.sass"]
 })
 export class LoginComponent implements OnInit {
-  username: string = "";
-  password: string = "";
-  loading: boolean = true;
-  loginFailed: boolean = false;
+  username = "";
+  password = "";
+  loading = true;
+  loginFailed = false;
 
   constructor(
     private readonly authService: AuthService,

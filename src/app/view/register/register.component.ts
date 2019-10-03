@@ -1,11 +1,11 @@
-import { FamilySearchService } from './family-search.service';
-import { AuthService } from '../auth/auth.service';
-import { ToastService } from '../util/toast/toast.service';
-import { User } from '../auth/user';
-import { Component, OnInit } from '@angular/core';
-import { debounceTime, distinctUntilChanged, every, filter, map, switchMap, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { FamilySearchService } from "./family-search.service";
+import { AuthService } from "../auth/auth.service";
+import { ToastService } from "../util/toast/toast.service";
+import { User } from "../auth/user";
+import { Component, OnInit } from "@angular/core";
+import { debounceTime, distinctUntilChanged, every, filter, map, switchMap, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-register",
@@ -96,5 +96,5 @@ export class RegisterComponent implements OnInit {
       ),
       tap(() => (this.searchingFamilies = false))
     );
-  };
+  }
 }

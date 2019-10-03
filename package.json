@@ -9,7 +9,7 @@
     "predeploy": "rimraf ../resources/static/ && mkdirp ../resources/static",
     "deploy": "copyfiles -f dist/** ../resources/static",
     "test": "ng test",
-    "lint": "ng lint --fix=true",
+    "lint": "ng lint --fix=true --files src/app",
     "e2e": "ng e2e"
   },
   "private": true,

@@ -1,6 +1,6 @@
-import { AnswerBusService } from 'src/app/model/messaging/answer-bus.service';
-import { AnswersService } from 'src/app/model/answers/answers.service';
-import { Component, OnInit } from '@angular/core';
+import { AnswerBusService } from "src/app/model/messaging/answer-bus.service";
+import { AnswersService } from "src/app/model/answers/answers.service";
+import { Component, OnInit } from "@angular/core";
 
 @Component({
   selector: "app-game",
@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GameComponent implements OnInit {
   openPanels: { [key: string]: boolean } = {} as any;
-  loading: boolean = true;
+  loading = true;
 
   constructor(
     public readonly answersService: AnswersService,

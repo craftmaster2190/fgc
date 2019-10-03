@@ -1,10 +1,10 @@
-import { Chat } from './chat';
-import { HttpClient } from '@angular/common/http';
-import { IMessage } from '@stomp/stompjs';
-import { Injectable, OnDestroy } from '@angular/core';
-import { JSONMessageSender } from 'src/app/model/messaging/json-message-sender';
-import { MessageBusService } from 'src/app/model/messaging/message-bus.service';
-import { Subscription } from 'rxjs';
+import { Chat } from "./chat";
+import { HttpClient } from "@angular/common/http";
+import { IMessage } from "@stomp/stompjs";
+import { Injectable, OnDestroy } from "@angular/core";
+import { JSONMessageSender } from "src/app/model/messaging/json-message-sender";
+import { MessageBusService } from "src/app/model/messaging/message-bus.service";
+import { Subscription } from "rxjs";
 
 @Injectable()
 export class ChatBusService {

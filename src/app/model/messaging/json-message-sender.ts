@@ -1,10 +1,10 @@
-import { RxStompService } from '@stomp/ng2-stompjs';
+import { RxStompService } from "@stomp/ng2-stompjs";
 export class JSONMessageSender {
   constructor(
     private readonly topic: string,
     private readonly rxStompService: RxStompService
   ) {}
   send = (message: string) =>
-    this.rxStompService.publish({ destination: this.topic, body: message });
+    this.rxStompService.publish({ destination: this.topic, body: message })
   convertAndSend = (message: any) => this.send(JSON.stringify(message));
 }

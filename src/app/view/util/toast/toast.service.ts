@@ -1,5 +1,5 @@
-import { BehaviorSubject, PartialObserver, Subject } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { BehaviorSubject, PartialObserver, Subject } from "rxjs";
+import { Injectable } from "@angular/core";
 
 export interface Toast {
   message: string;

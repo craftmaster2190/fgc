@@ -1,6 +1,6 @@
-import { Toast, ToastService } from './view/util/toast/toast.service';
-import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Toast, ToastService } from "./view/util/toast/toast.service";
+import { Component, OnDestroy } from "@angular/core";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-root",
