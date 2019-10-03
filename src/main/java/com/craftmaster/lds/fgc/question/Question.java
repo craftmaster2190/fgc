@@ -1,9 +1,9 @@
 package com.craftmaster.lds.fgc.question;
 
+import com.craftmaster.lds.fgc.config.ObjectMapperHolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
@@ -19,8 +19,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Question {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
   @Id
   @NotNull
   private Long id;
@@ -33,7 +31,7 @@ public class Question {
   @Transient
   public Set<String> getCorrectAnswers() {
     try {
-      return OBJECT_MAPPER.readValue(
+      return ObjectMapperHolder.get().readValue(
         Optional.ofNullable(getCorrectAnswersPersisted()).orElse("[]"),
         new TypeReference<Set<String>>() {
         });
@@ -45,7 +43,7 @@ public class Question {
   @Transient
   public Question setCorrectAnswers(Set<String> values) {
     try {
-      setCorrectAnswersPersisted(OBJECT_MAPPER.writeValueAsString(
+      setCorrectAnswersPersisted(ObjectMapperHolder.get().writeValueAsString(
         Optional.ofNullable(values).orElse(Set.of())));
       return this;
     } catch (JsonProcessingException e) {

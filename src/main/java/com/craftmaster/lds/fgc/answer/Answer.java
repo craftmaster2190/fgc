@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.craftmaster.lds.fgc.config.ObjectMapperHolder;
 import com.craftmaster.lds.fgc.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +26,6 @@ import lombok.experimental.Accessors;
 public class Answer {
 
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   @JsonUnwrapped
   @EmbeddedId
   private AnswerPk answerPk;
@@ -40,7 +39,7 @@ public class Answer {
   @Transient
   public Set<String> getValues() {
     try {
-      return OBJECT_MAPPER.readValue(
+      return ObjectMapperHolder.get().readValue(
         Optional.ofNullable(getValuesPersisted()).orElse("[]"),
         new TypeReference<Set<String>>() {
         });
@@ -52,7 +51,7 @@ public class Answer {
   @Transient
   public Answer setValues(Set<String> values) {
     try {
-      setValuesPersisted(OBJECT_MAPPER.writeValueAsString(
+      setValuesPersisted(ObjectMapperHolder.get().writeValueAsString(
         Optional.ofNullable(values).orElse(Set.of())));
       return this;
     } catch (JsonProcessingException e) {
