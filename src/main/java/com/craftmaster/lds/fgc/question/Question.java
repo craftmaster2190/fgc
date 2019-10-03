@@ -5,15 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Entity
@@ -28,23 +26,30 @@ public class Question {
   private Long id;
   @NotNull
   private Boolean enabled;
-
+  private Long pointValue;
   @JsonIgnore
-  @ToString.Exclude
   private String correctAnswersPersisted;
 
   @Transient
-  private Set<String> correctAnswers;
-
-  @PostLoad
-  public void postLoad() throws IOException {
-    this.setCorrectAnswers(
-      OBJECT_MAPPER.readValue(getCorrectAnswersPersisted(), new TypeReference<Set<String>>() {
-      }));
+  public Set<String> getCorrectAnswers() {
+    try {
+      return OBJECT_MAPPER.readValue(
+        Optional.ofNullable(getCorrectAnswersPersisted()).orElse("[]"),
+        new TypeReference<Set<String>>() {
+        });
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  @PrePersist
-  public void prePersist() throws JsonProcessingException {
-    this.setCorrectAnswersPersisted(OBJECT_MAPPER.writeValueAsString(getCorrectAnswers()));
+  @Transient
+  public Question setCorrectAnswers(Set<String> values) {
+    try {
+      setCorrectAnswersPersisted(OBJECT_MAPPER.writeValueAsString(
+        Optional.ofNullable(values).orElse(Set.of())));
+      return this;
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

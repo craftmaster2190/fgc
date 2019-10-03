@@ -13,14 +13,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatValue: string;
   loading: boolean;
 
-  @ViewChild("chatValues") chatValues: ElementRef;
+  @ViewChild("chatValues", { static: false }) chatValues: ElementRef;
 
   private subscription: Subscription;
 
-  constructor(
-    private readonly chatBusService: ChatBusService,
-    private readonly ngZone: NgZone
-  ) {}
+  constructor(private readonly chatBusService: ChatBusService) {}
 
   ngOnInit() {
     this.chatBusService

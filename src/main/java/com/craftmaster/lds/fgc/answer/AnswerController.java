@@ -1,5 +1,8 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.craftmaster.lds.fgc.question.Question;
+import com.craftmaster.lds.fgc.question.QuestionRepository;
+import com.craftmaster.lds.fgc.question.QuestionService;
 import com.craftmaster.lds.fgc.user.User;
 import java.security.Principal;
 import java.util.List;
@@ -21,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnswerController {
 
   private final AnswerRepository answerRepository;
+  private final QuestionService questionService;
 
   @MessageMapping("/answer")
   public void markAnswer(@Valid @Payload Answer answer, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Received answer {} {}", answer, user);
     answer.getAnswerPk().setUserId(user.getId());
+    questionService.getOrCreateById(answer.getAnswerPk().getQuestionId());
     answerRepository.save(answer);
   }
 

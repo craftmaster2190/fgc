@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatController {
 
-  private final SimpMessageSendingOperations messagingTemplate;;
+  private final SimpMessageSendingOperations messagingTemplate;
   private final Cache<Instant, Chat> chatStore = Caffeine.newBuilder().maximumSize(100).build();
 
   @MessageMapping("/chat")

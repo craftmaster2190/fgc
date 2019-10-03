@@ -1,65 +1,74 @@
-<app-section
-  title="When is the First Presidency speaking?"
-  [isOpen]="openPanels.firstPresidency"
-  (click)="openPanels.firstPresidency = !openPanels.firstPresidency"
-></app-section>
+<div *ngIf="loading; else notLoading" class="d-flex justify-content-center">
+  <div
+    class="spinner-border"
+    style="width: 12rem; height: 12rem;"
+    role="status"
+  ></div>
+</div>
 
-<ng-template [ngIf]="openPanels.firstPresidency">
-  <app-question
-    text="In which session is President Russell M. Nelson speaking?"
-    id="1"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="3"
-  ></app-question>
+<ng-template #notLoading>
+  <app-section
+    title="When is the First Presidency speaking?"
+    [isOpen]="openPanels.firstPresidency"
+    (click)="openPanels.firstPresidency = !openPanels.firstPresidency"
+  ></app-section>
 
-  <app-question
-    text="In which session is President Dallin H. Oaks speaking?"
-    id="2"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="2"
-  ></app-question>
+  <ng-template [ngIf]="openPanels.firstPresidency">
+    <app-question
+      text="In which session is President Russell M. Nelson speaking?"
+      id="1"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="3"
+    ></app-question>
 
-  <app-question
-    text="In which session is President Heny B. Eyring speaking?"
-    id="3"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="2"
-  ></app-question>
+    <app-question
+      text="In which session is President Dallin H. Oaks speaking?"
+      id="2"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="2"
+    ></app-question>
+
+    <app-question
+      text="In which session is President Heny B. Eyring speaking?"
+      id="3"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="2"
+    ></app-question>
+  </ng-template>
+
+  <app-section
+    title="Who's Conducting?"
+    [isOpen]="openPanels.whosConducting"
+    (click)="openPanels.whosConducting = !openPanels.whosConducting"
+  ></app-section>
+
+  <ng-template [ngIf]="openPanels.whosConducting">
+    <app-question
+      text="In which sessions is President Russell M. Nelson conducting?"
+      id="4"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="2"
+    ></app-question>
+
+    <app-question
+      text="In which session is President Dallin H. Oaks conducting?"
+      id="5"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="2"
+    ></app-question>
+
+    <app-question
+      text="In which session is President Heny B. Eyring conducting?"
+      id="6"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="2"
+    ></app-question>
+  </ng-template>
 </ng-template>
-
-<app-section
-  title="Who's Conducting?"
-  [isOpen]="openPanels.whosConducting"
-  (click)="openPanels.whosConducting = !openPanels.whosConducting"
-></app-section>
-
-<ng-template [ngIf]="openPanels.whosConducting">
-  <app-question
-    text="In which sessions is President Russell M. Nelson conducting?"
-    id="4"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="2"
-  ></app-question>
-
-  <app-question
-    text="In which session is President Dallin H. Oaks conducting?"
-    id="5"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="2"
-  ></app-question>
-
-  <app-question
-    text="In which session is President Heny B. Eyring conducting?"
-    id="6"
-    answerType="typeahead"
-    [answers]="answersService.conferenceSessions()"
-    [countOfAnswers]="2"
-  ></app-question>
-</ng-template>
-
 <app-chat></app-chat>

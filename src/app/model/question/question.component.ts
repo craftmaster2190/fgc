@@ -19,7 +19,7 @@ export class QuestionComponent implements OnInit {
   @Input() id: number;
 
   value: string;
-  selectedAnswers: Set<string> = new Set();
+  selectedAnswers: Set<string>;
   enabled: boolean = true;
 
   @ViewChild("instance", { static: true }) instance: NgbTypeahead;
@@ -42,7 +42,9 @@ export class QuestionComponent implements OnInit {
     return placeholders[Math.floor(Math.random() * placeholders.length)];
   })();
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.selectedAnswers = this.answersBus.getSelectedAnswers(this.id);
+  }
 
   search = (text$: Observable<string>) => {
     const debouncedText$ = text$.pipe(
