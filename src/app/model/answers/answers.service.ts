@@ -4,564 +4,169 @@ import { Injectable } from '@angular/core';
 export class AnswersService {
   constructor() {}
 
-  firstPresidency = () => ["Russell M. Nelson"];
+  firstPresidency = () => [
+    "Russell M. Nelson",
+    "Dallin H. Oaks",
+    "Henry B. Eyring"
+  ];
 
-  private obj = [
-    {
-      "name": "Russell M. Nelson",
-      "group": "First Presidency"
-    },
-    {
-      "name": "Dallin H. Oaks",
-      "group": "First Presidency"
-    },
-    {
-      "name": "Henry B. Eyring",
-      "group": "First Presidency"
-    },
-    {
-      "name": "M. Russell Ballard",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Jeffrey R. Holland",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Dieter F. Uchtdorf",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "David A. Bednar",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Quentin L. Cook",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "D. Todd Christofferson",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Neil L. Andersen",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Ronald A. Rasband",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Gary E. Stevenson",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Dale G. Renlund",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Gerrit W. Gong",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "Ulisses Soares",
-      "group": "Quorum of the Twelve Apostles"
-    },
-    {
-      "name": "L. Whitney Clayton",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Patrick Kearon",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Carl B. Cook",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Robert C. Gay",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Terence M. Vinson",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "José A. Teixeira",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Carlos A. Godoy",
-      "group": "Presidency of the Seventy"
-    },
-    {
-      "name": "Marcos A. Aidukaitis",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Rubén V. Alliaud",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Jose L. Alonso",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Jorge M. Alvarado",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Wilford W. Andersen",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Ian S. Ardern",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Steven R. Bangerter",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "W. Mark Bassett",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "David S. Baxter",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Randall K. Bennett",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Hans T. Boom",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Shayne M. Bowen",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Mark A. Bragg",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "L. Todd Budge",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Matthew L. Carpenter",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Yoon Hwan Choi",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Craig C. Christensen",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kim B. Clark",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Weatherford T. Clayton",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Lawrence E. Corbridge",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Valeri V. Cordón",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "J. Devn Cornish",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Claudio R. M. Costa",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Joaquin E. Costa",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "LeGrand R. Curtis Jr.",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Massimo De Feo",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Benjamin De Hoyos",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Edward Dube",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kevin R. Duncan",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Timothy J. Dyches",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "David F. Evans",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Enrique R. Falabella",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Bradley D. Foster",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Randy D. Funk",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Eduardo Gavarret",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Jack N. Gerard",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Ricardo P. Giménez",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Taylor G. Godoy",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Christoffel Golden",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Walter F. González",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "O. Vincent Haleck",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Brook P. Hales",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Donald L. Hallstrom",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kevin S. Hamilton",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Allen D. Haynie",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Mathias Held",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "David P. Homer",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Paul V. Johnson",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Peter M. Johnson",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Larry S. Kacher",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Jörg Klebingat",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Joni L. Koch",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Erich W. Kopischke",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Hugo E. Martinez",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "James B. Martino",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Richard J. Maynes",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "John A. McCune",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kyle S. McKay",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Peter F. Meurs",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Hugo Montoya",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Marcus B. Nash",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "K. Brett Nattress",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "S. Gifford Nielsen",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Brent H. Nielson",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Adrián Ochoa",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "S. Mark Palmer",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Adilson de Paula Parrella",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kevin W. Pearson",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Anthony D. Perkins",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Paul B. Pieper",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "John C. Pingree Jr.",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Rafael E. Pino",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "James R. Rasband",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Michael T. Ringwood",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Lynn G. Robbins",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Gary B. Sabin",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Evan A. Schmutz",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Joseph W. Sitati",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Steven E. Snow",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Vern P. Stanfill",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Benjamin M. Z. Tai",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Brian K. Taylor",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Michael John U. Teh",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Juan A. Uceda",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Arnulfo Valenzuela",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Juan Pablo Villar",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Takashi Wada",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Taniela B. Wakolo",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Alan R. Walker",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Scott D. Whiting",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Larry Y. Wilson",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Chi Hong (Sam) Wong",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Kazuhiko Yamashita",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Jorge F. Zeballos",
-      "group": "General Authority Seventies"
-    },
-    {
-      "name": "Gérald Caussé",
-      "group": "Presiding Bishopric"
-    },
-    {
-      "name": "Dean M. Davies",
-      "group": "Presiding Bishopric"
-    },
-    {
-      "name": "W. Christopher Waddell",
-      "group": "Presiding Bishopric"
-    },
-    {
-      "name": "Jean B. Bingham",
-      "group": "Relief Society General Presidency"
-    },
-    {
-      "name": "Sharon Eubank",
-      "group": "Relief Society General Presidency"
-    },
-    {
-      "name": "Reyna I. Aburto",
-      "group": "Relief Society General Presidency"
-    },
-    {
-      "name": "Bonnie H. Cordon",
-      "group": "Young Women General Presidency"
-    },
-    {
-      "name": "Michelle D. Craig",
-      "group": "Young Women General Presidency"
-    },
-    {
-      "name": "Becky Craven",
-      "group": "Young Women General Presidency"
-    },
-    {
-      "name": "Joy D. Jones",
-      "group": "Primary General Presidency"
-    },
-    {
-      "name": "Lisa L. Harkness",
-      "group": "Primary General Presidency"
-    },
-    {
-      "name": "Cristina B. Franco",
-      "group": "Primary General Presidency"
-    },
-    {
-      "name": "Mark L. Pace",
-      "group": "Sunday School General Presidency"
-    },
-    {
-      "name": "Milton Camargo",
-      "group": "Sunday School General Presidency"
-    },
-    {
-      "name": "Jan E. Newman",
-      "group": "Sunday School General Presidency"
-    },
-    {
-      "name": "Stephen W. Owen",
-      "group": "Young Men General Presidency"
-    },
-    {
-      "name": "Douglas D. Holmes",
-      "group": "Young Men General Presidency"
-    },
-    {
-      "name": "M. Joseph Brough",
-      "group": "Young Men General Presidency"
-    }
-  ]
+  apostles = () => [
+    "M. Russell Ballard",
+    "Jeffrey R. Holland",
+    "Dieter F. Uchtdorf",
+    "David A. Bednar",
+    "Quentin L. Cook",
+    "D. Todd Christofferson",
+    "Neil L. Andersen",
+    "Ronald A. Rasband",
+    "Gary E. Stevenson",
+    "Dale G. Renlund",
+    "Gerrit W. Gong",
+    "Ulisses Soares"
+  ];
 
-  apostles = () => [];
+  seventies = () => [
+    "Marcos A. Aidukaitis",
+    "Rubén V. Alliaud",
+    "Jose L. Alonso",
+    "Jorge M. Alvarado",
+    "Wilford W. Andersen",
+    "Ian S. Ardern",
+    "Steven R. Bangerter",
+    "W. Mark Bassett",
+    "David S. Baxter",
+    "Randall K. Bennett",
+    "Hans T. Boom",
+    "Shayne M. Bowen",
+    "Mark A. Bragg",
+    "L. Todd Budge",
+    "Matthew L. Carpenter",
+    "Yoon Hwan Choi",
+    "Craig C. Christensen",
+    "Kim B. Clark",
+    "Weatherford T. Clayton",
+    "Lawrence E. Corbridge",
+    "Valeri V. Cordón",
+    "J. Devn Cornish",
+    "Claudio R. M. Costa",
+    "Joaquin E. Costa",
+    "LeGrand R. Curtis Jr.",
+    "Massimo De Feo",
+    "Benjamin De Hoyos",
+    "Edward Dube",
+    "Kevin R. Duncan",
+    "Timothy J. Dyches",
+    "David F. Evans",
+    "Enrique R. Falabella",
+    "Bradley D. Foster",
+    "Randy D. Funk",
+    "Eduardo Gavarret",
+    "Jack N. Gerard",
+    "Ricardo P. Giménez",
+    "Taylor G. Godoy",
+    "Christoffel Golden",
+    "Walter F. González",
+    "O. Vincent Haleck",
+    "Brook P. Hales",
+    "Donald L. Hallstrom",
+    "Kevin S. Hamilton",
+    "Allen D. Haynie",
+    "Mathias Held",
+    "David P. Homer",
+    "Paul V. Johnson",
+    "Peter M. Johnson",
+    "Larry S. Kacher",
+    "Jörg Klebingat",
+    "Joni L. Koch",
+    "Erich W. Kopischke",
+    "Hugo E. Martinez",
+    "James B. Martino",
+    "Richard J. Maynes",
+    "John A. McCune",
+    "Kyle S. McKay",
+    "Peter F. Meurs",
+    "Hugo Montoya",
+    "Marcus B. Nash",
+    "K. Brett Nattress",
+    "S. Gifford Nielsen",
+    "Brent H. Nielson",
+    "Adrián Ochoa",
+    "S. Mark Palmer",
+    "Adilson de Paula Parrella",
+    "Kevin W. Pearson",
+    "Anthony D. Perkins",
+    "Paul B. Pieper",
+    "John C. Pingree Jr.",
+    "Rafael E. Pino",
+    "James R. Rasband",
+    "Michael T. Ringwood",
+    "Lynn G. Robbins",
+    "Gary B. Sabin",
+    "Evan A. Schmutz",
+    "Joseph W. Sitati",
+    "Steven E. Snow",
+    "Vern P. Stanfill",
+    "Benjamin M. Z. Tai",
+    "Brian K. Taylor",
+    "Michael John U. Teh",
+    "Juan A. Uceda",
+    "Arnulfo Valenzuela",
+    "Juan Pablo Villar",
+    "Takashi Wada",
+    "Taniela B. Wakolo",
+    "Alan R. Walker",
+    "Scott D. Whiting",
+    "Larry Y. Wilson",
+    "Chi Hong (Sam) Wong",
+    "Kazuhiko Yamashita",
+    "Jorge F. Zeballos"
+  ];
 
-  seventies = () => [];
+  presidencyOfTheSeventy = () => [
+    "L. Whitney Clayton",
+    "Patrick Kearon",
+    "Carl B. Cook",
+    "Robert C. Gay",
+    "Terence M. Vinson",
+    "José A. Teixeira",
+    "Carlos A. Godoy"
+  ];
 
-  presidencyOfTheSeventy = () => [];
+  presidingBishopric = () => [
+    "Gérald Caussé",
+    "Dean M. Davies",
+    "W. Christopher Waddell"
+  ];
 
-  presidingBishopric = () => [];
+  reliefSocietyPresidency = () => [
+    "Jean B. Bingham",
+    "Sharon Eubank",
+    "Reyna I. Aburto"
+  ];
 
-  reliefSocietyPresidency = () => [];
+  youngMensPresidency = () => [
+    "Stephen W. Owen",
+    "Douglas D. Holmes",
+    "M. Joseph Brough"
+  ];
 
-  youngMensPresidency = () => [];
+  youndWomensPresidency = () => [
+    "Bonnie H. Cordon",
+    "Michelle D. Craig",
+    "Becky Craven"
+  ];
 
-  youndWomensPresidency = () => [];
+  sundaySchoolPresidency = () => [
+    "Mark L. Pace",
+    "Milton Camargo",
+    "Jan E. Newman"
+  ];
 
-  sundaySchoolPresidency = () => [];
-
-  primaryPresidency = () => [];
+  primaryPresidency = () => [
+    "Joy D. Jones",
+    "Lisa L. Harkness",
+    "Cristina B. Franco"
+  ];
 
   hymnsAndSongs = () => [
     "The Morning Breaks",
