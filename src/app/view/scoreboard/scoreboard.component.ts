@@ -16,7 +16,7 @@ export class ScoreboardComponent implements OnInit {
     this.loadScores();
     this.interval = setInterval(() => {
       this.loadScores();
-    }, 90000);
+    }, 30000);
   }
 
   private loadScores() {
