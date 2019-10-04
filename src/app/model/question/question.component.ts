@@ -98,6 +98,10 @@ export class QuestionComponent implements OnInit, OnDestroy {
   };
 
   updateAnswer = (event?: NgbTypeaheadSelectItemEvent) => {
+    if (!event && this.instance.isPopupOpen()) {
+      return;
+    }
+
     if (this.isEnabled()) {
       const newAnswer = ((event && event.item) || this.value || "").trim();
       if (newAnswer) {
