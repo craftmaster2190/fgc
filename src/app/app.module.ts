@@ -16,6 +16,8 @@ import { NavHeaderComponent } from './view/nav-header/nav-header.component';
 import { NotAuthGuard } from './view/auth/not-auth-guard.service';
 import { QuestionComponent } from './model/question/question.component';
 import { RegisterComponent } from './view/register/register.component';
+import { ScoreboardComponent } from './view/scoreboard/scoreboard.component';
+import { ScoresService } from './view/scoreboard/scores.service';
 import { SectionComponent } from './model/section/section.component';
 import { ToastService } from './view/util/toast/toast.service';
 import { ValidTextComponent } from './view/util/valid-text/valid-text.component';
@@ -36,7 +38,8 @@ import { NgModule } from '@angular/core';
     RegisterComponent,
     NavHeaderComponent,
     ValidTextComponent,
-    ChatComponent
+    ChatComponent,
+    ScoreboardComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import { NgModule } from '@angular/core';
     ChatBusService,
     FamilySearchService,
     MessageBusService,
+    ScoresService,
     ToastService,
     {
       provide: HTTP_INTERCEPTORS,
