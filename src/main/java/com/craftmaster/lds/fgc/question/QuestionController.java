@@ -30,7 +30,7 @@ public class QuestionController {
   @PostMapping
   @RolesAllowed("ROLE_ADMIN")
   public Question updateQuestion(@RequestBody Question question) {
-   return questionService.updateQuestion(question);
+    return questionService.updateQuestion(question);
   }
 
   @GetMapping("possible/{id}")
