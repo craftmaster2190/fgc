@@ -1,11 +1,16 @@
-import { AuthService } from "./auth.service";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { AuthService } from './auth.service';
+import { catchError } from 'rxjs/operators';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -19,6 +24,14 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       });
     }
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError(err => {
+        if (err.status === 401) {
+          this.authService.logout();
+          this.router.navigate(["login"]);
+        }
+        return throwError(err);
+      })
+    );
   }
 }

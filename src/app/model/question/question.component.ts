@@ -3,7 +3,7 @@ import { AnswerBusService } from '../messaging/answer-bus.service';
 import { AnswersService } from '../answers/answers.service';
 import { Question } from '../answers/question';
 import { AuthService } from 'src/app/view/auth/auth.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { merge, Observable, Subject } from 'rxjs';
 import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +13,8 @@ import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-boot
   templateUrl: "./question.component.html",
   styleUrls: ["./question.component.sass"]
 })
-export class QuestionComponent implements OnInit {
+export class QuestionComponent implements OnInit, OnDestroy {
+  interval;
   constructor(
     private readonly answersBus: AnswerBusService,
     private readonly authService: AuthService
@@ -27,8 +28,8 @@ export class QuestionComponent implements OnInit {
   value: string;
   selectedAnswers: Set<string>;
   question?: Question;
-  possibleAnswers?: Array<string>;
-  correctAnswers: Set<string>;
+  possibleAnswers: Array<string> = [];
+  correctAnswers?: Set<string>;
 
   @ViewChild("instance", { static: true }) instance: NgbTypeahead;
   focus$ = new Subject<string>();
@@ -55,17 +56,20 @@ export class QuestionComponent implements OnInit {
     const answer = this.answersBus.getAnswer(this.id);
     this.question = answer && this.question;
     if (!this.question) {
-      this.answersBus
-        .fetchQuestion(this.id)
-        .then(question => (this.question = question));
+      this.fetchQuestion();
     }
+    this.interval = setInterval(this.fetchQuestion, 15000);
 
     if (this.isAdmin()) {
       this.answersBus
         .getPossibleAnswers(this.id)
-        .then(possibleAnswers => (this.possibleAnswers = possibleAnswers));
+        .then(possibleAnswers => possibleAnswers.forEach(this.addToPossibleAnswers));
       this.correctAnswers = new Set();
     }
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 
   search = (text$: Observable<string>) => {
@@ -88,19 +92,20 @@ export class QuestionComponent implements OnInit {
           : possibleAnswers.filter(
               v => v.toLowerCase().indexOf(term.toLowerCase()) > -1
             )
-        ).slice(0, 10);
+        ).slice(0, 12);
       })
     );
   };
 
   updateAnswer = (event?: NgbTypeaheadSelectItemEvent) => {
-    if (this.isAdmin()) {
-      this.possibleAnswers!.push(this.value);
-    }
     if (this.isEnabled()) {
       const newAnswer = ((event && event.item) || this.value || "").trim();
       if (newAnswer) {
         this.selectedAnswers.add(newAnswer);
+
+        if (this.isAdmin()) {
+          this.addToPossibleAnswers(newAnswer);
+        }
       }
       event && event.preventDefault();
       this.value = "";
@@ -108,8 +113,15 @@ export class QuestionComponent implements OnInit {
     }
   };
 
+  private addToPossibleAnswers = (value) => {
+    if (this.possibleAnswers.indexOf(value) === -1) {
+      this.possibleAnswers.push(value);
+      this.possibleAnswers.sort();
+    }
+  }
+
   removeAnswer = (value: string) => {
-    if (this.isEnabled()) {
+    if (!this.isQuestionClosed()) {
       this.selectedAnswers.delete(value);
       this.persistAnswer();
     }
@@ -147,11 +159,21 @@ export class QuestionComponent implements OnInit {
     return !this.question.enabled;
   };
 
+  private fetchQuestion = () => {
+    this.answersBus.fetchQuestion(this.id).then(question => {
+      this.question = question;
+      (this.question.correctAnswers || []).forEach(c => {
+        this.correctAnswers.add(c);
+        this.addToPossibleAnswers(c);
+      });
+    });
+  };
+
   getPointValue() {
     return this.question && this.question.pointValue;
   }
 
-  updatePointValue() {
+  updateQuestion() {
     this.answersBus.updateQuestion(this.question);
   }
 
@@ -162,6 +184,6 @@ export class QuestionComponent implements OnInit {
       this.correctAnswers.add(answerValue);
     }
     this.question.correctAnswers = Array.from(this.correctAnswers);
-    this.answersBus.updateQuestion(this.question);
+    this.updateQuestion();
   }
 }

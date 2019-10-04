@@ -1,9 +1,11 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.craftmaster.lds.fgc.question.Question;
 import com.craftmaster.lds.fgc.question.QuestionService;
 import com.craftmaster.lds.fgc.user.User;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,12 @@ public class AnswerController {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Received answer {} {}", answer, user);
     answer.getAnswerPk().setUserId(user.getId());
-    questionService.getOrCreateById(answer.getAnswerPk().getQuestionId());
-    answerRepository.save(answer);
+    Question question = questionService.getOrCreateById(answer.getAnswerPk().getQuestionId());
+    Boolean enabled = question
+      .getEnabled();
+    if (Objects.equals(enabled, true)) {
+      answerRepository.save(answer);
+    }
   }
 
   @GetMapping("mine")

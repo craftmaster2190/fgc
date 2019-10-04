@@ -32,28 +32,37 @@
       (click)="removeAnswer(answer)"
       [class.badge-success]="question?.correctAnswers?.indexOf(answer) > -1"
       [class.badge-primary]="!isQuestionClosed()"
-      [class.badge-seconday]="!isEnabled()"
+      [class.badge-secondary]="isQuestionClosed()"
     >
-      {{ answer }} <i *ngIf="!isQuestionClosed()" class="fas fa-trash"></i>
+      {{ answer }} <i *ngIf="isAdmin() || !isQuestionClosed()" class="fas fa-trash"></i>
     </span>
   </div>
 </ng-template>
 
 <div class="admin-tools" *ngIf="question && isAdmin()">
   <div>
+    Set enabled:
+    <input
+      type="checkbox"
+      [(ngModel)]="question.enabled"
+      (change)="updateQuestion()"
+    />
+  </div>
+  <div>
     Set point value:
     <input
       type="number"
       [(ngModel)]="question.pointValue"
-      (change)="updatePointValue()"
+      (change)="updateQuestion()"
     />
   </div>
-  <div>Select Correct Answers:</div>
-  <span
-    *ngFor="let pa of possibleAnswers"
-    class="badge"
-    [ngClass]="correctAnswers.has(pa) ? 'badge-success' : 'badge-danger'"
-    (click)="toggleCorrectAnswer(pa)"
-    >{{ pa }}</span
-  >
+  <div>Set correct answers:</div>
+  <div *ngFor="let pa of possibleAnswers">
+    <span
+      class="badge"
+      [ngClass]="correctAnswers.has(pa) ? 'badge-success' : 'badge-danger'"
+      (click)="toggleCorrectAnswer(pa)"
+      >{{ pa }}</span
+    >
+  </div>
 </div>

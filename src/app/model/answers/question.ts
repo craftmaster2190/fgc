@@ -1,6 +1,6 @@
 export interface Question {
   id: number;
-  correctAnswers: Array<string>;
+  correctAnswers?: Array<string>;
   enabled: boolean;
   pointValue?: number;
 }

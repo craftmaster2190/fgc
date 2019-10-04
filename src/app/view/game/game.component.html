@@ -29,11 +29,11 @@
 <ng-template #notLoading>
   <app-section
     title="When is the First Presidency speaking?"
-    [isOpen]="openPanels.firstPresidency"
-    (click)="openPanels.firstPresidency = !openPanels.firstPresidency"
+    [isOpen]="openPanel === 'firstPresidency'"
+    (click)="toggelOpenPanel($event, 'firstPresidency')"
   ></app-section>
 
-  <ng-template [ngIf]="openPanels.firstPresidency">
+  <ng-template [ngIf]="openPanel === 'firstPresidency'">
     <app-question
       text="In which session(s) is President Russell M. Nelson speaking?"
       id="1"
@@ -61,11 +61,11 @@
 
   <app-section
     title="Who's Conducting?"
-    [isOpen]="openPanels.whosConducting"
-    (click)="openPanels.whosConducting = !openPanels.whosConducting"
+    [isOpen]="openPanel === 'whosConducting'"
+    (click)="toggelOpenPanel($event, 'whosConducting')"
   ></app-section>
 
-  <ng-template [ngIf]="openPanels.whosConducting">
+  <ng-template [ngIf]="openPanel === 'whosConducting'">
     <app-question
       text="In which sessions(s) is President Russell M. Nelson conducting?"
       id="11"
@@ -94,11 +94,11 @@
 
 <app-section
   title="When are the Apostles Speaking?"
-  [isOpen]="openPanels.apostlesSpeaking"
-  (click)="openPanels.apostlesSpeaking = !openPanels.apostlesSpeaking"
+  [isOpen]="openPanel === 'apostlesSpeaking'"
+  (click)="toggelOpenPanel($event, 'apostlesSpeaking')"
 ></app-section>
 
-<ng-template [ngIf]="openPanels.apostlesSpeaking">
+<ng-template [ngIf]="openPanel === 'apostlesSpeaking'">
   <app-question
     text="Which Apostle(s) are speaking in the Saturday Morning Session?"
     id="21"
@@ -131,11 +131,11 @@
 
 <app-section
   title="Auxiliaries and Seventies"
-  [isOpen]="openPanels.auxAndSeventies"
-  (click)="openPanels.auxAndSeventies = !openPanels.auxAndSeventies"
+  [isOpen]="openPanel === 'auxAndSeventies'"
+  (click)="toggelOpenPanel($event, 'auxAndSeventies')"
 ></app-section>
 
-<ng-template [ngIf]="openPanels.auxAndSeventies">
+<ng-template [ngIf]="openPanel === 'auxAndSeventies'">
   <app-question
     text="Who of the Quorums of the Seventies will be speaking in any session? (Pick ten)"
     id="31"
@@ -196,11 +196,11 @@
 
 <app-section
   title="Hymns and the Choir"
-  [isOpen]="openPanels.hymnsAndChoir"
-  (click)="openPanels.hymnsAndChoir = !openPanels.hymnsAndChoir"
+  [isOpen]="openPanel === 'hymnsAndChoir'"
+  (click)="toggelOpenPanel($event, 'hymnsAndChoir')"
 ></app-section>
 
-<ng-template [ngIf]="openPanels.hymnsAndChoir">
+<ng-template [ngIf]="openPanel === 'hymnsAndChoir'">
   <app-question
     text="Which hymns will be sung in any session? (Pick ten)"
     id="41"
@@ -248,11 +248,11 @@
 
 <app-section
   title="Tie Colors"
-  [isOpen]="openPanels.tieColors"
-  (click)="openPanels.tieColors = !openPanels.tieColors"
+  [isOpen]="openPanel === 'tieColors'"
+  (click)="toggelOpenPanel($event, 'tieColors')"
 ></app-section>
 
-<ng-template [ngIf]="openPanels.tieColors">
+<ng-template [ngIf]="openPanel === 'tieColors'">
   <app-question
     text="What will President Russell M. Nelson's tie color be in the Saturday Morning Session?"
     id="51"
@@ -343,11 +343,11 @@
 
 <app-section
   title="New Temple Locations"
-  [isOpen]="openPanels.newTempleLocations"
-  (click)="openPanels.newTempleLocations = !openPanels.newTempleLocations"
+  [isOpen]="openPanel === 'newTempleLocations'"
+  (click)="toggelOpenPanel($event, 'newTempleLocations')"
 ></app-section>
 
-<ng-template [ngIf]="openPanels.newTempleLocations">
+<ng-template [ngIf]="openPanel === 'newTempleLocations'">
   <app-question
     text="In which states in the U.S.A. will new temples be built?"
     id="71"
