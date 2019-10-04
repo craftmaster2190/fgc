@@ -1,7 +1,13 @@
 <label for="typeahead-basic">
   {{ text }}<br />
-  <small>Point value for each correct answer: ??</small>&nbsp;
+  <small
+    >Point value for each correct answer: {{ getPointValue() || "??" }} </small
+  >&nbsp;<br class="d-md-none" />
   <small>Maximum number of guesses: {{ countOfAnswers }}</small>
+  <ng-template [ngIf]="isQuestionClosed()">
+    &nbsp;<br class="d-md-none" />
+    <small>This question is closed.</small>
+  </ng-template>
 </label>
 <input
   id="typeahead-basic"
@@ -15,8 +21,8 @@
   (focus)="focus$.next($event.target.value)"
   (click)="click$.next($event.target.value)"
   #instance="ngbTypeahead"
-  [disabled]="selectedAnswers.size >= countOfAnswers"
-  [placeholder]="randomPlaceholder"
+  [disabled]="!isEnabled()"
+  [placeholder]="isQuestionClosed() ? '' : randomPlaceholder"
 />
 
 <ng-template ngFor let-answer [ngForOf]="selectedAnswers">
@@ -24,9 +30,30 @@
     <span
       class="badge"
       (click)="removeAnswer(answer)"
-      [class.badge-primary]="enabled"
+      [class.badge-success]="question?.correctAnswers?.indexOf(answer) > -1"
+      [class.badge-primary]="!isQuestionClosed()"
+      [class.badge-seconday]="!isEnabled()"
     >
-      {{ answer }} <i class="fas fa-trash"></i>
+      {{ answer }} <i *ngIf="!isQuestionClosed()" class="fas fa-trash"></i>
     </span>
   </div>
 </ng-template>
+
+<div class="admin-tools" *ngIf="question && isAdmin()">
+  <div>
+    Set point value:
+    <input
+      type="number"
+      [(ngModel)]="question.pointValue"
+      (change)="updatePointValue()"
+    />
+  </div>
+  <div>Select Correct Answers:</div>
+  <span
+    *ngFor="let pa of possibleAnswers"
+    class="badge"
+    [ngClass]="correctAnswers.has(pa) ? 'badge-success' : 'badge-danger'"
+    (click)="toggleCorrectAnswer(pa)"
+    >{{ pa }}</span
+  >
+</div>

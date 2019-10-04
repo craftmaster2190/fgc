@@ -15,4 +15,8 @@ public class QuestionService {
         questionRepository.save(new Question().setId(questionId).setEnabled(true))
       );
   }
+
+  public Question updateQuestion(Question question) {
+    return questionRepository.save(question);
+  }
 }

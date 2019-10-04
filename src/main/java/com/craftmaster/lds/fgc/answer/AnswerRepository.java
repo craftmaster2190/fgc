@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface AnswerRepository extends CrudRepository<Answer, AnswerPk> {
 
   List<Answer> findByAnswerPk_UserId(Long id);
+
+  List<Answer> findByAnswerPk_QuestionId(Long id);
 }
 

@@ -65,21 +65,4 @@ public class RegisterController {
         log.warn("Created `{}` user with password: `{}`", adminUsername, adminPassword);
       });
   }
-
-  @PostConstruct
-  public void generateTest() {
-    String adminUsername = "TEST";
-    userRepository.findByUsernameIgnoreCase(adminUsername)
-      .ifPresentOrElse(existingAdmin -> {
-        log.warn("Test already exists!");
-      }, () -> {
-        String adminPassword = "test";
-        registerUser(new User()
-          .setUsername(adminUsername)
-          .setPassword(adminPassword)
-          .setIsAdmin(true)
-          .setFamily(new Family().setName("Fisher")));
-        log.warn("Created `{}` user with password: `{}`", adminUsername, adminPassword);
-      });
-  }
 }

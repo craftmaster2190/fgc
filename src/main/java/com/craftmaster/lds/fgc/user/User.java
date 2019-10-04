@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Data
 @Accessors(chain = true)
+@Table(name = "appuser")
 public class User implements UserDetails {
 
   @Transient
@@ -52,6 +54,7 @@ public class User implements UserDetails {
   private String username;
   @NotBlank
   @JsonProperty(access = Access.WRITE_ONLY)
+  @ToString.Exclude
   private String password;
 
   @JsonInclude(Include.NON_NULL)
@@ -71,7 +74,7 @@ public class User implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     if (Objects.equals(getIsAdmin(), Boolean.TRUE)) {
-      return Set.of(new SimpleGrantedAuthority("ADMIN"));
+      return Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
     return Set.of();
   }

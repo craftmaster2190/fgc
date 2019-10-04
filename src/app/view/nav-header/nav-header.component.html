@@ -1,7 +1,7 @@
 <p>Fantasy General Conference</p>
 <div class="right-side" (click)="logout()">
   <div *ngIf="authService.getLoggedInUser()" class="logout text-muted">Log out</div>
-  <div class="autheticated-user">
+  <div class="authenticated-user">
     <div class="username">{{ getUsername() }}</div>
     <div class="family-name text-muted">{{ getFamilyName() }}</div>
   </div>

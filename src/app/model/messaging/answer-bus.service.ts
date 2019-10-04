@@ -1,10 +1,11 @@
-import { JSONMessageSender } from "./json-message-sender";
-import { MessageBusService } from "./message-bus.service";
-import { Answer } from "../answers/answer";
-import { AnswersService } from "../answers/answers.service";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Message } from "@stomp/stompjs";
+import { JSONMessageSender } from './json-message-sender';
+import { MessageBusService } from './message-bus.service';
+import { Answer } from '../answers/answer';
+import { AnswersService } from '../answers/answers.service';
+import { Question } from '../answers/question';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Message } from '@stomp/stompjs';
 
 @Injectable()
 export class AnswerBusService {
@@ -38,6 +39,14 @@ export class AnswerBusService {
       this.selectedAnswersCache[questionId] || new Set());
   }
 
+  getAnswer(questionId: number): Answer | undefined {
+    return this.answersCache[questionId];
+  }
+
+  fetchQuestion(id: number) {
+    return this.httpClient.get<Question>(`/api/question/${id}`).toPromise();
+  }
+
   answer(questionId: number, answerText: Array<string>) {
     const answer: Answer = {
       questionId,
@@ -45,5 +54,13 @@ export class AnswerBusService {
     };
 
     this.answerSender.convertAndSend(answer);
+  }
+
+  updateQuestion(question: Question) {
+    this.httpClient.post(`/api/question/`, question).toPromise();
+  }
+
+  getPossibleAnswers(id: number) {
+    return this.httpClient.get<Array<string>>(`/api/question/possible/${id}`).toPromise();
   }
 }

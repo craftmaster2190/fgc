@@ -1,5 +1,8 @@
+import { Answer } from '../answers/answer';
 import { AnswerBusService } from '../messaging/answer-bus.service';
 import { AnswersService } from '../answers/answers.service';
+import { Question } from '../answers/question';
+import { AuthService } from 'src/app/view/auth/auth.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { merge, Observable, Subject } from 'rxjs';
@@ -11,7 +14,10 @@ import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-boot
   styleUrls: ["./question.component.sass"]
 })
 export class QuestionComponent implements OnInit {
-  constructor(private readonly answersBus: AnswerBusService) {}
+  constructor(
+    private readonly answersBus: AnswerBusService,
+    private readonly authService: AuthService
+  ) {}
   @Input() text: string;
   @Input() answerType: "typeahead" | "text";
   @Input() answers: Array<string> = [];
@@ -20,7 +26,9 @@ export class QuestionComponent implements OnInit {
 
   value: string;
   selectedAnswers: Set<string>;
-  enabled: boolean = true;
+  question?: Question;
+  possibleAnswers?: Array<string>;
+  correctAnswers: Set<string>;
 
   @ViewChild("instance", { static: true }) instance: NgbTypeahead;
   focus$ = new Subject<string>();
@@ -44,6 +52,20 @@ export class QuestionComponent implements OnInit {
 
   ngOnInit() {
     this.selectedAnswers = this.answersBus.getSelectedAnswers(this.id);
+    const answer = this.answersBus.getAnswer(this.id);
+    this.question = answer && this.question;
+    if (!this.question) {
+      this.answersBus
+        .fetchQuestion(this.id)
+        .then(question => (this.question = question));
+    }
+
+    if (this.isAdmin()) {
+      this.answersBus
+        .getPossibleAnswers(this.id)
+        .then(possibleAnswers => (this.possibleAnswers = possibleAnswers));
+      this.correctAnswers = new Set();
+    }
   }
 
   search = (text$: Observable<string>) => {
@@ -72,21 +94,74 @@ export class QuestionComponent implements OnInit {
   };
 
   updateAnswer = (event?: NgbTypeaheadSelectItemEvent) => {
-    const newAnswer = ((event && event.item) || this.value || "").trim();
-    if (newAnswer) {
-      this.selectedAnswers.add(newAnswer);
+    if (this.isAdmin()) {
+      this.possibleAnswers!.push(this.value);
     }
-    event.preventDefault();
-    this.value = "";
-    this.persistAnswer();
+    if (this.isEnabled()) {
+      const newAnswer = ((event && event.item) || this.value || "").trim();
+      if (newAnswer) {
+        this.selectedAnswers.add(newAnswer);
+      }
+      event && event.preventDefault();
+      this.value = "";
+      this.persistAnswer();
+    }
   };
 
   removeAnswer = (value: string) => {
-    this.selectedAnswers.delete(value);
-    this.persistAnswer();
+    if (this.isEnabled()) {
+      this.selectedAnswers.delete(value);
+      this.persistAnswer();
+    }
   };
 
   persistAnswer = () => {
     this.answersBus.answer(this.id, Array.from(this.selectedAnswers));
   };
+
+  isAdmin = () => {
+    return this.authService.getLoggedInUser().isAdmin;
+  };
+
+  isEnabled = () => {
+    if (this.isAdmin()) {
+      return true;
+    }
+
+    if (this.selectedAnswers.size >= this.countOfAnswers) {
+      return false;
+    }
+
+    if (!this.question) {
+      return false;
+    }
+
+    return this.question.enabled;
+  };
+
+  isQuestionClosed = () => {
+    if (!this.question) {
+      return false;
+    }
+
+    return !this.question.enabled;
+  };
+
+  getPointValue() {
+    return this.question && this.question.pointValue;
+  }
+
+  updatePointValue() {
+    this.answersBus.updateQuestion(this.question);
+  }
+
+  toggleCorrectAnswer(answerValue: string) {
+    if (this.correctAnswers.has(answerValue)) {
+      this.correctAnswers.delete(answerValue);
+    } else {
+      this.correctAnswers.add(answerValue);
+    }
+    this.question.correctAnswers = Array.from(this.correctAnswers);
+    this.answersBus.updateQuestion(this.question);
+  }
 }
