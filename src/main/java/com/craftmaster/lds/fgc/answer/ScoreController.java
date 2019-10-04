@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +56,16 @@ public class ScoreController {
         answer.getQuestion().getCorrectAnswers());
       intersectionOfCorrectAnswers.retainAll(answer.getValues());
 
+      if (intersectionOfCorrectAnswers.isEmpty()) {
+        return;
+      }
+
       User user = userId2User.get(answer.getAnswerPk().getUserId(),
         userId -> userRepository.findById(userId).orElseThrow());
+
+      if (Objects.equals(user.getIsAdmin(), true)) {
+        return;
+      }
 
       long pointValue = intersectionOfCorrectAnswers.size() * answer.getQuestion().getPointValue();
 
