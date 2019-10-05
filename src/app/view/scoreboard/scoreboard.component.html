@@ -9,14 +9,14 @@
 <div class="row">
   <div class="col-12 col-md-6">
     <h1 *ngIf="userScores.length">Top Users</h1>
-    <p *ngFor="let score of userScores">
+    <div *ngFor="let score of userScores">
       <b>{{ score.name }}</b> {{ score.value }}
-    </p>
+    </div>
   </div>
   <div class="col-12 col-md-6">
     <h1 *ngIf="familyScores.length">Top Families</h1>
-    <p *ngFor="let score of familyScores">
+    <div *ngFor="let score of familyScores">
       <b>{{ score.name }}</b> {{ score.value }}
-    </p>
+    </div>
   </div>
 </div>

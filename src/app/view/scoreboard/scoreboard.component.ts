@@ -27,19 +27,29 @@ export class ScoreboardComponent implements OnInit {
 
   private loadScores() {
     if (this.authService.getLoggedInUser().isAdmin) {
-      this.scoresService.getUsernames().then(usernames => this.usernames = usernames);
+      this.scoresService
+        .getUsernames()
+        .then(usernames => (this.usernames = usernames));
     }
-    this.scoresService.getUserCount().then(userCount => this.userCount = userCount);
+    this.scoresService
+      .getUserCount()
+      .then(userCount => (this.userCount = userCount));
 
     this.scoresService.get().then(scores => {
       this.userScores = Object.keys(scores.user2Score).map(user => ({
         name: user,
         value: scores.user2Score[user]
       }));
+      this.userScores.sort((a, b) =>
+        a.value === b.value ? 0 : a.value < b.value ? 1 : -1
+      );
       this.familyScores = Object.keys(scores.family2Score).map(family => ({
         name: family,
         value: scores.family2Score[family]
       }));
+      this.familyScores.sort((a, b) =>
+        a.value === b.value ? 0 : a.value < b.value ? 1 : -1
+      );
     });
   }
 

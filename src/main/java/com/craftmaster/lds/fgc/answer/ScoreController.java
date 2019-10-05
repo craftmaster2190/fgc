@@ -37,9 +37,6 @@ public class ScoreController {
   private volatile Map<String, Long> user2Score = new ConcurrentHashMap<>();
   private volatile Map<String, Long> family2Score = new ConcurrentHashMap<>();
 
-
-
-
   @GetMapping
   public Scores get() {
     return new Scores()
