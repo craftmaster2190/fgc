@@ -1,3 +1,11 @@
+<h3 *ngIf="userCount">Users playing: {{ userCount }}</h3>
+
+<ng-template [ngIf]="usernames">
+  <div *ngFor="let username of usernames">
+    {{ username }}
+  </div>
+</ng-template>
+
 <div class="row">
   <div class="col-12 col-md-6">
     <h1 *ngIf="userScores.length">Top Users</h1>

@@ -1,4 +1,5 @@
 import { ScoresService } from './scores.service';
+import { AuthService } from '../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -8,9 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScoreboardComponent implements OnInit {
   private interval;
+  userCount: number;
+  usernames: Array<string>;
   userScores: Array<{ name: string; value: number }> = [];
   familyScores: Array<{ name: string; value: number }> = [];
-  constructor(private readonly scoresService: ScoresService) {}
+  constructor(
+    private readonly scoresService: ScoresService,
+    private readonly authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadScores();
@@ -20,6 +26,11 @@ export class ScoreboardComponent implements OnInit {
   }
 
   private loadScores() {
+    if (this.authService.getLoggedInUser().isAdmin) {
+      this.scoresService.getUsernames().then(usernames => this.usernames = usernames);
+    }
+    this.scoresService.getUserCount().then(userCount => this.userCount = userCount);
+
     this.scoresService.get().then(scores => {
       this.userScores = Object.keys(scores.user2Score).map(user => ({
         name: user,
