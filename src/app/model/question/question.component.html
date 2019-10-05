@@ -7,6 +7,11 @@
   <ng-template [ngIf]="isQuestionClosed()">
     &nbsp;<br class="d-md-none" />
     <small>This question is closed.</small>
+    <br />
+    <small
+      >Correct Answers:
+      {{ question?.correctAnswers?.join(", ") || "None yet." }}</small
+    >
   </ng-template>
 </label>
 <input
@@ -34,7 +39,8 @@
       [class.badge-primary]="!isQuestionClosed()"
       [class.badge-secondary]="isQuestionClosed()"
     >
-      {{ answer }} <i *ngIf="isAdmin() || !isQuestionClosed()" class="fas fa-trash"></i>
+      {{ answer }}
+      <i *ngIf="isAdmin() || !isQuestionClosed()" class="fas fa-trash"></i>
     </span>
   </div>
 </ng-template>
