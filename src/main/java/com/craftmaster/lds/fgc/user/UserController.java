@@ -35,7 +35,7 @@ public class UserController {
   public Set<String> getAllUsernames() {
     return StreamSupport.stream(this.userRepository.findAll().spliterator(), false)
       .filter(user -> (!Objects.equals(user.getIsAdmin() , true)))
-      .map(User::getUsername)
+      .map(user -> user.getUsername() + " (" + user.getFamily().getName() + ")")
       .collect(Collectors.toCollection(TreeSet::new));
   }
 }

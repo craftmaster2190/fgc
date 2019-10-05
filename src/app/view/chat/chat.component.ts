@@ -48,7 +48,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendChat() {
-    this.chatBusService.send(this.chatValue);
+    if (this.chatValue) {
+      this.chatBusService.send(this.chatValue);
+    }
     this.chatValue = "";
   }
 
