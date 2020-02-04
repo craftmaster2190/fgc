@@ -14,7 +14,7 @@
       <div *ngFor="let chat of chats">
         <b
           >{{ chat.user.username }} <small class="text-mutes">({{ chat.user.family.name }})</small></b
-        >:&nbsp;{{ chat.value }}
+        >:&nbsp;{{ chat.value }} <span class="time-stamp"> - {{ chat.sendTime }}</span>
       </div>
     </div>
     <form class="chat-controls" (ngSubmit)="sendChat()">

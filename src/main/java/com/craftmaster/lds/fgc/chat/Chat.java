@@ -10,4 +10,5 @@ public class Chat {
 
   private User user;
   private String value;
+  private String sendTime;
 }

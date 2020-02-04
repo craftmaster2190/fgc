@@ -31,8 +31,9 @@ public class ChatController {
   @SendTo("/topic/chat")
   public Chat sendChat(@NotBlank @Payload String chatString, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
-    Chat chat = new Chat().setValue(chatString).setUser(user);
+    Chat chat = new Chat().setValue(chatString).setUser(user).setSendTime(new ChatTime().getCurrentTime());
     chatStore.put(Instant.now(), chat);
+
     return chat;
   }
 
