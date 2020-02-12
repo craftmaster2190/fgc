@@ -14,12 +14,19 @@ export class MessageBusService {
     this.senders[topic] =
       this.senders[topic] || new JSONMessageSender(topic, this.rxStompService);
     return this.senders[topic];
-  }
+  };
 
   topicWatcher = (topic: string) => {
     topic = `/topic/${topic}`;
     this.watchers[topic] =
       this.watchers[topic] || this.rxStompService.watch(topic);
     return this.watchers[topic];
-  }
+  };
+
+  userTopicWatcher = (topic: string) => {
+    topic = `/user/topic/${topic}`;
+    this.watchers[topic] =
+      this.watchers[topic] || this.rxStompService.watch(topic);
+    return this.watchers[topic];
+  };
 }

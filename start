@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function pidOfPort() {
+    lsof -Pi ":${1}" -sTCP:LISTEN -t
+}
+
+function clean() {
+    ./gradlew clean
+    mkdir build
+    yarn install 2>&1 | tee build/yarnInstall.log
+}
+
+function frontEnd() {
+    nohup yarn start <<</dev/null >build/frontEnd.log 2>&1 &
+    echo $! >build/frontEnd.pid
+}
+
+function backEnd() {
+    nohup ./gradlew bootRun <<</dev/null >build/backEnd.log 2>&1 &
+    echo $! >build/backEnd.pid
+}
+
+echo "Cleaning..."
+./stop
+clean
+frontEnd
+backEnd
+
+START_TIME=`date +%s`
+echo -n 'Loading...'
+while : ; do
+    FRONT_END_STATUS="startup"
+    if [ -f build/frontEnd.pid ] ; then
+        FRONT_END_STATUS="port 4200"
+        if lsof -Pi :4200 -sTCP:LISTEN -t >/dev/null ; then
+            FRONT_END_STATUS="ready"
+        fi
+    fi
+
+    BACK_END_STATUS="startup"
+    if [ -f build/backEnd.pid ] ; then
+        BACK_END_STATUS="port 8080"
+        if lsof -Pi :8080 -sTCP:LISTEN -t >/dev/null ; then
+            BACK_END_STATUS="ready"
+        fi
+    fi
+
+    TIME_ELAPSED=$((`date +%s` - START_TIME))
+    echo -n -e "\r\033[0K ${TIME_ELAPSED}s Waiting for FrontEnd: ${FRONT_END_STATUS} BackEnd: ${BACK_END_STATUS}"
+
+    if [[ "${FRONT_END_STATUS}" = 'ready' ]] && [[ "${BACK_END_STATUS}" = 'ready' ]] ; then
+        break;
+    fi
+
+    sleep 1
+done
+echo '';

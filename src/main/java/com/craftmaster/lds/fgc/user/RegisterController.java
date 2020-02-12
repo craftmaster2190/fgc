@@ -56,7 +56,7 @@ public class RegisterController {
       .ifPresentOrElse(existingAdmin -> {
         log.warn("Admin already exists!");
       }, () -> {
-        String adminPassword = UUID.randomUUID().toString();
+        String adminPassword = "admin";// UUID.randomUUID().toString();
         registerUser(new User()
           .setUsername(adminUsername)
           .setPassword(adminPassword)

@@ -21,4 +21,12 @@ export class ToastService {
   create(toast: Toast) {
     this.toasts.next(toast);
   }
+
+  createError(header: string, message: string) {
+    this.create({
+      header,
+      message: "Error: " + message,
+      classname: "bg-danger text-light"
+    });
+  }
 }

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function pidOfPort() {
+    lsof -Pi ":${1}" -sTCP:LISTEN -t
+}
+
+if [ -f build/backEnd.pid ] ; then
+    kill `cat build/backEnd.pid` 2>/dev/null
+fi
+
+if pidOfPort 8080 >/dev/null ; then 
+    kill `pidOfPort 8080`
+fi
+
+if [ -f build/frontEnd.pid ] ; then
+    kill `cat build/frontEnd.pid` 2>/dev/null
+fi
+
+if pidOfPort 4200 >/dev/null ; then
+    kill `pidOfPort 4200`
+fi

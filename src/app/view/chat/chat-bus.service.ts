@@ -5,6 +5,8 @@ import { Injectable, OnDestroy } from "@angular/core";
 import { JSONMessageSender } from "src/app/model/messaging/json-message-sender";
 import { MessageBusService } from "src/app/model/messaging/message-bus.service";
 import { Subscription } from "rxjs";
+import { ToastService } from "../util/toast/toast.service";
+import { merge } from "rxjs";
 
 @Injectable()
 export class ChatBusService {
@@ -12,15 +14,9 @@ export class ChatBusService {
 
   constructor(
     private readonly messageBusService: MessageBusService,
-    private readonly httpClient: HttpClient
+    private readonly toastService: ToastService
   ) {
     this.chatSender = messageBusService.messageSender("chat");
-  }
-
-  getAll() {
-    return this.httpClient
-      .get<{ [time: string]: Chat }>("/api/chat")
-      .toPromise();
   }
 
   send(message: string) {
@@ -28,8 +24,20 @@ export class ChatBusService {
   }
 
   listen(next: (chat: Chat) => void) {
-    return this.messageBusService
-      .topicWatcher("chat")
-      .subscribe(message => next(JSON.parse(message.body) as Chat));
+    return merge(
+      this.messageBusService.topicWatcher("chat")
+      // this.messageBusService.userTopicWatcher("chat")
+    ).subscribe(message => {
+      try {
+        const parsedChats = JSON.parse(message.body) as Chat | Chat[];
+        const chats = Array.isArray(parsedChats) ? parsedChats : [parsedChats];
+        chats.forEach(chat => next(chat));
+      } catch (error) {
+        this.toastService.createError(
+          "Unable to read chat",
+          message.body + "\n" + error
+        );
+      }
+    });
   }
 }

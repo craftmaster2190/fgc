@@ -3,7 +3,15 @@ import { AuthService } from "../auth/auth.service";
 import { ToastService } from "../util/toast/toast.service";
 import { User } from "../auth/user";
 import { Component, OnInit } from "@angular/core";
-import { debounceTime, distinctUntilChanged, every, filter, map, switchMap, tap } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  every,
+  filter,
+  map,
+  switchMap,
+  tap
+} from "rxjs/operators";
 import { Observable } from "rxjs";
 import { Router } from "@angular/router";
 
@@ -74,11 +82,10 @@ export class RegisterComponent implements OnInit {
         message = message || err.message;
         message = message || "Unable to complete request!";
 
-        this.toastService.create({
-          header: "Unable to complete registration",
-          message: "Error: " + message,
-          classname: "bg-danger text-light"
-        });
+        this.toastService.createError(
+          "Unable to complete registration",
+          message
+        );
         console.error(err);
       });
   }
@@ -96,5 +103,5 @@ export class RegisterComponent implements OnInit {
       ),
       tap(() => (this.searchingFamilies = false))
     );
-  }
+  };
 }

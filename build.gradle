@@ -37,6 +37,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+  compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.3.0-rc1'
+
 }
 
 // if using sub-project with eclipse
