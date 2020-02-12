@@ -1,6 +1,7 @@
 import { User } from "./user";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import deepEqual from "deep-equal";
 
 @Injectable()
 export class AuthService {
@@ -31,6 +32,10 @@ export class AuthService {
 
   getLoggedInUser() {
     return this.user;
+  }
+
+  isMe(user: User) {
+    return deepEqual(this.user, user);
   }
 
   logout() {

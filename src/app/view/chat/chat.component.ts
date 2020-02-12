@@ -8,8 +8,11 @@ import {
 import * as moment from "moment";
 import { Subscription } from "rxjs";
 import { Optional } from "../util/optional";
+import { ToastService } from "../util/toast/toast.service";
 import { Chat } from "./chat";
 import { ChatBusService } from "./chat-bus.service";
+import { AuthService } from "../auth/auth.service";
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 @Component({
   selector: "app-chat",
@@ -24,7 +27,11 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(private readonly chatBusService: ChatBusService) {}
+  constructor(
+    private readonly chatBusService: ChatBusService,
+    private readonly toastService: ToastService,
+    private readonly authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.subscription = this.chatBusService.listen(chat => {
@@ -36,6 +43,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         return a.time.epochSecond > b.time.epochSecond ? 1 : -1;
       });
       this.scrollToBottomOfChats();
+      this.notifyIfNeeded(chat);
     });
   }
 
@@ -64,5 +72,20 @@ export class ChatComponent implements OnInit, OnDestroy {
       .filter(time => time.isBefore(moment().subtract(30, "seconds")))
       .map(time => " - " + time.fromNow())
       .orElse(null);
+  }
+
+  notifyIfNeeded(chat: Chat) {
+    if (
+      !this.authService.isMe(chat.user) &&
+      Optional.of(chat?.time?.epochSecond)
+        .map(moment.unix)
+        .map(time => time.isAfter(moment().subtract(30, "seconds")))
+        .orElse(false)
+    ) {
+      this.toastService.create({
+        message: chat.user.username + ": " + chat.value,
+        classname: "bg-secondary"
+      });
+    }
   }
 }
