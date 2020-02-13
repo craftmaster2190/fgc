@@ -1,5 +1,6 @@
 import { AuthGuard } from "./view/auth/auth-guard.service";
 import { GameComponent } from "./view/game/game.component";
+import { ScoreboardComponent } from "./view/scoreboard/scoreboard.component";
 import { LoginComponent } from "./view/login/login.component";
 import { NotAuthGuard } from "./view/auth/not-auth-guard.service";
 import { RegisterComponent } from "./view/register/register.component";
@@ -14,6 +15,7 @@ const routes: Routes = [
     canActivate: [NotAuthGuard]
   },
   { path: "game", component: GameComponent, canActivate: [AuthGuard] },
+  { path: "scoreboard", component: ScoreboardComponent },
   { path: "", redirectTo: "/game", pathMatch: "full" },
   { path: "**", redirectTo: "/game" }
 ];

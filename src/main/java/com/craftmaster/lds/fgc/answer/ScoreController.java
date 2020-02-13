@@ -39,6 +39,8 @@ public class ScoreController {
 
   @GetMapping
   public Scores get() {
+	  user2Score.put("Carson", 10_000L);
+	  user2Score.put("Bryce", -1_000L);
     return new Scores()
       .setUser2Score(user2Score)
       .setFamily2Score(family2Score);
