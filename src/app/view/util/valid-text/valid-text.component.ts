@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
   selector: "app-valid-text",
   templateUrl: "./valid-text.component.html",
-  styleUrls: ["./valid-text.component.sass"]
+  styleUrls: ["./valid-text.component.scss"]
 })
 export class ValidTextComponent implements OnInit {
   @Input() text: string;

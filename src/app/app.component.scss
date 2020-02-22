@@ -1,0 +1,12 @@
+:host {
+  margin: 15px;
+}
+
+.toast-container {
+  position: fixed;
+  z-index: 1;
+  top: 15px;
+  right: 15px;
+  width: 350px;
+  max-width: 100%;
+}

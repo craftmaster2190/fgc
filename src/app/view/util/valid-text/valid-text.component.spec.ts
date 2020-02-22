@@ -1,6 +1,5 @@
-import { ValidTextComponent } from './valid-text.component';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ValidTextComponent } from "./valid-text.component";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 describe("ValidTextComponent", () => {
   let component: ValidTextComponent;

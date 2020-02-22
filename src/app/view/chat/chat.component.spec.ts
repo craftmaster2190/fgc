@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { ChatComponent } from "./chat.component";
-import { ChatBusService } from "./chat-bus.service";
-import { ToastService } from "../util/toast/toast.service";
 import { AuthService } from "../auth/auth.service";
+import { ToastService } from "../util/toast/toast.service";
+import { ChatBusService } from "./chat-bus.service";
+import { ChatComponent } from "./chat.component";
+import { of } from "rxjs";
+import { FormsModule } from "@angular/forms";
 
 describe("ChatComponent", () => {
   let component: ChatComponent;
@@ -13,10 +14,20 @@ describe("ChatComponent", () => {
     TestBed.configureTestingModule({
       declarations: [ChatComponent],
       providers: [
-        { provide: AuthService, useValue: {} },
-        { provide: ChatBusService, useValue: { listen: () => {} } },
-        { provide: ToastService, useValue: {} }
-      ]
+        {
+          provide: ChatBusService,
+          useValue: { listen: () => of().subscribe() }
+        },
+        {
+          provide: AuthService,
+          useValue: {}
+        },
+        {
+          provide: ToastService,
+          useValue: {}
+        }
+      ],
+      imports: [FormsModule]
     }).compileComponents();
   }));
 

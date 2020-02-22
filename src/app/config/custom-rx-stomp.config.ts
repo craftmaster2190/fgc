@@ -1,4 +1,4 @@
-import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
+import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
 
 export const customRxStompConfig: InjectableRxStompConfig = {
   // Which server?

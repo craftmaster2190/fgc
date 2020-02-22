@@ -3,9 +3,7 @@ import { TestBed } from "@angular/core/testing";
 
 describe("AnswersService", () => {
   beforeEach(() =>
-    TestBed.configureTestingModule({
-      providers: [{ provide: AnswersService, useValue: {} }]
-    })
+    TestBed.configureTestingModule({ providers: [AnswersService] })
   );
 
   it("should be created", () => {

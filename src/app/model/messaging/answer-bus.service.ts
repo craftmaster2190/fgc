@@ -1,11 +1,11 @@
-import { JSONMessageSender } from './json-message-sender';
-import { MessageBusService } from './message-bus.service';
-import { Answer } from '../answers/answer';
-import { AnswersService } from '../answers/answers.service';
-import { Question } from '../answers/question';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Message } from '@stomp/stompjs';
+import { JSONMessageSender } from "./json-message-sender";
+import { MessageBusService } from "./message-bus.service";
+import { Answer } from "../answers/answer";
+import { AnswersService } from "../answers/answers.service";
+import { Question } from "../answers/question";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Message } from "@stomp/stompjs";
 
 @Injectable()
 export class AnswerBusService {
@@ -61,6 +61,8 @@ export class AnswerBusService {
   }
 
   getPossibleAnswers(id: number) {
-    return this.httpClient.get<Array<string>>(`/api/question/possible/${id}`).toPromise();
+    return this.httpClient
+      .get<Array<string>>(`/api/question/possible/${id}`)
+      .toPromise();
   }
 }

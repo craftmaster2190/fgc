@@ -1,11 +1,11 @@
-import { AuthService } from '../auth/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { AuthService } from "../auth/auth.service";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-nav-header",
   templateUrl: "./nav-header.component.html",
-  styleUrls: ["./nav-header.component.sass"]
+  styleUrls: ["./nav-header.component.scss"]
 })
 export class NavHeaderComponent implements OnInit {
   constructor(

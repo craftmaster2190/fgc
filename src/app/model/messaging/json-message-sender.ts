@@ -5,6 +5,6 @@ export class JSONMessageSender {
     private readonly rxStompService: RxStompService
   ) {}
   send = (message: string) =>
-    this.rxStompService.publish({ destination: this.topic, body: message })
+    this.rxStompService.publish({ destination: this.topic, body: message });
   convertAndSend = (message: any) => this.send(JSON.stringify(message));
 }

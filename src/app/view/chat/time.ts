@@ -1,4 +1,4 @@
 export interface Time {
-    nano: number;
-    epochSecond: number;
+  nano: number;
+  epochSecond: number;
 }

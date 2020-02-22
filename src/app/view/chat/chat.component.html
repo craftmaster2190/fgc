@@ -1,38 +1,28 @@
-<div *ngIf="loading; else notLoading" class="d-flex justify-content-center">
-  <div
-    class="spinner-border"
-    style="width: 12rem; height: 12rem;"
-    role="status"
-  ></div>
-</div>
+<div class="chat-container">
+  <h1><i class="far fa-comments"></i>&nbsp;Chat</h1>
 
-<ng-template #notLoading>
-  <div class="chat-container">
-    <h1><i class="far fa-comments"></i>&nbsp;Chat</h1>
-
-    <div class="chat-values" #chatValues>
-      <div *ngFor="let chat of chats">
-        <b
-          >{{ chat.user.username }}
-          <small class="text-mutes">({{ chat.user.family.name }})</small></b
-        >:&nbsp;{{ chat.value }}
-        <span class="time-stamp">{{ renderTimeAgo(chat) }}</span>
+  <div class="chat-values" #chatValues>
+    <div *ngFor="let chat of chats">
+      <b
+        >{{ chat.user.username }}
+        <small class="text-mutes">({{ chat.user.family.name }})</small></b
+      >:&nbsp;{{ chat.value }}
+      <span class="time-stamp">{{ renderTimeAgo(chat) }}</span>
+    </div>
+  </div>
+  <form class="chat-controls" (ngSubmit)="sendChat()">
+    <div class="input-group mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="chatValue"
+        [(ngModel)]="chatValue"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="submit">
+          <i class="far fa-comment-dots"></i>
+        </button>
       </div>
     </div>
-    <form class="chat-controls" (ngSubmit)="sendChat()">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          name="chatValue"
-          [(ngModel)]="chatValue"
-        />
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="submit">
-            <i class="far fa-comment-dots"></i>
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</ng-template>
+  </form>
+</div>

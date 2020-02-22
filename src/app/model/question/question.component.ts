@@ -1,17 +1,25 @@
-import { Answer } from '../answers/answer';
-import { AnswerBusService } from '../messaging/answer-bus.service';
-import { AnswersService } from '../answers/answers.service';
-import { Question } from '../answers/question';
-import { AuthService } from 'src/app/view/auth/auth.service';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { merge, Observable, Subject } from 'rxjs';
-import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { Answer } from "../answers/answer";
+import { AnswerBusService } from "../messaging/answer-bus.service";
+import { AnswersService } from "../answers/answers.service";
+import { Question } from "../answers/question";
+import { AuthService } from "src/app/view/auth/auth.service";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map
+} from "rxjs/operators";
+import { merge, Observable, Subject } from "rxjs";
+import {
+  NgbTypeahead,
+  NgbTypeaheadSelectItemEvent
+} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "app-question",
   templateUrl: "./question.component.html",
-  styleUrls: ["./question.component.sass"]
+  styleUrls: ["./question.component.scss"]
 })
 export class QuestionComponent implements OnInit, OnDestroy {
   interval;
@@ -63,7 +71,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
     if (this.isAdmin()) {
       this.answersBus
         .getPossibleAnswers(this.id)
-        .then(possibleAnswers => possibleAnswers.forEach(this.addToPossibleAnswers));
+        .then(possibleAnswers =>
+          possibleAnswers.forEach(this.addToPossibleAnswers)
+        );
       this.correctAnswers = new Set();
     }
   }
@@ -117,12 +127,12 @@ export class QuestionComponent implements OnInit, OnDestroy {
     }
   };
 
-  private addToPossibleAnswers = (value) => {
+  private addToPossibleAnswers = value => {
     if (this.possibleAnswers.indexOf(value) === -1) {
       this.possibleAnswers.push(value);
       this.possibleAnswers.sort();
     }
-  }
+  };
 
   removeAnswer = (value: string) => {
     if (!this.isQuestionClosed()) {
