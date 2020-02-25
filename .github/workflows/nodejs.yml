@@ -1,0 +1,74 @@
+name: Test and Build
+
+on: [push]
+
+jobs:
+  cancel:
+    name: Cancel Previous Runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: styfle/cancel-workflow-action@0.2.0
+        with:
+          workflow_id: 617433
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node using nvm
+        uses: dcodeIO/setup-node-nvm@v2.0.0
+
+      - name: Yarn Install
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - name: Yarn Test
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test-ci
+      - name: Yarn Build
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build
+      - name: Yarn Deploy
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: deploy
+
+      - name: Setup Java
+        uses: olafurpg/setup-scala@v6
+        with:
+          java-version: adopt@1.13
+
+      - name: Gradle Compile
+        run: ./gradlew clean classes testClasses
+
+      - name: Gradle Test
+        run: ./gradlew test check
+
+      - name: Gradle Build
+        run: ./gradlew build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: Jar File
+          path: build/libs/fgc-1.0.jar
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-2
+
+      - name: Upload Versioned Artifacts to S3
+        run: aws s3 sync build/libs/fgc-*.jar s3://fantasygc/deploy/
+
+      - name: Upload Latest Artifacts to S3
+        run: aws s3 sync build/libs/fgc-*.jar s3://fantasygc/deploy/fgc-latest.jar

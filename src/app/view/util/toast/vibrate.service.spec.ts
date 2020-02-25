@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { VibrateService } from './vibrate.service';
+import { VibrateService } from "./vibrate.service";
 
-describe('VibrateService', () => {
+describe("VibrateService", () => {
   let service: VibrateService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [VibrateService] });
     service = TestBed.inject(VibrateService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

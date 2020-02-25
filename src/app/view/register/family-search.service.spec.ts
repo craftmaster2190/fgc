@@ -1,15 +1,12 @@
 import { FamilySearchService } from "./family-search.service";
 import { TestBed } from "@angular/core/testing";
-import { AuthService } from "../auth/auth.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("FamilySearchService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthService, useValue: {} },
-        // most likey need the actual FamilySearchService
-        { provide: FamilySearchService, useValue: {} }
-      ]
+      providers: [FamilySearchService],
+      imports: [HttpClientTestingModule]
     })
   );
 

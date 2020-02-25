@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { UserAliveService } from './user-alive.service';
+import { UserAliveService } from "./user-alive.service";
 
-describe('UserAliveService', () => {
+describe("UserAliveService", () => {
   let service: UserAliveService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [UserAliveService] });
     service = TestBed.inject(UserAliveService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable, merge, fromEvent } from "rxjs";
+import { Injectable, OnDestroy } from "@angular/core";
+import { Observable, merge, fromEvent, Subscription } from "rxjs";
 
 import { interval } from "rxjs";
 import { throttle, filter } from "rxjs/operators";
@@ -9,10 +9,12 @@ import * as moment from "moment";
 @Injectable({
   providedIn: "root"
 })
-export class UserAliveService {
+export class UserAliveService implements OnDestroy {
   private lastActive = moment();
+  private readonly subscription: Subscription;
+
   constructor() {
-    merge(
+    this.subscription = merge(
       fromEvent(document, "mousemove"),
       fromEvent(document, "click"),
       fromEvent(document, "touchmove"),
@@ -25,6 +27,10 @@ export class UserAliveService {
     )
       .pipe(throttle(val => interval(200)))
       .subscribe(() => (this.lastActive = moment()));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   isActive() {

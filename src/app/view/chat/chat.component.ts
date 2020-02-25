@@ -17,7 +17,7 @@ import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 @Component({
   selector: "app-chat",
   templateUrl: "./chat.component.html",
-  styleUrls: ["./chat.component.sass"]
+  styleUrls: ["./chat.component.scss"]
 })
 export class ChatComponent implements OnInit, OnDestroy {
   chats: Array<Chat> = [];

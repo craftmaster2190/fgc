@@ -1,11 +1,11 @@
-import { ScoresService } from './scores.service';
-import { AuthService } from '../auth/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { ScoresService } from "./scores.service";
+import { AuthService } from "../auth/auth.service";
+import { Component, OnInit } from "@angular/core";
 
 @Component({
   selector: "app-scoreboard",
   templateUrl: "./scoreboard.component.html",
-  styleUrls: ["./scoreboard.component.sass"]
+  styleUrls: ["./scoreboard.component.scss"]
 })
 export class ScoreboardComponent implements OnInit {
   private interval;

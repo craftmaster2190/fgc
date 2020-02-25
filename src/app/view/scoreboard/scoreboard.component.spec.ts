@@ -13,14 +13,18 @@ describe("ScoreboardComponent", () => {
       declarations: [ScoreboardComponent],
       providers: [
         {
-          provide: AuthService,
+          provide: ScoresService,
           useValue: {
-            getLoggedInUser: () => {
-              return true;
-            }
+            getUserCount: () => Promise.resolve(),
+            get: () => Promise.resolve()
           }
         },
-        { provide: ScoresService, useValue: { getUserCount: () => {} } }
+        {
+          provide: AuthService,
+          useValue: {
+            getLoggedInUser: () => ({})
+          }
+        }
       ]
     }).compileComponents();
   }));

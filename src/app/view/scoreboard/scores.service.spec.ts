@@ -1,16 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 
 import { ScoresService } from "./scores.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ScoresService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: ScoresService,
-          useValue: {}
-        }
-      ]
+      providers: [ScoresService],
+      imports: [HttpClientTestingModule]
     })
   );
 
