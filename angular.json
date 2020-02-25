@@ -23,8 +23,13 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.sass"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.sass"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -85,8 +90,13 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.sass"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.sass"
+            ],
             "scripts": []
           }
         },
@@ -98,7 +108,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {
@@ -116,5 +128,8 @@
       }
     }
   },
-  "defaultProject": "fgc"
+  "defaultProject": "fgc",
+  "cli": {
+    "analytics": "f792dfc8-e617-4277-a644-42f92eeb9d5a"
+  }
 }

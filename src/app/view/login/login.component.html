@@ -16,7 +16,7 @@
           class="form-control"
           id="username"
           name="username"
-          placeholder="Username"
+          placeholder="Username (at least 4 chars)"
           [(ngModel)]="username"
           autocomplete="new-password"
         />
@@ -28,7 +28,7 @@
           class="form-control"
           id="password"
           name="password"
-          placeholder="Password"
+          placeholder="Password (at least 4 chars)"
           [(ngModel)]="password"
           autocomplete="current-password"
         />
@@ -36,7 +36,8 @@
           *ngIf="loginFailed"
           id="loginFailed"
           class="form-text text-danger"
-          >Username and password combination is incorrect</small
+          >Username and password combination is incorrect, maybe
+          register?</small
         >
       </div>
       <button

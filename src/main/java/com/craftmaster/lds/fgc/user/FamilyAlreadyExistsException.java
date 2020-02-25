@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Family already exists!")
 public class FamilyAlreadyExistsException extends RuntimeException {
-
+	private static final long serialVersionUID = 20200225L;
 }

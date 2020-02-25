@@ -1,27 +1,22 @@
 package com.craftmaster.lds.fgc.answer;
 
-import com.craftmaster.lds.fgc.user.User;
-import com.craftmaster.lds.fgc.user.UserRepository;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.craftmaster.lds.fgc.user.User;
+import com.craftmaster.lds.fgc.user.UserRepository;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import lombok.RequiredArgsConstructor;
 
 
 @RestController

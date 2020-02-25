@@ -16,7 +16,8 @@ public class HealthController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public void ping() {
+  public String ping() {
+	  return "FGC is up and running";
   }
 
   @GetMapping("startup")

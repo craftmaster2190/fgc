@@ -32,6 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Accessors(chain = true)
 @Table(name = "appuser")
 public class User implements UserDetails {
+  private static final long serialVersionUID = 20200225L;
 
   @Transient
   @JsonIgnore
