@@ -1,5 +1,6 @@
 import { AuthService } from "./auth.service";
-import { TestBed } from "@angular/core/testing";import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("AuthService", () => {
   beforeEach(() =>
