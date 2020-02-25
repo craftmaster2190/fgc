@@ -1,6 +1,6 @@
-import { QuestionComponent } from './question.component';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { QuestionComponent } from "./question.component";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { AnswerBusService } from "../messaging/answer-bus.service";
 
 describe("QuestionComponent", () => {
   let component: QuestionComponent;
@@ -8,7 +8,8 @@ describe("QuestionComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuestionComponent]
+      declarations: [QuestionComponent],
+      providers: [{ provide: AnswerBusService, useValue: {} }]
     }).compileComponents();
   }));
 

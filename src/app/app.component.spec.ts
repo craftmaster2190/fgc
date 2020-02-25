@@ -1,12 +1,22 @@
-import { AppComponent } from './app.component';
-import { async, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from "./app.component";
+import { async, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ToastService } from "./view/util/toast/toast.service";
+import { of } from "rxjs";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [AppComponent]
+      declarations: [AppComponent],
+      providers: [
+        {
+          provide: ToastService,
+          useValue: {
+            subscribe: () => of().subscribe()
+          }
+        }
+      ]
     }).compileComponents();
   }));
 

@@ -1,16 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ScoreboardComponent } from './scoreboard.component';
+import { ScoreboardComponent } from "./scoreboard.component";
+import { ScoresService } from "./scores.service";
+import { AuthService } from "../auth/auth.service";
 
-describe('ScoreboardComponent', () => {
+describe("ScoreboardComponent", () => {
   let component: ScoreboardComponent;
   let fixture: ComponentFixture<ScoreboardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScoreboardComponent ]
-    })
-    .compileComponents();
+      declarations: [ScoreboardComponent],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: {
+            getLoggedInUser: () => {
+              return true;
+            }
+          }
+        },
+        { provide: ScoresService, useValue: { getUserCount: () => {} } }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +31,7 @@ describe('ScoreboardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
