@@ -1,8 +1,8 @@
-import { GameComponent } from "./game.component";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AnswersService } from "src/app/model/answers/answers.service";
 import { AnswerBusService } from "src/app/model/messaging/answer-bus.service";
+import { AnswersService } from "src/app/model/answers/answers.service";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { GameComponent } from "./game.component";
 
 describe("GameComponent", () => {
   let component: GameComponent;

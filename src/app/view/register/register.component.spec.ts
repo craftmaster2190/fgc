@@ -1,12 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AuthService } from "../auth/auth.service";
-import { ToastService } from "../util/toast/toast.service";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FamilySearchService } from "./family-search.service";
-import { RegisterComponent } from "./register.component";
+import { FormsModule } from "@angular/forms";
 import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
+import { RegisterComponent } from "./register.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ToastService } from "../util/toast/toast.service";
 
 describe("RegisterComponent", () => {
   let component: RegisterComponent;
@@ -17,8 +17,8 @@ describe("RegisterComponent", () => {
       declarations: [RegisterComponent],
       providers: [
         { provide: AuthService, useValue: { logout: () => void 0 } },
-        { provide: ToastService, useValue: {} },
-        { provide: FamilySearchService, useValue: {} }
+        { provide: FamilySearchService, useValue: {} },
+        { provide: ToastService, useValue: {} }
       ],
       imports: [RouterTestingModule, NgbTypeaheadModule, FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

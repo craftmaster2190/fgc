@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AuthService } from "../auth/auth.service";
 import { NavHeaderComponent } from "./nav-header.component";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("NavHeaderComponent", () => {
   let component: NavHeaderComponent;
@@ -13,7 +13,16 @@ describe("NavHeaderComponent", () => {
       providers: [
         {
           provide: AuthService,
-          useValue: { getLoggedInUser: () => void 0 }
+          useValue: {
+            getLoggedInUser: () => {
+              return {
+                isAdmin: false,
+                family: {
+                  name: "someName"
+                }
+              };
+            }
+          }
         }
       ],
       imports: [RouterTestingModule]

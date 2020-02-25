@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { AuthService } from "../auth/auth.service";
 import { ScoreboardComponent } from "./scoreboard.component";
 import { ScoresService } from "./scores.service";
-import { AuthService } from "../auth/auth.service";
 
 describe("ScoreboardComponent", () => {
   let component: ScoreboardComponent;
@@ -22,7 +21,11 @@ describe("ScoreboardComponent", () => {
         {
           provide: AuthService,
           useValue: {
-            getLoggedInUser: () => ({})
+            getLoggedInUser: () => {
+              return {
+                isAdmin: false
+              };
+            }
           }
         }
       ]

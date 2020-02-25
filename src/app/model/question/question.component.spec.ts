@@ -1,9 +1,9 @@
-import { QuestionComponent } from "./question.component";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { AnswerBusService } from "../messaging/answer-bus.service";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { AuthService } from "src/app/view/auth/auth.service";
-import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
+import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
+import { QuestionComponent } from "./question.component";
 
 describe("QuestionComponent", () => {
   let component: QuestionComponent;
@@ -21,7 +21,16 @@ describe("QuestionComponent", () => {
             fetchQuestion: () => Promise.resolve({})
           }
         },
-        { provide: AuthService, useValue: { getLoggedInUser: () => ({}) } }
+        {
+          provide: AuthService,
+          useValue: {
+            getLoggedInUser: () => {
+              return {
+                isAdmin: false
+              };
+            }
+          }
+        }
       ],
       imports: [NgbTypeaheadModule, FormsModule]
     }).compileComponents();
