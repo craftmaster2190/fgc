@@ -16,7 +16,7 @@ describe("ScoreboardComponent", () => {
           provide: ScoresService,
           useValue: {
             getUserCount: () => Promise.resolve(),
-            get: () => Promise.resolve()
+            get: () => Promise.resolve({})
           }
         },
         {

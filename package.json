@@ -9,7 +9,7 @@
     "predeploy": "rimraf src/main/resources/static/ && mkdirp src/main/resources/static/",
     "deploy": "cp -r dist/fgc/* src/main/resources/static/",
     "test": "ng test",
-    "test-ci": "ng test --watch=false --browsers=ChromeHeadlessCustom",
+    "test-ci": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint --fix=true --files src/app",
     "e2e": "ng e2e",
     "clean": "rimraf dist && yarn predeploy",

@@ -18,7 +18,7 @@ describe("QuestionComponent", () => {
           useValue: {
             getSelectedAnswers: () => new Set(),
             getAnswer: () => void 0,
-            fetchQuestion: () => Promise.resolve()
+            fetchQuestion: () => Promise.resolve({})
           }
         },
         { provide: AuthService, useValue: { getLoggedInUser: () => ({}) } }
