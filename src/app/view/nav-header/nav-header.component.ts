@@ -1,6 +1,6 @@
-import { AuthService } from "../auth/auth.service";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 @Component({
   selector: "app-nav-header",
@@ -9,32 +9,17 @@ import { Router } from "@angular/router";
 })
 export class NavHeaderComponent implements OnInit {
   constructor(
-    public readonly authService: AuthService,
+    public readonly authService: DeviceUsersService,
     private readonly router: Router
   ) {}
 
   ngOnInit() {}
 
-  logout() {
-    this.authService.logout();
-    location.assign("/login");
-  }
-
   getUsername() {
-    const user = this.authService.getLoggedInUser();
-    if (!user) {
-      return "";
-    }
-
-    return user.username;
+    return this.authService.getCurrentUser()?.name || "";
   }
 
   getFamilyName() {
-    const user = this.authService.getLoggedInUser();
-    if (!user) {
-      return "";
-    }
-
-    return user.family.name;
+    return this.authService.getCurrentUser()?.family?.name || "";
   }
 }

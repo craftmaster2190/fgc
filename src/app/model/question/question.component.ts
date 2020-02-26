@@ -1,20 +1,18 @@
-import { Answer } from "../answers/answer";
-import { AnswerBusService } from "../messaging/answer-bus.service";
-import { AnswersService } from "../answers/answers.service";
-import { Question } from "../answers/question";
-import { AuthService } from "src/app/view/auth/auth.service";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  NgbTypeahead,
+  NgbTypeaheadSelectItemEvent
+} from "@ng-bootstrap/ng-bootstrap";
+import { merge, Observable, Subject } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   map
 } from "rxjs/operators";
-import { merge, Observable, Subject } from "rxjs";
-import {
-  NgbTypeahead,
-  NgbTypeaheadSelectItemEvent
-} from "@ng-bootstrap/ng-bootstrap";
+import { Question } from "../answers/question";
+import { AnswerBusService } from "../messaging/answer-bus.service";
+import { DeviceUsersService } from "src/app/view/auth/device-users.service";
 
 @Component({
   selector: "app-question",
@@ -25,7 +23,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   interval;
   constructor(
     private readonly answersBus: AnswerBusService,
-    private readonly authService: AuthService
+    private readonly authService: DeviceUsersService
   ) {}
   @Input() text: string;
   @Input() answerType: "typeahead" | "text";
@@ -146,7 +144,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   };
 
   isAdmin = () => {
-    return this.authService.getLoggedInUser().isAdmin;
+    return this.authService.getCurrentUser()?.isAdmin;
   };
 
   isEnabled = () => {

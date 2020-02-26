@@ -4,15 +4,16 @@ import com.craftmaster.lds.fgc.config.ObjectMapperHolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Data

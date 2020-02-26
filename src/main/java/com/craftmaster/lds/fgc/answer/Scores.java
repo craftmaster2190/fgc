@@ -1,8 +1,9 @@
 package com.craftmaster.lds.fgc.answer;
 
-import java.util.Map;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.Map;
 
 @Data
 @Accessors(chain = true)
