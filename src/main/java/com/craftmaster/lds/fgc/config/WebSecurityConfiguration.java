@@ -18,11 +18,10 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final CustomUserDetailsService customUserDetailsService;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    auth.userDetailsService(customUserDetailsService);
   }
 
   @Override

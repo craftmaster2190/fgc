@@ -52,7 +52,7 @@ public class User implements UserDetails {
   @JsonIgnore
   private Long familyId;
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "id", referencedColumnName = "userId")
+  @JoinColumn(name = "userId")
   @ToString.Exclude
   @JsonIgnore
   private Set<Device> devices;

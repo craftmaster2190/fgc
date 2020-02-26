@@ -1,12 +1,17 @@
 import { TestBed } from "@angular/core/testing";
 
 import { DeviceUsersService } from "./device-users.service";
+import { DeviceIdService } from "./device-id.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("DeviceUsersService", () => {
   let service: DeviceUsersService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: DeviceIdService, useValue: {} }],
+      imports: [HttpClientTestingModule]
+    });
     service = TestBed.inject(DeviceUsersService);
   });
 

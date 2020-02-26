@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +26,7 @@ public class ScoreController {
   private final AnswerRepository answerRepository;
   private final UserRepository userRepository;
 
-  private final Cache<Long, User> userId2User = Caffeine.newBuilder()
+  private final Cache<UUID, User> userId2User = Caffeine.newBuilder()
     .expireAfterWrite(15, TimeUnit.MINUTES).build();
   private volatile Map<String, Long> user2Score = new ConcurrentHashMap<>();
   private volatile Map<String, Long> family2Score = new ConcurrentHashMap<>();

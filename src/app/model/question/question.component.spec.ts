@@ -1,8 +1,8 @@
-import { AnswerBusService } from "../messaging/answer-bus.service";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AuthService } from "src/app/view/auth/auth.service";
 import { FormsModule } from "@angular/forms";
 import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
+import { DeviceUsersService } from "src/app/view/auth/device-users.service";
+import { AnswerBusService } from "../messaging/answer-bus.service";
 import { QuestionComponent } from "./question.component";
 
 describe("QuestionComponent", () => {
@@ -22,13 +22,9 @@ describe("QuestionComponent", () => {
           }
         },
         {
-          provide: AuthService,
+          provide: DeviceUsersService,
           useValue: {
-            getLoggedInUser: () => {
-              return {
-                isAdmin: false
-              };
-            }
+            getCurrentUser: () => ({})
           }
         }
       ],
