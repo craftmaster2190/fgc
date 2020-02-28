@@ -25,6 +25,7 @@ import { ScoreboardComponent } from "./view/scoreboard/scoreboard.component";
 import { ScoresService } from "./view/scoreboard/scores.service";
 import { ToastService } from "./view/util/toast/toast.service";
 import { ValidTextComponent } from "./view/util/valid-text/valid-text.component";
+import { WelcomeComponent } from "./welcome/welcome.component";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ValidTextComponent } from "./view/util/valid-text/valid-text.component"
     NavHeaderComponent,
     ValidTextComponent,
     ChatComponent,
-    ScoreboardComponent
+    ScoreboardComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,

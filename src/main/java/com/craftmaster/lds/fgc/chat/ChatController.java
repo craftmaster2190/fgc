@@ -20,7 +20,6 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/chat")
 @RequiredArgsConstructor
 public class ChatController {
 

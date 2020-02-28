@@ -1,11 +1,12 @@
 package com.craftmaster.lds.fgc.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -17,5 +18,8 @@ public class Device {
   @GeneratedValue
   private UUID id;
 
-  private UUID userId;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @ToString.Exclude
+  @JsonIgnore
+  private Set<User> users;
 }

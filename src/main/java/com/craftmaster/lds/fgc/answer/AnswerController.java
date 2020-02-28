@@ -20,14 +20,14 @@ import java.util.Objects;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/answer")
+@RequestMapping("api/answer")
 @RequiredArgsConstructor
 public class AnswerController {
 
   private final AnswerRepository answerRepository;
   private final QuestionService questionService;
 
-  @MessageMapping("/answer")
+  @MessageMapping("answer")
   public void markAnswer(@Valid @Payload Answer answer, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Received answer {} {}", answer, user);

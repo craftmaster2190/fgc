@@ -38,6 +38,14 @@ class Optional<T> {
 
     return defaultValue;
   }
+
+  public orElseGet(defaultValueSupplier: () => Nullable<T>): Nullable<T> {
+    if (this.isPresent()) {
+      return this.value;
+    }
+
+    return defaultValueSupplier();
+  }
 }
 
 export { Optional };

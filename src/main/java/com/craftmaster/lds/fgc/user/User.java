@@ -51,8 +51,7 @@ public class User implements UserDetails {
   @Column(insertable = false, updatable = false)
   @JsonIgnore
   private Long familyId;
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "userId")
+  @ManyToMany(fetch = FetchType.EAGER)
   @ToString.Exclude
   @JsonIgnore
   private Set<Device> devices;

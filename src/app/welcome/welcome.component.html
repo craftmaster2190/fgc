@@ -1,0 +1,65 @@
+<div *ngIf="loading; else state" class="d-flex justify-content-center">
+  <div
+    class="spinner-border"
+    style="width: 12rem; height: 12rem;"
+    role="status"
+  ></div>
+</div>
+
+<ng-template #state>
+  <div *ngIf="isStateUnknown()"><p>Haven't met you before...</p></div>
+  <div *ngIf="isStateMetButUnauthenticated()"><p>You seem familiar...</p></div>
+  <div *ngIf="isStateKnown()"><p>Welcome back!</p></div>
+</ng-template>
+
+<div *ngIf="showRegisterUser">
+  <form (ngSubmit)="registerUser()" novalidate>
+    <fieldset [disabled]="loading">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          [(ngModel)]="name"
+          autocomplete="name"
+          placeholder="What should I call you?"
+        />
+        <small class="form-text text-muted"
+          ><app-valid-text
+            [valid]="nameValid()"
+            text="Must be 4 characters long."
+          ></app-valid-text>
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="family">Family Name (Team Name)</label>
+        <input
+          type="search"
+          class="form-control"
+          id="family"
+          name="family"
+          [(ngModel)]="family"
+          placeholder="Who did you bring with you?"
+          autocomplete="off"
+          [ngbTypeahead]="searchFamilies"
+        />
+        <small class="form-text text-muted"
+          ><app-valid-text
+            [valid]="familyValid()"
+            text="Must be 4 characters long."
+          ></app-valid-text>
+        </small>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="!formValid()">
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm"
+          role="status"
+        ></span
+        >&nbsp;Start Playing
+      </button>
+    </fieldset>
+  </form>
+</div>

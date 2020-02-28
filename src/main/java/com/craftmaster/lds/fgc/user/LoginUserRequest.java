@@ -4,14 +4,15 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
 @Accessors(chain = true)
 public class LoginUserRequest {
 
-  @NotBlank
+  @NotNull
   private UUID userId;
-  @NotBlank
+  @NotNull
   private UUID deviceId;
 }

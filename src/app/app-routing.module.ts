@@ -1,11 +1,14 @@
 import { GameComponent } from "./view/game/game.component";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { WelcomeComponent } from "./welcome/welcome.component";
+import { KnownGuard } from "./view/auth/known.guard";
 
 const routes: Routes = [
-  { path: "game", component: GameComponent },
-  { path: "", redirectTo: "/game", pathMatch: "full" },
-  { path: "**", redirectTo: "/game" }
+  { path: "game", component: GameComponent, canActivate: [KnownGuard] },
+  { path: "welcome", component: WelcomeComponent },
+  { path: "", redirectTo: "/welcome", pathMatch: "full" },
+  { path: "**", redirectTo: "/welcome" }
 ];
 
 @NgModule({
