@@ -71,7 +71,8 @@ export class WelcomeComponent implements OnInit {
       .createUser()
       .then(() =>
         this.authService.updateUser({ name: this.name, family: this.family })
-      );
+      )
+      .then(() => this.router.navigate(["game"]));
   }
   name: string;
   family: string;
