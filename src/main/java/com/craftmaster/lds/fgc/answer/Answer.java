@@ -8,17 +8,13 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 @Entity
 @Data

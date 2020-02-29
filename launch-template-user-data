@@ -1,0 +1,32 @@
+#!/bin/bash
+set -x
+echo "Loading FGC..."
+sudo amazon-linux-extras install java-openjdk11
+sudo aws s3 cp s3://fantasygc/deploy/fgc-latest.jar /bin/
+nohup java -jar /bin/fgc-latest.jar >>/var/log/fgc.log 2>&1 &
+
+export DOCKERIZE_VERSION='v0.6.1'
+wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+dockerize -wait http://127.0.0.1:8080
+
+export EC2_INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+
+aws ec2 wait instance-status-ok --instance-ids $EC2_INSTANCE_ID --region us-east-2
+
+aws autoscaling attach-instances --instance-ids $EC2_INSTANCE_ID --auto-scaling-group-name fgc-asg --region us-east-2
+aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-2:035010029185:targetgroup/fgc-public-tg/371f6f571876765f --targets "Id=${EC2_INSTANCE_ID}" --region us-east-2
+
+function wait-instance() {
+    until [[ `aws autoscaling describe-auto-scaling-instances --instance-ids $EC2_INSTANCE_ID --query 'AutoScalingInstances[0].LifecycleState' --output text  --region us-east-2` = 'InService' ]] ; do 
+        sleep 10
+    done
+}
+
+wait-instance
+
+export DESIRED_CAPACITY=$((`aws autoscaling  describe-auto-scaling-groups --auto-scaling-group-names fgc-asg --query 'AutoScalingGroups[0].DesiredCapacity' --output text  --region us-east-2` - 1))
+
+aws autoscaling set-desired-capacity --auto-scaling-group-name fgc-asg --desired-capacity $DESIRED_CAPACITY --region us-east-2
+echo "Finished FGC Startup!"

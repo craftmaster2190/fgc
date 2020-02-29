@@ -7,12 +7,11 @@ import {
 } from "@angular/core";
 import * as moment from "moment";
 import { Subscription } from "rxjs";
+import { DeviceUsersService } from "../auth/device-users.service";
 import { Optional } from "../util/optional";
 import { ToastService } from "../util/toast/toast.service";
 import { Chat } from "./chat";
 import { ChatBusService } from "./chat-bus.service";
-import { AuthService } from "../auth/auth.service";
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 @Component({
   selector: "app-chat",
@@ -30,7 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(
     private readonly chatBusService: ChatBusService,
     private readonly toastService: ToastService,
-    private readonly authService: AuthService
+    private readonly authService: DeviceUsersService
   ) {}
 
   ngOnInit() {
@@ -76,14 +75,14 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   notifyIfNeeded(chat: Chat) {
     if (
-      !this.authService.isMe(chat.user) &&
+      this.authService.getCurrentUser()?.id !== chat.user?.id &&
       Optional.of(chat?.time?.epochSecond)
         .map(moment.unix)
         .map(time => time.isAfter(moment().subtract(30, "seconds")))
         .orElse(false)
     ) {
       this.toastService.create({
-        message: chat.user.username + ": " + chat.value,
+        message: chat.user?.name + ": " + chat.value,
         classname: "bg-secondary"
       });
     }

@@ -3,9 +3,10 @@ package com.craftmaster.lds.fgc.user;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import org.springframework.util.StringUtils;
+
 import java.io.IOException;
 import java.util.Optional;
-import org.springframework.util.StringUtils;
 
 public class StringTrimDeserializer extends JsonDeserializer<String> {
 

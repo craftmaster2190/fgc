@@ -3,13 +3,18 @@ package com.craftmaster.lds.fgc.config;
 import com.craftmaster.lds.fgc.user.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -17,24 +22,18 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+  private final CustomAuthenticationProvider authProvider;
   private final CustomUserDetailsService customUserDetailsService;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    auth.authenticationProvider(authProvider).userDetailsService(customUserDetailsService);
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable() // TODO Enable?
-      .authorizeRequests()
-      .antMatchers("/api/**").authenticated()
-      .antMatchers("/game-ws").authenticated()
-      .antMatchers("/register", "register/*").anonymous()
-      .anyRequest().permitAll()
-      .and().httpBasic()
-      .and().logout().logoutUrl("/logout")
-      .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+    http.csrf().disable()// TODO Enable?
+      .sessionManagement();
   }
 }
+

@@ -1,20 +1,25 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { DeviceUsersService } from "../auth/device-users.service";
-import { NavHeaderComponent } from "./nav-header.component";
 
-describe("NavHeaderComponent", () => {
-  let component: NavHeaderComponent;
-  let fixture: ComponentFixture<NavHeaderComponent>;
+import { WelcomeComponent } from "./welcome.component";
+import { DeviceUsersService } from "../view/auth/device-users.service";
+import { RouterTestingModule } from "@angular/router/testing";
+import { of } from "rxjs";
+import { promise } from "protractor";
+
+describe("WelcomeComponent", () => {
+  let component: WelcomeComponent;
+  let fixture: ComponentFixture<WelcomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavHeaderComponent],
+      declarations: [WelcomeComponent],
       providers: [
         {
           provide: DeviceUsersService,
           useValue: {
-            getCurrentUser: () => ({})
+            getCurrentUser: () => of({}),
+            getUsers: () => of([]),
+            fetchUsers: () => Promise.resolve()
           }
         }
       ],
@@ -23,7 +28,7 @@ describe("NavHeaderComponent", () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NavHeaderComponent);
+    fixture = TestBed.createComponent(WelcomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

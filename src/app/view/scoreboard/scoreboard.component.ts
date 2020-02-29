@@ -1,6 +1,6 @@
 import { ScoresService } from "./scores.service";
-import { AuthService } from "../auth/auth.service";
 import { Component, OnInit } from "@angular/core";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 @Component({
   selector: "app-scoreboard",
@@ -15,7 +15,7 @@ export class ScoreboardComponent implements OnInit {
   familyScores: Array<{ name: string; value: number }> = [];
   constructor(
     private readonly scoresService: ScoresService,
-    private readonly authService: AuthService
+    private readonly authService: DeviceUsersService
   ) {}
 
   ngOnInit() {
@@ -26,7 +26,7 @@ export class ScoreboardComponent implements OnInit {
   }
 
   private loadScores() {
-    if (this.authService.getLoggedInUser().isAdmin) {
+    if (this.authService.getCurrentUser()?.isAdmin) {
       this.scoresService
         .getUsernames()
         .then(usernames => (this.usernames = usernames));

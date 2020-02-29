@@ -3,10 +3,6 @@ package com.craftmaster.lds.fgc.answer;
 import com.craftmaster.lds.fgc.question.Question;
 import com.craftmaster.lds.fgc.question.QuestionService;
 import com.craftmaster.lds.fgc.user.User;
-import java.security.Principal;
-import java.util.List;
-import java.util.Objects;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,16 +13,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/answer")
+@RequestMapping("api/answer")
 @RequiredArgsConstructor
 public class AnswerController {
 
   private final AnswerRepository answerRepository;
   private final QuestionService questionService;
 
-  @MessageMapping("/answer")
+  @MessageMapping("answer")
   public void markAnswer(@Valid @Payload Answer answer, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Received answer {} {}", answer, user);
