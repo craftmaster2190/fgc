@@ -1,7 +1,7 @@
-import { AnswerBusService } from "./answer-bus.service";
-import { TestBed } from "@angular/core/testing";
-import { ChatBusService } from "../../chat/chat-bus.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { ChatBusService } from "../chat/chat-bus.service";
+import { AnswerBusService } from "./answer-bus.service";
 import { MessageBusService } from "./message-bus.service";
 
 describe("AnswerBusService", () => {

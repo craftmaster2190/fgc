@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { of } from "rxjs";
 import { DeviceUsersService } from "../auth/device-users.service";
-import { ToastService } from "../util/toast/toast.service";
+import { ToastService } from "../toast/toast.service";
 import { ChatBusService } from "./chat-bus.service";
 import { ChatComponent } from "./chat.component";
 

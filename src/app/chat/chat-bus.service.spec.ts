@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { MessageBusService } from "src/app/messaging/message-bus.service";
 import { ChatBusService } from "./chat-bus.service";
-import { ToastService } from "../util/toast/toast.service";
+import { ToastService } from "../toast/toast.service";
 
 describe("ChatBusService", () => {
   beforeEach(() =>

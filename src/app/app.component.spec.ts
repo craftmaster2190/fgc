@@ -1,9 +1,9 @@
-import { AppComponent } from "./app.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ToastService } from "./util/toast/toast.service";
-import { Subscription, of } from "rxjs";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { of } from "rxjs";
+import { AppComponent } from "./app.component";
+import { ToastService } from "./toast/toast.service";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
