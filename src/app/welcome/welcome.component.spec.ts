@@ -4,6 +4,7 @@ import { WelcomeComponent } from "./welcome.component";
 import { DeviceUsersService } from "../view/auth/device-users.service";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of } from "rxjs";
+import { promise } from "protractor";
 
 describe("WelcomeComponent", () => {
   let component: WelcomeComponent;
@@ -15,7 +16,11 @@ describe("WelcomeComponent", () => {
       providers: [
         {
           provide: DeviceUsersService,
-          useValue: { getCurrentUser: () => of({}), getUsers: () => of([]) }
+          useValue: {
+            getCurrentUser: () => of({}),
+            getUsers: () => of([]),
+            fetchUsers: () => Promise.resolve()
+          }
         }
       ],
       imports: [RouterTestingModule]

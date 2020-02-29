@@ -9,7 +9,11 @@ export class DeviceIdService {
   public readonly deviceId: string;
 
   constructor() {
-    this.deviceId = localStorage.getItem(DeviceIdService.DEVICE_ID) || uuidv4();
+    this.deviceId = localStorage.getItem(DeviceIdService.DEVICE_ID);
+    if (!this.deviceId) {
+      this.deviceId = uuidv4();
+      localStorage.setItem(DeviceIdService.DEVICE_ID, this.deviceId);
+    }
   }
 
   get() {

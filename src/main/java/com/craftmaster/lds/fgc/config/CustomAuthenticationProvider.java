@@ -3,6 +3,7 @@ package com.craftmaster.lds.fgc.config;
 import com.craftmaster.lds.fgc.user.Device;
 import com.craftmaster.lds.fgc.user.DeviceRepository;
 import com.craftmaster.lds.fgc.user.User;
+import com.craftmaster.lds.fgc.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,6 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
   private final TransactionalContext transactionalContext;
   private final DeviceRepository deviceRepository;
+  private final UserRepository userRepository;
 
   public Authentication authenticate(User user, HttpSession session, UUID deviceId) {
     UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, deviceId, Set.of());
@@ -38,14 +40,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     session.setAttribute("DEVICE_ID", deviceId);
     transactionalContext.run(() -> {
-      Device device = deviceRepository
-        .findById(deviceId)
-        .orElseGet(() ->
-          deviceRepository.save(new Device().setId(deviceId)));
-      Optional.ofNullable(device
-        .getUsers())
-        .orElseGet(HashSet::new)
-        .add(user);
+      var device = deviceRepository.findById(deviceId).orElseGet(() -> deviceRepository.save(new Device().setId(deviceId)));
+
+      Optional.ofNullable(user.getDevices()).orElseGet(() -> {
+        HashSet<Device> devices = new HashSet<>();
+        user.setDevices(devices);
+        return devices;
+      }).add(device);
+
+      userRepository.save(user);
     });
     return auth;
   }

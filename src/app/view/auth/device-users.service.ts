@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { User } from "./user";
 import { tap } from "rxjs/operators";
 import { Family } from "./family";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -14,7 +15,8 @@ export class DeviceUsersService {
 
   constructor(
     private readonly deviceId: DeviceIdService,
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
+    private readonly router: Router
   ) {}
 
   fetchUsers() {
@@ -22,8 +24,8 @@ export class DeviceUsersService {
       .get<Array<User>>("/api/auth/users", {
         params: { deviceId: this.deviceId.get() }
       })
-      .pipe(tap(user => (this.deviceUsers = user)))
-      .toPromise();
+      .toPromise()
+      .then(users => (this.deviceUsers = users));
   }
 
   createUser() {
@@ -32,8 +34,8 @@ export class DeviceUsersService {
       .post<User>("/api/auth/", {
         deviceId: this.deviceId.get()
       })
-      .pipe(tap(user => (this.currentUser = user)))
-      .toPromise();
+      .toPromise()
+      .then(user => (this.currentUser = user));
   }
 
   loginUser(user: User) {
@@ -44,8 +46,18 @@ export class DeviceUsersService {
         userId: user.id,
         deviceId: this.deviceId.get()
       })
-      .pipe(tap(user => (this.currentUser = user)))
-      .toPromise();
+      .toPromise()
+      .then(user => (this.currentUser = user));
+  }
+
+  logoutUser() {
+    this.currentUser = null;
+    // Can be used to switch users
+    // Should put a server cookie and create a sesssion
+    return Promise.all([
+      this.router.navigate(["welcome"]),
+      this.http.post<User>("/api/auth/logout", null).toPromise()
+    ]);
   }
 
   updateUser(updates: { name?: string; family?: string }) {
@@ -53,8 +65,8 @@ export class DeviceUsersService {
     // Undecided? Do we allow players to change families
     return this.http
       .patch<User>("/api/auth/", updates)
-      .pipe(tap(user => (this.currentUser = user)))
-      .toPromise();
+      .toPromise()
+      .then(user => (this.currentUser = user));
   }
 
   searchFamilies(partialFamilyName: string) {
@@ -68,8 +80,8 @@ export class DeviceUsersService {
     // If there is a session, this will return a user
     return this.http
       .get<User>("/api/auth/me")
-      .pipe(tap(user => (this.currentUser = user)))
-      .toPromise();
+      .toPromise()
+      .then(user => (this.currentUser = user));
   }
 
   getUsers() {

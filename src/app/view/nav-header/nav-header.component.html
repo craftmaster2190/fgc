@@ -1,8 +1,10 @@
 <p>Fantasy General Conference</p>
 <div class="right-side">
-  <div class="authenticated-user">
-    <div class="username">{{ getUsername() }}</div>
-    <div class="family-name text-muted">{{ getFamilyName() }}</div>
-  </div>
-  <img src="assets/logo.png" />
+  <a (click)="logout()">
+    <div class="authenticated-user">
+      <div class="username">{{ getUsername() }}</div>
+      <div class="family-name text-muted">{{ getFamilyName() }}</div>
+    </div>
+    <img src="assets/logo.png" />
+  </a>
 </div>

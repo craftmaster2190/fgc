@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,7 +43,6 @@ public class User implements UserDetails {
   private final String password = null;
   @Id
   @GeneratedValue
-  @JsonIgnore
   private UUID id;
   private String name;
   @JsonInclude(Include.NON_NULL)
@@ -50,14 +50,17 @@ public class User implements UserDetails {
   private Boolean isAdmin;
   @Column(insertable = false, updatable = false)
   @JsonIgnore
-  private Long familyId;
-  @ManyToMany(fetch = FetchType.EAGER)
-  @ToString.Exclude
-  @JsonIgnore
+  private UUID familyId;
+
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinTable
+  @EqualsAndHashCode.Exclude
   private Set<Device> devices;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "familyId")
   @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Family family;
 
   @Transient

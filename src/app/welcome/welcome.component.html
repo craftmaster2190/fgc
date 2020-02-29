@@ -12,7 +12,7 @@
   <div *ngIf="isStateKnown()"><p>Welcome back!</p></div>
 </ng-template>
 
-<div *ngIf="showRegisterUser">
+<div *ngIf="showRegisterUser; else showKnownUsers">
   <form (ngSubmit)="registerUser()" novalidate>
     <fieldset [disabled]="loading">
       <div class="form-group">
@@ -62,4 +62,20 @@
       </button>
     </fieldset>
   </form>
+
+  <div *ngIf="authService.getUsers()?.length">
+    <a (click)="this.showRegisterUser = false">Login as existing user</a>
+  </div>
 </div>
+
+<ng-template #showKnownUsers>
+  <div *ngIf="authService.getUsers()?.length">
+    <div *ngFor="let user of authService.getUsers()">
+      <a (click)="login(user)"> {{ user?.name }} {{ user?.family?.name }} </a>
+    </div>
+  </div>
+
+  <div>
+    <a (click)="this.showRegisterUser = true">Create new User</a>
+  </div>
+</ng-template>

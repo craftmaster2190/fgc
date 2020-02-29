@@ -2,6 +2,7 @@ package com.craftmaster.lds.fgc.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -15,11 +16,11 @@ import java.util.UUID;
 public class Device {
 
   @Id
-  @GeneratedValue
   private UUID id;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(mappedBy = "devices", fetch = FetchType.EAGER)
   @ToString.Exclude
   @JsonIgnore
+  @EqualsAndHashCode.Exclude
   private Set<User> users;
 }

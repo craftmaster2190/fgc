@@ -22,4 +22,8 @@ export class NavHeaderComponent implements OnInit {
   getFamilyName() {
     return this.authService.getCurrentUser()?.family?.name || "";
   }
+
+  logout() {
+    this.authService.logoutUser();
+  }
 }

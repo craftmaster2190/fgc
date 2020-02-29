@@ -14,6 +14,7 @@ import { Observable } from "rxjs";
 import { FamilySearchService } from "../view/register/family-search.service";
 import { Router } from "@angular/router";
 import timeout from "../view/util/timeout";
+import { User } from "../view/auth/user";
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -23,7 +24,7 @@ export class WelcomeComponent implements OnInit {
   loading: boolean = true;
   showRegisterUser: boolean;
   constructor(
-    private readonly authService: DeviceUsersService,
+    public readonly authService: DeviceUsersService,
     private readonly router: Router
   ) {}
 
@@ -31,10 +32,8 @@ export class WelcomeComponent implements OnInit {
     Promise.all([
       Optional.of(this.authService.getCurrentUser())
         .map(currentUser => Promise.resolve(currentUser))
-        .orElseGet(() => this.authService.fetchMe()),
-      Optional.of(this.authService.getUsers())
-        .map(users => Promise.resolve(users))
-        .orElseGet(() => this.authService.fetchUsers())
+        .orElseGet(() => this.authService.fetchMe().catch(() => void 0)),
+      this.authService.fetchUsers()
     ])
       .then(
         () => (this.loading = false),
@@ -74,6 +73,12 @@ export class WelcomeComponent implements OnInit {
       )
       .then(() => this.router.navigate(["game"]));
   }
+
+  login(user: User) {
+    console.log("Login", user);
+    this.authService.loginUser(user).then(() => this.router.navigate(["game"]));
+  }
+
   name: string;
   family: string;
   searchingFamilies: boolean;

@@ -5,14 +5,8 @@ import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Slf4j
 @RestController
@@ -49,7 +41,7 @@ public class AuthController {
   public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     var user = userRepository.save(new User());
-    authenticationManager.authenticate(user, session , createUserRequest.getDeviceId());
+    authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
     return user;
   }
 
@@ -57,7 +49,7 @@ public class AuthController {
   public User loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
     var user = userRepository.findById(loginUserRequest.getUserId()).orElseThrow(accessDeniedExceptionFactory::get);
-    authenticationManager.authenticate(user, session , loginUserRequest.getDeviceId());
+    authenticationManager.authenticate(user, session, loginUserRequest.getDeviceId());
     return user;
   }
 
@@ -70,10 +62,11 @@ public class AuthController {
   @Transactional
   @PatchMapping
   public User patchUser(@AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
-    Optional.ofNullable(patchUserRequest.getName()).filter(StringUtils::hasText).ifPresent(user::setName);
-    Optional.ofNullable(patchUserRequest.getFamily()).filter(StringUtils::hasText)
-      .flatMap(familyRepository::findByName)
-      .ifPresent(user::setFamily);
+    Optional.ofNullable(patchUserRequest.getName()).ifPresent(user::setName);
+    if (patchUserRequest.getFamily() != null) {
+      user.setFamily(familyRepository.findByName(patchUserRequest.getFamily())
+        .orElseGet(() -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+    }
     return userRepository.save(user);
   }
 
