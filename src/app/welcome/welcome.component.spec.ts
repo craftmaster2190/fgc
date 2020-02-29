@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { WelcomeComponent } from "./welcome.component";
-import { DeviceUsersService } from "../view/auth/device-users.service";
+import { DeviceUsersService } from "../auth/device-users.service";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of } from "rxjs";
 import { promise } from "protractor";

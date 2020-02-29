@@ -1,5 +1,5 @@
-import { AnswerBusService } from "src/app/model/messaging/answer-bus.service";
-import { AnswersService } from "src/app/model/answers/answers.service";
+import { AnswerBusService } from "src/app/messaging/answer-bus.service";
+import { AnswersService } from "src/app/answers/answers.service";
 import { Component, OnInit } from "@angular/core";
 
 @Component({

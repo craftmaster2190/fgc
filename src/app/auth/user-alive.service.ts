@@ -1,10 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { Observable, merge, fromEvent, Subscription } from "rxjs";
-
-import { interval } from "rxjs";
-import { throttle, filter } from "rxjs/operators";
-
 import * as moment from "moment";
+import { fromEvent, interval, merge, Subscription } from "rxjs";
+import { filter, throttle } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"

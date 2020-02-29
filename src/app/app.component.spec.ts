@@ -1,7 +1,7 @@
 import { AppComponent } from "./app.component";
 import { async, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ToastService } from "./view/util/toast/toast.service";
+import { ToastService } from "./util/toast/toast.service";
 import { Subscription, of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 

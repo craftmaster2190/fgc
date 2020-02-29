@@ -1,20 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { DeviceUsersService } from "../view/auth/device-users.service";
-import { Optional } from "../view/util/optional";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
-  every,
   filter,
   map,
   switchMap,
   tap
 } from "rxjs/operators";
-import { Observable } from "rxjs";
-import { FamilySearchService } from "../view/register/family-search.service";
-import { Router } from "@angular/router";
-import timeout from "../view/util/timeout";
-import { User } from "../view/auth/user";
+import { DeviceUsersService } from "../auth/device-users.service";
+import { User } from "../auth/user";
+import { Optional } from "../util/optional";
+import timeout from "../util/timeout";
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",

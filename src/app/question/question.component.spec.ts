@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
-import { DeviceUsersService } from "src/app/view/auth/device-users.service";
+import { DeviceUsersService } from "src/app/auth/device-users.service";
 import { AnswerBusService } from "../messaging/answer-bus.service";
 import { QuestionComponent } from "./question.component";
 

@@ -1,6 +1,6 @@
 import { AnswerBusService } from "./answer-bus.service";
 import { TestBed } from "@angular/core/testing";
-import { ChatBusService } from "../../view/chat/chat-bus.service";
+import { ChatBusService } from "../../chat/chat-bus.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MessageBusService } from "./message-bus.service";
 

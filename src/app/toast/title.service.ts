@@ -1,9 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-
 import { interval } from "rxjs";
-import { throttle } from "rxjs/operators";
-import { UserAliveService } from "../../auth/user-alive.service";
+import { UserAliveService } from "../auth/user-alive.service";
 
 @Injectable({
   providedIn: "root"

@@ -1,12 +1,9 @@
-import { Chat } from "./chat";
-import { HttpClient } from "@angular/common/http";
-import { IMessage } from "@stomp/stompjs";
-import { Injectable, OnDestroy } from "@angular/core";
-import { JSONMessageSender } from "src/app/model/messaging/json-message-sender";
-import { MessageBusService } from "src/app/model/messaging/message-bus.service";
-import { Subscription } from "rxjs";
-import { ToastService } from "../util/toast/toast.service";
+import { Injectable } from "@angular/core";
 import { merge } from "rxjs";
+import { JSONMessageSender } from "src/app/messaging/json-message-sender";
+import { MessageBusService } from "src/app/messaging/message-bus.service";
+import { Chat } from "./chat";
+import { ToastService } from "../toast/toast.service";
 
 @Injectable()
 export class ChatBusService {

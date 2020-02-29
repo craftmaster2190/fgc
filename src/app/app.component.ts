@@ -1,4 +1,4 @@
-import { Toast, ToastService } from "./view/util/toast/toast.service";
+import { Toast, ToastService } from "./toast/toast.service";
 import { Component, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 

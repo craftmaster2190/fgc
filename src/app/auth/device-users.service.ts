@@ -1,10 +1,9 @@
-import { Injectable } from "@angular/core";
-import { DeviceIdService } from "./device-id.service";
 import { HttpClient } from "@angular/common/http";
-import { User } from "./user";
-import { tap } from "rxjs/operators";
-import { Family } from "./family";
+import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { DeviceIdService } from "./device-id.service";
+import { User } from "./user";
+import { Family } from "../family/family";
 
 @Injectable({
   providedIn: "root"

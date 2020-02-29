@@ -8,23 +8,23 @@ import {
   RxStompService,
   rxStompServiceFactory
 } from "@stomp/ng2-stompjs";
+import { AnswersService } from "./answers/answers.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { ChatBusService } from "./chat/chat-bus.service";
+import { ChatComponent } from "./chat/chat.component";
 import { customRxStompConfig } from "./config/custom-rx-stomp.config";
-import { AnswersService } from "./model/answers/answers.service";
-import { AnswerBusService } from "./model/messaging/answer-bus.service";
-import { MessageBusService } from "./model/messaging/message-bus.service";
-import { QuestionComponent } from "./model/question/question.component";
-import { SectionComponent } from "./model/section/section.component";
-import { ChatBusService } from "./view/chat/chat-bus.service";
-import { ChatComponent } from "./view/chat/chat.component";
-import { GameComponent } from "./view/game/game.component";
-import { NavHeaderComponent } from "./view/nav-header/nav-header.component";
-import { FamilySearchService } from "./view/register/family-search.service";
-import { ScoreboardComponent } from "./view/scoreboard/scoreboard.component";
-import { ScoresService } from "./view/scoreboard/scores.service";
-import { ToastService } from "./view/util/toast/toast.service";
-import { ValidTextComponent } from "./view/util/valid-text/valid-text.component";
+import { FamilySearchService } from "./family/family-search.service";
+import { GameComponent } from "./game/game.component";
+import { AnswerBusService } from "./messaging/answer-bus.service";
+import { MessageBusService } from "./messaging/message-bus.service";
+import { NavHeaderComponent } from "./nav-header/nav-header.component";
+import { QuestionComponent } from "./question/question.component";
+import { ScoreboardComponent } from "./scoreboard/scoreboard.component";
+import { ScoresService } from "./scoreboard/scores.service";
+import { SectionComponent } from "./section/section.component";
+import { ToastService } from "./toast/toast.service";
+import { ValidTextComponent } from "./valid-text/valid-text.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
 
 @NgModule({

@@ -9,9 +9,9 @@ import * as moment from "moment";
 import { Subscription } from "rxjs";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { Optional } from "../util/optional";
-import { ToastService } from "../util/toast/toast.service";
 import { Chat } from "./chat";
 import { ChatBusService } from "./chat-bus.service";
+import { ToastService } from "../toast/toast.service";
 
 @Component({
   selector: "app-chat",

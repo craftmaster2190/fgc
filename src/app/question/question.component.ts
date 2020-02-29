@@ -10,9 +10,9 @@ import {
   filter,
   map
 } from "rxjs/operators";
-import { Question } from "../answers/question";
+import { DeviceUsersService } from "src/app/auth/device-users.service";
 import { AnswerBusService } from "../messaging/answer-bus.service";
-import { DeviceUsersService } from "src/app/view/auth/device-users.service";
+import { Question } from "./question";
 
 @Component({
   selector: "app-question",

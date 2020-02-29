@@ -1,8 +1,8 @@
-import { GameComponent } from "./view/game/game.component";
+import { GameComponent } from "./game/game.component";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { WelcomeComponent } from "./welcome/welcome.component";
-import { KnownGuard } from "./view/auth/known.guard";
+import { KnownGuard } from "./auth/known.guard";
 
 const routes: Routes = [
   { path: "game", component: GameComponent, canActivate: [KnownGuard] },

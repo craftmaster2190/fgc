@@ -1,4 +1,4 @@
-import { Family } from "./family";
+import { Family } from "../family/family";
 
 export interface User {
   id: string;
