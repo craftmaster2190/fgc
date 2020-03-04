@@ -73,5 +73,7 @@ export class NavHeaderComponent implements OnInit {
     return (this.family?.length || 0) >= 4;
   }
 
-  updateUser() {}
+  updateUser() {
+    // TODO
+  }
 }

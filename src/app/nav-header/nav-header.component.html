@@ -20,7 +20,12 @@
       <div class="form-group profile-picture">
         <label for="name">My Profile Picture</label>
         <div>
-          <img [src]="user?.profileImage || '/assets/profile.png'" />
+          <img
+            [src]="
+              authService.getCurrentUser()?.profileImageLink ||
+              '/assets/profile.png'
+            "
+          />
           <div class="form-group">
             <label for="file">Upload File</label>
             TODO

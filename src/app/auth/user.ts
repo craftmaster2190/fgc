@@ -5,4 +5,5 @@ export interface User {
   name?: string;
   family?: Family;
   isAdmin?: boolean;
+  profileImageLink?: string;
 }
