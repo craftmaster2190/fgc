@@ -1,6 +1,6 @@
-export class Images {}
+import { Injectable } from "@angular/core";
 
-const images = [
+const peopleImages = [
   {
     name: "Russell M. Nelson",
     title: "First Presidency",
@@ -627,3 +627,20 @@ const images = [
     source: "M_Joseph_Brough_small.jpg"
   }
 ];
+
+@Injectable()
+export class ImagesService {
+  private readonly nameMap = {};
+  constructor() {
+    peopleImages.forEach(
+      personImageData =>
+        (this.nameMap[
+          personImageData.name
+        ] = `/assets/people/${personImageData.source}`)
+    );
+  }
+
+  getPerson(name: string): string | undefined {
+    return this.nameMap[name];
+  }
+}

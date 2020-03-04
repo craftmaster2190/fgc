@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { NavHeaderComponent } from "./nav-header.component";
+import { NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 
 describe("NavHeaderComponent", () => {
   let component: NavHeaderComponent;
@@ -18,7 +19,7 @@ describe("NavHeaderComponent", () => {
           }
         }
       ],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule, NgbModalModule]
     }).compileComponents();
   }));
 

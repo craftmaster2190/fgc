@@ -4,6 +4,7 @@ import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { DeviceUsersService } from "src/app/auth/device-users.service";
 import { AnswerBusService } from "../messaging/answer-bus.service";
 import { QuestionComponent } from "./question.component";
+import { ImagesService } from "../answers/images.service";
 
 describe("QuestionComponent", () => {
   let component: QuestionComponent;
@@ -26,6 +27,10 @@ describe("QuestionComponent", () => {
           useValue: {
             getCurrentUser: () => ({})
           }
+        },
+        {
+          provide: ImagesService,
+          useValue: {}
         }
       ],
       imports: [NgbTypeaheadModule, FormsModule]

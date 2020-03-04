@@ -26,7 +26,8 @@ import { SectionComponent } from "./section/section.component";
 import { ToastService } from "./toast/toast.service";
 import { ValidTextComponent } from "./valid-text/valid-text.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
-import { LogoutComponent } from './logout/logout.component';
+import { LogoutComponent } from "./logout/logout.component";
+import { ImagesService } from "./answers/images.service";
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { LogoutComponent } from './logout/logout.component';
     FamilySearchService,
     MessageBusService,
     ScoresService,
+    ImagesService,
     ToastService,
     {
       provide: InjectableRxStompConfig,

@@ -1,5 +1,6 @@
 <label for="typeahead-basic">
   {{ text }}<br />
+  <img *ngIf="imageLink" [src]="imageLink" class="question-image" />
   <small
     >Point value for each correct answer: {{ getPointValue() || "??" }}</small
   >&nbsp; <br class="d-md-none" /><small
@@ -41,6 +42,11 @@
       [class.badge-primary]="!isQuestionClosed()"
       [class.badge-secondary]="isQuestionClosed()"
     >
+      <img
+        *ngIf="images.getPerson(answer)"
+        [src]="images.getPerson(answer)"
+        class="answer-image"
+      />
       {{ answer }}
       <i *ngIf="isAdmin() || !isQuestionClosed()" class="fas fa-trash"></i>
     </span>

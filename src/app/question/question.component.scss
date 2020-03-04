@@ -18,3 +18,14 @@
 small {
   margin-left: 16px;
 }
+
+.question-image {
+  float: left;
+  max-width: 50px;
+  border-radius: 5px;
+}
+
+.answer-image {
+  max-width: 30px;
+  border-radius: 3px;
+}

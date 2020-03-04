@@ -13,6 +13,7 @@ import {
 import { DeviceUsersService } from "src/app/auth/device-users.service";
 import { AnswerBusService } from "../messaging/answer-bus.service";
 import { Question } from "./question";
+import { ImagesService } from "../answers/images.service";
 
 @Component({
   selector: "app-question",
@@ -23,13 +24,16 @@ export class QuestionComponent implements OnInit, OnDestroy {
   interval;
   constructor(
     private readonly answersBus: AnswerBusService,
-    private readonly authService: DeviceUsersService
+    private readonly authService: DeviceUsersService,
+    public readonly images: ImagesService
   ) {}
   @Input() text: string;
   @Input() answerType: "typeahead" | "text";
   @Input() answers: Array<string> = [];
   @Input() countOfAnswers: number = 1;
   @Input() id: number;
+  @Input() image: string;
+  imageLink: string;
 
   value: string;
   selectedAnswers: Set<string>;
@@ -44,6 +48,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   randomPlaceholder = (() => {
     const placeholders = [
       "Take a guess",
+      "Take a wild guess",
       "What do you think?",
       "Insert guess here",
       "Type something",
@@ -52,7 +57,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
       "I won't type for you",
       "Press enter when you're done",
       "A guess goes here",
-      "Guess correctly for points"
+      "Guess correctly for points",
+      "Type here",
+      "Don't leave me blank!"
     ];
     return placeholders[Math.floor(Math.random() * placeholders.length)];
   })();
@@ -73,6 +80,10 @@ export class QuestionComponent implements OnInit, OnDestroy {
           possibleAnswers.forEach(this.addToPossibleAnswers)
         );
       this.correctAnswers = new Set();
+    }
+
+    if (this.image) {
+      this.imageLink = this.images.getPerson(this.image);
     }
   }
 
