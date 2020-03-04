@@ -189,6 +189,14 @@
     ></app-question>
 
     <app-question
+      text="Which session will have the guest choir?"
+      id="47"
+      answerType="typeahead"
+      [answers]="answersService.conferenceSessions()"
+      [countOfAnswers]="1"
+    ></app-question>
+
+    <app-question
       text="What colors will the choir be wearing Saturday Morning Session? (Dresses, Suits or Ties)"
       id="42"
       answerType="typeahead"
