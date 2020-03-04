@@ -26,6 +26,7 @@ import { SectionComponent } from "./section/section.component";
 import { ToastService } from "./toast/toast.service";
 import { ValidTextComponent } from "./valid-text/valid-text.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { WelcomeComponent } from "./welcome/welcome.component";
     ValidTextComponent,
     ChatComponent,
     ScoreboardComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,

@@ -53,10 +53,11 @@ export class DeviceUsersService {
     this.currentUser = null;
     // Can be used to switch users
     // Should put a server cookie and create a sesssion
-    return Promise.all([
-      this.router.navigate(["welcome"]),
-      this.http.post<User>("/api/auth/logout", null).toPromise()
-    ]);
+
+    return this.router
+      .navigate(["logout"])
+      .then(() => this.http.post<User>("/api/auth/logout", null).toPromise())
+      .then(() => location.reload());
   }
 
   updateUser(updates: { name?: string; family?: string }) {

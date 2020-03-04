@@ -1,4 +1,4 @@
-<div *ngIf="loading; else state" class="d-flex justify-content-center">
+<div *ngIf="loading; else state" class="text-center" style="margin-top: 50px;">
   <div
     class="spinner-border"
     style="width: 12rem; height: 12rem;"
@@ -12,7 +12,7 @@
     <p class="fade-in-1">Here's how you play:</p>
     <p class="fade-in-2">
       It is pretty easy. Pick a name and your family name. Then you will guess
-      who is speaking and what color tie they will be wearing, etc.
+      who will be speaking and what color tie they will be wearing, etc.
     </p>
     <p class="fade-in-3">
       When General Conference starts, some of the questions will lock and you
@@ -46,10 +46,10 @@
       </div>
     </div>
 
-    <div class="fade-in-2">
+    <div class="fade-in-2" style="margin-top: 12px;">
       <a (click)="this.showRegisterUser = true">
-        <button type="button" class="btn btn-primary" [disabled]="loading">
-          Create new User
+        <button type="button" class="btn btn-outline-dark" [disabled]="loading">
+          Create a New User
         </button>
       </a>
     </div>
@@ -105,14 +105,18 @@
             class="spinner-border spinner-border-sm"
             role="status"
           ></span
-          >&nbsp;Start Playing
+          >&nbsp;Create User and Start Playing
         </button>
       </fieldset>
     </form>
 
-    <div *ngIf="authService.getUsers()?.length" class="fade-in-2">
+    <div
+      *ngIf="authService.getUsers()?.length"
+      class="fade-in-2"
+      style="margin-top: 12px;"
+    >
       <a (click)="this.showRegisterUser = false">
-        <button type="button" class="btn btn-primary" [disabled]="loading">
+        <button type="button" class="btn btn-outline-dark" [disabled]="loading">
           Login as existing user
         </button>
       </a>

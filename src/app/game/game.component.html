@@ -1,4 +1,8 @@
-<div *ngIf="loading; else notLoading" class="d-flex justify-content-center">
+<div
+  *ngIf="loading; else notLoading"
+  class="text-center"
+  style="margin-top: 50px;"
+>
   <div
     class="spinner-border"
     style="width: 12rem; height: 12rem;"
@@ -7,6 +11,24 @@
 </div>
 
 <ng-template #notLoading>
+  <p>Here's how you play:</p>
+  <p>
+    It is pretty easy. Open one of the sections below and guess who will be
+    speaking and what color tie they will be wearing, etc.
+  </p>
+  <p>
+    When General Conference starts, some of the questions will lock and you will
+    no longer be able to put in guesses. If you guessed correctly, you will get
+    points. The person or family (also called a team) with the most points wins.
+  </p>
+  <p>
+    <b>Pro Tip:&nbsp;</b>Some of the questions will still be open in between
+    sessions.
+  </p>
+  <p>
+    To switch users, click the organ pipes in the top right.
+  </p>
+
   <app-section
     title="When is the First Presidency speaking?"
     [isOpen]="openPanel === 'firstPresidency'"
@@ -19,9 +41,8 @@
       id="1"
       answerType="typeahead"
       [answers]="answersService.conferenceSessions()"
-      [countOfAnswers]="3"
+      [countOfAnswers]="2"
     ></app-question>
-
     <app-question
       text="In which session(s) is President Dallin H. Oaks speaking?"
       id="2"
@@ -29,7 +50,6 @@
       [answers]="answersService.conferenceSessions()"
       [countOfAnswers]="2"
     ></app-question>
-
     <app-question
       text="In which session(s) is President Heny B. Eyring speaking?"
       id="3"
@@ -44,7 +64,6 @@
     [isOpen]="openPanel === 'whosConducting'"
     (click)="toggelOpenPanel($event, 'whosConducting')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'whosConducting'">
     <app-question
       text="In which sessions(s) is President Russell M. Nelson conducting?"
@@ -53,21 +72,19 @@
       [answers]="answersService.conferenceSessions()"
       [countOfAnswers]="2"
     ></app-question>
-
     <app-question
       text="In which session(s) is President Dallin H. Oaks conducting?"
       id="12"
       answerType="typeahead"
       [answers]="answersService.conferenceSessions()"
-      [countOfAnswers]="3"
+      [countOfAnswers]="2"
     ></app-question>
-
     <app-question
       text="In which session(s) is President Heny B. Eyring conducting?"
       id="13"
       answerType="typeahead"
       [answers]="answersService.conferenceSessions()"
-      [countOfAnswers]="3"
+      [countOfAnswers]="2"
     ></app-question>
   </ng-template>
 
@@ -76,7 +93,6 @@
     [isOpen]="openPanel === 'apostlesSpeaking'"
     (click)="toggelOpenPanel($event, 'apostlesSpeaking')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'apostlesSpeaking'">
     <app-question
       text="Which Apostle(s) are speaking in the Saturday Morning Session?"
@@ -93,15 +109,22 @@
       [countOfAnswers]="3"
     ></app-question>
     <app-question
-      text="Which Apostle(s) are speaking in the Sunday Morning Session?"
+      text="Which Apostle(s) are speaking in the Bicentennial Special Session?"
       id="23"
       answerType="typeahead"
       [answers]="answersService.apostles()"
       [countOfAnswers]="3"
     ></app-question>
     <app-question
-      text="Which Apostle(s) are speaking in the Sunday Afternoon Session?"
+      text="Which Apostle(s) are speaking in the Sunday Morning Session?"
       id="24"
+      answerType="typeahead"
+      [answers]="answersService.apostles()"
+      [countOfAnswers]="3"
+    ></app-question>
+    <app-question
+      text="Which Apostle(s) are speaking in the Sunday Afternoon Session?"
+      id="25"
       answerType="typeahead"
       [answers]="answersService.apostles()"
       [countOfAnswers]="3"
@@ -109,29 +132,21 @@
   </ng-template>
 
   <app-section
-    title="Auxiliaries and Seventies"
+    title="Seventies and Organizations"
     [isOpen]="openPanel === 'auxAndSeventies'"
     (click)="toggelOpenPanel($event, 'auxAndSeventies')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'auxAndSeventies'">
     <app-question
-      text="Who of the Quorums of the Seventies will be speaking in any session? (Pick ten)"
-      id="31"
-      answerType="typeahead"
-      [answers]="answersService.seventies()"
-      [countOfAnswers]="10"
-    ></app-question>
-    <app-question
       text="Who of the Presidency of the Seventy will be speaking in any session?"
-      id="32"
+      id="31"
       answerType="typeahead"
       [answers]="answersService.presidencyOfTheSeventy()"
       [countOfAnswers]="2"
     ></app-question>
     <app-question
       text="Who of the Presiding Bishopric will be speaking in any session?"
-      id="38"
+      id="32"
       answerType="typeahead"
       [answers]="answersService.presidingBishopric()"
       [countOfAnswers]="1"
@@ -171,6 +186,13 @@
       [answers]="answersService.primaryPresidency()"
       [countOfAnswers]="1"
     ></app-question>
+    <app-question
+      text="Who of the General Authority Seventies will be speaking in any session? (Pick ten)"
+      id="38"
+      answerType="typeahead"
+      [answers]="answersService.seventies()"
+      [countOfAnswers]="10"
+    ></app-question>
   </ng-template>
 
   <app-section
@@ -178,7 +200,6 @@
     [isOpen]="openPanel === 'hymnsAndChoir'"
     (click)="toggelOpenPanel($event, 'hymnsAndChoir')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'hymnsAndChoir'">
     <app-question
       text="Which hymns will be sung in any session? (Pick ten)"
@@ -187,46 +208,44 @@
       [answers]="answersService.hymnsAndSongs()"
       [countOfAnswers]="10"
     ></app-question>
-
     <app-question
       text="Which session will have the guest choir?"
-      id="47"
+      id="42"
       answerType="typeahead"
       [answers]="answersService.conferenceSessions()"
       [countOfAnswers]="1"
     ></app-question>
-
     <app-question
       text="What colors will the choir be wearing Saturday Morning Session? (Dresses, Suits or Ties)"
-      id="42"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="2"
-    ></app-question>
-    <app-question
-      text="What colors will the choir be wearing Saturday Afternoon Session? (Dresses, Suits or Ties)"
       id="43"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="2"
     ></app-question>
     <app-question
-      text="What colors will the choir be wearing General Women's Session? (Dresses)"
+      text="What colors will the choir be wearing Saturday Afternoon Session? (Dresses, Suits or Ties)"
       id="44"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="2"
     ></app-question>
     <app-question
-      text="What colors will the choir be wearing Sunday Morning Session? (Dresses, Suits or Ties)"
+      text="What colors will the choir be wearing Bicentennial Special Session? (Dresses, Suits or Ties)"
       id="45"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="2"
     ></app-question>
     <app-question
-      text="What colors will the choir be wearing Sunday Afternoon Session? (Dresses, Suits or Ties)"
+      text="What colors will the choir be wearing Sunday Morning Session? (Dresses, Suits or Ties)"
       id="46"
+      answerType="typeahead"
+      [answers]="answersService.colors()"
+      [countOfAnswers]="2"
+    ></app-question>
+    <app-question
+      text="What colors will the choir be wearing Sunday Afternoon Session? (Dresses, Suits or Ties)"
+      id="47"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="2"
@@ -238,14 +257,13 @@
     [isOpen]="openPanel === 'tieColors'"
     (click)="toggelOpenPanel($event, 'tieColors')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'tieColors'">
     <app-question
       text="What will President Russell M. Nelson's tie color be in the Saturday Morning Session?"
       id="51"
       answerType="typeahead"
       [answers]="answersService.colors()"
-      [countOfAnswers]="1"
+      [countOfAnswers]="2"
     ></app-question>
     <app-question
       text="What will President Russell M. Nelson's tie color be in the Saturday Afternoon Session?"
@@ -255,76 +273,60 @@
       [countOfAnswers]="1"
     ></app-question>
     <app-question
-      text="What will President Russell M. Nelson's tie color be in the Sunday Morning Session?"
+      text="What will President Russell M. Nelson's tie color be in the Bicentennial Special Session?"
       id="53"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="1"
     ></app-question>
     <app-question
-      text="What will President Russell M. Nelson's tie color be in the Sunday Afternoon Session?"
+      text="What will President Russell M. Nelson's tie color be in the Sunday Morning Session?"
       id="54"
       answerType="typeahead"
       [answers]="answersService.colors()"
-      [countOfAnswers]="1"
+      [countOfAnswers]="2"
     ></app-question>
-
     <app-question
-      text="What will President Dallin H. Oaks's tie color be in the Saturday Morning Session?"
+      text="What will President Russell M. Nelson's tie color be in the Sunday Afternoon Session?"
       id="55"
       answerType="typeahead"
       [answers]="answersService.colors()"
       [countOfAnswers]="1"
     ></app-question>
     <app-question
-      text="What will President Dallin H. Oaks's tie color be in the Saturday Afternoon Session?"
-      id="56"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="1"
-    ></app-question>
-    <app-question
-      text="What will President Dallin H. Oaks's tie color be in the Sunday Morning Session?"
-      id="57"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="1"
-    ></app-question>
-    <app-question
-      text="What will President Dallin H. Oaks's tie color be in the Sunday Afternoon Session?"
-      id="58"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="1"
-    ></app-question>
-
-    <app-question
-      text="What will President Heny B. Eyring's tie color be in the Saturday Morning Session?"
-      id="59"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="1"
-    ></app-question>
-    <app-question
-      text="What will President Heny B. Eyring's tie color be in the Saturday Afternoon Session?"
-      id="60"
-      answerType="typeahead"
-      [answers]="answersService.colors()"
-      [countOfAnswers]="1"
-    ></app-question>
-    <app-question
-      text="What will President Heny B. Eyring's tie color be in the Sunday Morning Session?"
+      text="What will the Conducting Presidency Member's tie color be in the Saturday Morning Session?"
       id="61"
       answerType="typeahead"
       [answers]="answersService.colors()"
-      [countOfAnswers]="1"
+      [countOfAnswers]="2"
     ></app-question>
     <app-question
-      text="What will President Heny B. Eyring's tie color be in the Sunday Afternoon Session?"
+      text="What will the Conducting Presidency Member's tie color be in the Saturday Afternoon Session?"
       id="62"
       answerType="typeahead"
       [answers]="answersService.colors()"
-      [countOfAnswers]="1"
+      [countOfAnswers]="2"
+    ></app-question>
+    <app-question
+      text="What will the Conducting Presidency Member's tie color be in the Bicentennial Special Session?"
+      id="63"
+      answerType="typeahead"
+      [answers]="answersService.colors()"
+      [countOfAnswers]="2"
+    ></app-question>
+    <app-question
+      text="What will the Conducting Presidency Member's tie color be in the Sunday Morning Session?"
+      id="64"
+      answerType="typeahead"
+      [answers]="answersService.colors()"
+      [countOfAnswers]="2"
+    ></app-question>
+    <app-question
+      text="What will the Conducting Presidency Member's tie color be in the Sunday Afternoon Session?"
+      id="65"
+      answerType="typeahead"
+      [answers]="answersService.colors()"
+      [countOfAnswers]="2"
     ></app-question>
   </ng-template>
 
@@ -333,7 +335,6 @@
     [isOpen]="openPanel === 'newTempleLocations'"
     (click)="toggelOpenPanel($event, 'newTempleLocations')"
   ></app-section>
-
   <ng-template [ngIf]="openPanel === 'newTempleLocations'">
     <app-question
       text="In which states in the U.S.A. will new temples be built?"
@@ -342,7 +343,6 @@
       [answers]="answersService.usaStates()"
       [countOfAnswers]="5"
     ></app-question>
-
     <app-question
       text="In which countries will new temples be built? (Not including U.S.A.)"
       id="72"

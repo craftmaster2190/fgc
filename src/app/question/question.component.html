@@ -1,8 +1,9 @@
 <label for="typeahead-basic">
   {{ text }}<br />
   <small
-    >Point value for each correct answer: {{ getPointValue() || "??" }} (Average
-    winnings: {{ getAverageValue() }})</small
+    >Point value for each correct answer: {{ getPointValue() || "??" }}</small
+  >&nbsp; <br class="d-md-none" /><small
+    >(Average winnings: {{ getAverageValue() }})</small
   >&nbsp;<br class="d-md-none" />
   <small>Maximum number of guesses: {{ countOfAnswers }}</small>
   <ng-template [ngIf]="isQuestionClosed()">
