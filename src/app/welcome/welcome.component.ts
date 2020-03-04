@@ -64,17 +64,29 @@ export class WelcomeComponent implements OnInit {
   }
 
   registerUser() {
+    this.loading = true;
     this.authService
       .createUser()
       .then(() =>
         this.authService.updateUser({ name: this.name, family: this.family })
       )
-      .then(() => this.router.navigate(["game"]));
+      .then(() => this.router.navigate(["game"]))
+      .then(
+        () => (this.loading = false),
+        () => (this.loading = false)
+      );
   }
 
   login(user: User) {
+    this.loading = true;
     console.log("Login", user);
-    this.authService.loginUser(user).then(() => this.router.navigate(["game"]));
+    this.authService
+      .loginUser(user)
+      .then(() => this.router.navigate(["game"]))
+      .then(
+        () => (this.loading = false),
+        () => (this.loading = false)
+      );
   }
 
   name: string;

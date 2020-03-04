@@ -1,10 +1,81 @@
-<p>Fantasy General Conference</p>
+<marquee behavior="scroll" direction="left">Fantasy General Conference</marquee>
 <div class="right-side">
-  <a (click)="logout()">
-    <div class="authenticated-user">
-      <div class="username">{{ getUsername() }}</div>
-      <div class="family-name text-muted">{{ getFamilyName() }}</div>
-    </div>
-    <img src="assets/logo.png" />
+  <a (click)="openModal(modalContent)">
+    <img src="assets/logo-small.png" />
   </a>
 </div>
+
+<ng-template #modalContent let-modal>
+  <div class="modal-body">
+    <div class="text-right">
+      <button
+        type="button"
+        class="close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span>&times;</span>
+      </button>
+    </div>
+    <form (ngSubmit)="modal.dismiss('Form submit')" novalidate>
+      <div class="form-group profile-picture">
+        <label for="name">My Profile Picture</label>
+        <div>
+          <img [src]="user?.profileImage || '/assets/profile.png'" />
+          <div class="form-group">
+            <label for="file">Upload File</label>
+            TODO
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">My Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          [(ngModel)]="name"
+          autocomplete="name"
+        />
+        <small class="form-text text-muted"
+          ><app-valid-text
+            [valid]="nameValid()"
+            text="Must be 4 characters long."
+          ></app-valid-text>
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="family">My Family Name (Team Name)</label>
+        <input
+          type="search"
+          class="form-control"
+          id="family"
+          name="family"
+          [(ngModel)]="family"
+          autocomplete="off"
+          [ngbTypeahead]="searchFamilies"
+        />
+        <small class="form-text text-muted"
+          ><app-valid-text
+            [valid]="familyValid()"
+            text="Must be 4 characters long."
+          ></app-valid-text>
+        </small>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="logout(modal)">
+      Switch Users
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')"
+    >
+      Close
+    </button>
+  </div>
+</ng-template>

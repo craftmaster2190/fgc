@@ -1,0 +1,59 @@
+:host {
+  display: block;
+  padding-bottom: 200px;
+}
+
+.fade-in-0 {
+  animation: fadeIn ease 2s;
+}
+.fade-in-1 {
+  animation: fadeIn ease 3s;
+}
+.fade-in-2 {
+  animation: fadeIn ease 4s;
+}
+.fade-in-3 {
+  animation: fadeIn ease 5s;
+}
+.fade-in-4 {
+  animation: fadeIn ease 6s;
+}
+.fade-in-5 {
+  animation: fadeIn ease 7s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.selectable-users {
+  display: flex;
+  flex-wrap: wrap;
+
+  .user {
+    border: #b0b0b0 solid 1px;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 8px;
+    text-align: center;
+    min-width: 100px;
+    cursor: pointer;
+
+    img {
+      max-height: 50px;
+      max-width: 50px;
+    }
+
+    .user-name {
+      font-size: 120%;
+    }
+
+    .family-name {
+      color: #b0b0b0;
+    }
+  }
+}
