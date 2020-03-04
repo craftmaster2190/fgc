@@ -1117,7 +1117,7 @@ export class AnswersService {
   conferenceSessions = () => [
     "Saturday Morning Session",
     "Saturday Afternoon Session",
-    "General Women's Session",
+    "Special Session",
     "Sunday Morning Session",
     "Sunday Afternoon Session",
     "None"
