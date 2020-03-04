@@ -198,4 +198,45 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.question.correctAnswers = Array.from(this.correctAnswers);
     this.updateQuestion();
   }
+
+  getAverageValue() {
+    const score = this.question?.pointValue || 1;
+    const guesses = this.countOfAnswers;
+    const likely = this.question?.likelyCorrectCount || this.countOfAnswers;
+    const possible = this.answers?.length;
+    if (!possible) {
+      return 0;
+    }
+
+    let numberCorrect = 1;
+
+    const weightedArray = Array(guesses);
+    while (numberCorrect <= guesses) {
+      const valueCorrect = numberCorrect * score;
+      let value = 1;
+      let top = likely;
+      let bottom = possible;
+      for (let n = numberCorrect; n > 0; n--) {
+        value *= top-- / bottom--;
+      }
+      weightedArray[numberCorrect++] = value * valueCorrect;
+    }
+
+    const weightedAverageScore = weightedArray.reduce((a, b) => a + b, 0);
+    return weightedAverageScore.toFixed(1);
+  }
+
+  sumOfNMinus1OverMMinus1LimitNGreaterThan0(top: number, bottom: number) {
+    if (top >= bottom) {
+      throw new Error("Um....");
+    }
+
+    let value = 1;
+
+    while (top > 0) {
+      value *= top-- / bottom--;
+    }
+
+    return value;
+  }
 }

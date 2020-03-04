@@ -72,4 +72,6 @@ export class NavHeaderComponent implements OnInit {
   familyValid() {
     return (this.family?.length || 0) >= 4;
   }
+
+  updateUser() {}
 }

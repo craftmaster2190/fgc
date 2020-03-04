@@ -3,4 +3,5 @@ export interface Question {
   correctAnswers?: Array<string>;
   enabled: boolean;
   pointValue?: number;
+  likelyCorrectCount?: number;
 }
