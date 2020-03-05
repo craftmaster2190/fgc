@@ -1,6 +1,6 @@
 <label for="typeahead-basic">
   {{ text }}<br />
-  <img *ngIf="imageLink" [src]="imageLink" class="question-image" />
+  <img *ngIf="imageLink" src="{{ imageLink }}" class="question-image" />
   <small
     >Point value for each correct answer: {{ getPointValue() || "??" }}</small
   >&nbsp; <br class="d-md-none" /><small
@@ -54,7 +54,7 @@
     >
       <img
         *ngIf="images.getPerson(answer)"
-        [src]="images.getPerson(answer)"
+        src="{{ images.getPerson(answer) }}"
         class="answer-image"
       />
       <span
