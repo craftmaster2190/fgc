@@ -7,6 +7,16 @@
   padding: 8px;
   margin-top: 6px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+
+  :first-child:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  :last-child {
+    margin-left: 10px;
+  }
 }
 
 .admin-tools {
@@ -28,4 +38,13 @@ small {
 .answer-image {
   max-width: 30px;
   border-radius: 3px;
+}
+
+.color-square {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid white;
+  border-radius: 3px;
+  vertical-align: middle;
 }

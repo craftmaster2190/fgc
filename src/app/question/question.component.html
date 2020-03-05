@@ -31,7 +31,17 @@
   #instance="ngbTypeahead"
   [disabled]="!isEnabled()"
   [placeholder]="isQuestionClosed() ? '' : randomPlaceholder"
+  [resultTemplate]="isColors ? colorResultTemplate : null"
 />
+
+<ng-template #colorResultTemplate let-r="result" let-t="term">
+  <span
+    class="color-square"
+    [ngStyle]="{ 'background-color': r }"
+    style="margin-right: 10px;"
+  ></span>
+  <ngb-highlight [result]="r" [term]="t"></ngb-highlight>
+</ng-template>
 
 <ng-template ngFor let-answer [ngForOf]="selectedAnswers">
   <div>
@@ -47,6 +57,11 @@
         [src]="images.getPerson(answer)"
         class="answer-image"
       />
+      <span
+        class="color-square"
+        *ngIf="isColors"
+        [ngStyle]="{ 'background-color': answer }"
+      ></span>
       {{ answer }}
       <i *ngIf="isAdmin() || !isQuestionClosed()" class="fas fa-trash"></i>
     </span>

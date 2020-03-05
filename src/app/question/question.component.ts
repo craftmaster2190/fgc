@@ -32,6 +32,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   @Input() answers: Array<string> = [];
   @Input() countOfAnswers: number = 1;
   @Input() id: number;
+  @Input() isColors: boolean = false;
   @Input() image: string;
   imageLink: string;
 
@@ -106,12 +107,13 @@ export class QuestionComponent implements OnInit, OnDestroy {
         const possibleAnswers = this.answers.filter(
           v => !this.selectedAnswers.has(v)
         );
-        return (term === ""
-          ? possibleAnswers
-          : possibleAnswers.filter(
-              v => v.toLowerCase().indexOf(term.toLowerCase()) > -1
-            )
-        ).slice(0, 12);
+        const filteredAnswers =
+          term === ""
+            ? possibleAnswers
+            : possibleAnswers.filter(
+                v => v.toLowerCase().indexOf(term.toLowerCase()) > -1
+              );
+        return this.isColors ? filteredAnswers : filteredAnswers.slice(0, 12);
       })
     );
   };
