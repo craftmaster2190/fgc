@@ -30,6 +30,7 @@ public class UserController {
   @GetMapping("all")
   @RolesAllowed("ROLE_ADMIN")
   public Set<String> getAllUsernames() {
+	  log.info("Getting all usernames");
     return StreamSupport.stream(this.userRepository.findAll().spliterator(), false)
       .filter(user -> (!Objects.equals(user.getIsAdmin(), true)))
       .map(user -> user.getUsername() + " (" + user.getFamily().getName() + ")")

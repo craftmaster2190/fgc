@@ -79,21 +79,4 @@ public class AuthController {
   public List<Family> searchFamilies(@RequestParam("search") String partialFamilyName) {
     return familyRepository.findByNameContainingIgnoreCase(partialFamilyName);
   }
-
-//  @PostConstruct
-//  public void generateAdmin() {
-//    String adminUsername = "ADMIN";
-//    userRepository.findByUsernameIgnoreCase(adminUsername)
-//      .ifPresentOrElse(existingAdmin -> {
-//        log.warn("Admin already exists!");
-//      }, () -> {
-//        String adminPassword = "admin";// UUID.randomUUID().toString();
-//        registerUser(new User()
-//          .setUsername(adminUsername)
-//          .setPassword(adminPassword)
-//          .setIsAdmin(true)
-//          .setFamily(new Family().setName("Fisher")));
-//        log.warn("Created `{}` user with password: `{}`", adminUsername, adminPassword);
-//      });
-//  }
 }
