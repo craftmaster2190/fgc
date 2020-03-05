@@ -7,9 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Optional;
@@ -21,12 +19,14 @@ import java.util.Set;
 public class Question {
 
   @Id
+  @GeneratedValue
   @NotNull
   private Long id;
   @NotNull
   private Boolean enabled;
   private Long pointValue;
   @JsonIgnore
+  @Column(columnDefinition = "text")
   private String correctAnswersPersisted;
 
   @Transient

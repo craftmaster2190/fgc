@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -37,12 +38,13 @@ public class AuthController {
     return user;
   }
 
+  @Transactional
   @PostMapping
   public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     var user = userRepository.save(new User());
     authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
-    return user;
+    return patchUser(user, createUserRequest);
   }
 
   @PostMapping("/login")
@@ -62,9 +64,16 @@ public class AuthController {
   @Transactional
   @PatchMapping
   public User patchUser(@AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
-    Optional.ofNullable(patchUserRequest.getName()).ifPresent(user::setName);
+    Optional.ofNullable(patchUserRequest.getName())
+      .filter((name) -> {
+        if (userRepository.findByNameIgnoreCase(name).isPresent()) {
+          throw new UsernameAlreadyTakenException();
+        }
+        return true;
+      })
+      .ifPresent(user::setName);
     if (patchUserRequest.getFamily() != null) {
-      user.setFamily(familyRepository.findByName(patchUserRequest.getFamily())
+      user.setFamily(familyRepository.findByNameIgnoreCase(patchUserRequest.getFamily())
         .orElseGet(() -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
     }
     return userRepository.save(user);
@@ -78,5 +87,19 @@ public class AuthController {
   @GetMapping("family")
   public List<Family> searchFamilies(@RequestParam("search") String partialFamilyName) {
     return familyRepository.findByNameContainingIgnoreCase(partialFamilyName);
+  }
+
+  // There is no way to become an admin programmatically.
+  // This is intentional, the Admin must login to DB and assign their device id.
+  @PostConstruct
+  public void generateAdmin() {
+    String adminName = "Admin";
+    userRepository.findByNameIgnoreCase(adminName)
+      .ifPresentOrElse(existingAdmin -> {
+        log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
+      }, () -> {
+        var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
+        log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
+      });
   }
 }

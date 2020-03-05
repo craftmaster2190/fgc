@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ public class Answer {
   @JsonProperty(access = Access.READ_ONLY)
   private Question question;
   @JsonIgnore
+  @Column(columnDefinition = "text")
   private String valuesPersisted;
 
   @Transient
@@ -55,6 +57,26 @@ public class Answer {
     }
   }
 
+  @Transient
+  public boolean isScorable() {
+    return getQuestion() != null
+      && getQuestion().getPointValue() != null
+      && getQuestion().getCorrectAnswers() != null
+      && !getQuestion().getCorrectAnswers().isEmpty()
+      && getValues() != null
+      && !getValues().isEmpty();
+  }
+
+
+  @Transient
+  public long getScore() {
+    if (isScorable()) {
+      HashSet<String> intersection = new HashSet<>(getValues());
+      intersection.retainAll(getQuestion().getCorrectAnswers());
+      return intersection.size() * getQuestion().getPointValue();
+    }
+    return 0;
+  }
 
 }
 

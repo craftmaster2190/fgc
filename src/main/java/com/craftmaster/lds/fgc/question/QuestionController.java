@@ -3,6 +3,8 @@ package com.craftmaster.lds.fgc.question;
 import com.craftmaster.lds.fgc.answer.Answer;
 import com.craftmaster.lds.fgc.answer.AnswerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -17,16 +19,19 @@ public class QuestionController {
 
   private final QuestionService questionService;
   private final AnswerRepository answerRepository;
+  private final SimpMessageSendingOperations simpMessageSendingOperations;
 
-  @GetMapping("{id}")
-  public Question get(@PathVariable long id) {
-    return questionService.getOrCreateById(id);
+  @SubscribeMapping("/question")
+  public Iterable<Question> getAll() {
+    return questionService.findAll();
   }
 
   @PostMapping
   @RolesAllowed("ROLE_ADMIN")
   public Question updateQuestion(@RequestBody Question question) {
-    return questionService.updateQuestion(question);
+    Question savedQuestion = questionService.updateQuestion(question);
+    simpMessageSendingOperations.convertAndSend("/topic/question", savedQuestion);
+    return savedQuestion;
   }
 
   @GetMapping("possible/{id}")
@@ -37,5 +42,21 @@ public class QuestionController {
       .map(Answer::getValues)
       .flatMap(Collection::stream)
       .collect(Collectors.toSet());
+  }
+
+  @PostMapping("disable-all")
+  @RolesAllowed("ROLE_ADMIN")
+  public void disableAll() {
+    getAll().forEach(question -> updateQuestion(question.setEnabled(false)));
+  }
+
+  @PostMapping("enabled-all")
+  @RolesAllowed("ROLE_ADMIN")
+  public void enableAll() {
+    getAll().forEach(question -> {
+      if (question.getCorrectAnswers() == null || question.getCorrectAnswers().isEmpty()) {
+        updateQuestion(question.setEnabled(true));
+      }
+    });
   }
 }

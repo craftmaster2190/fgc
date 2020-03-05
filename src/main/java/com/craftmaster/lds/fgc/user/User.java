@@ -42,8 +42,8 @@ public class User implements UserDetails {
   @JsonIgnore
   private final String password = null;
   @Id
-  @GeneratedValue
-  private UUID id;
+  private UUID id = UUID.randomUUID();
+  @Column(columnDefinition = "text")
   private String name;
   @JsonInclude(Include.NON_NULL)
   @JsonProperty(access = Access.READ_ONLY)

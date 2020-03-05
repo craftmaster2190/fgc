@@ -1,83 +1,95 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.craftmaster.lds.fgc.config.TransactionalContext;
+import com.craftmaster.lds.fgc.user.FamilyRepository;
+import com.craftmaster.lds.fgc.user.NotFoundException;
 import com.craftmaster.lds.fgc.user.User;
 import com.craftmaster.lds.fgc.user.UserRepository;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import javax.transaction.Transactional;
+import java.security.Principal;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
-
+@Slf4j
 @RestController
-@RequestMapping("/api/score")
 @RequiredArgsConstructor
 public class ScoreController {
 
   private final AnswerRepository answerRepository;
+  private final ScoreRepository scoreRepository;
   private final UserRepository userRepository;
+  private final FamilyRepository familyRepository;
 
-  private final Cache<UUID, User> userId2User = Caffeine.newBuilder()
-    .expireAfterWrite(15, TimeUnit.MINUTES).build();
-  private volatile Map<String, Long> user2Score = new ConcurrentHashMap<>();
-  private volatile Map<String, Long> family2Score = new ConcurrentHashMap<>();
+  private final SimpUserRegistry simpUserRegistry;
+  private final SimpMessageSendingOperations simpMessageSendingOperations;
+  private final TransactionalContext transactionalContext;
 
-  @GetMapping
-  public Scores get() {
-    return new Scores()
-      .setUser2Score(user2Score)
-      .setFamily2Score(family2Score);
+  @Scheduled(fixedDelay = 15000L)
+  public void sendUsersScores() {
+    simpUserRegistry.getUsers().forEach(user -> {
+      var userId = user.getName();
+      simpMessageSendingOperations.convertAndSendToUser(userId, "/topic/score",
+        transactionalContext.run(() ->
+          get(UUID.fromString(userId))));
+    });
   }
 
-  @Scheduled(fixedDelay = 60_000)
-  public void calculateScores() {
-    Map<String, Long> user2Score = new ConcurrentHashMap<>();
-    Map<String, Long> family2Score = new ConcurrentHashMap<>();
+  @SubscribeMapping("/score")
+  public Score listenToScores(Principal principal) {
+    User user = (User) ((Authentication) principal).getPrincipal();
+    return transactionalContext.run(() -> get(user.getId()));
+  }
 
-    answerRepository.findAll().forEach(answer -> {
-      if (answer.getQuestion() == null
-        || answer.getQuestion().getPointValue() == null
-        || answer.getQuestion().getCorrectAnswers() == null
-        || answer.getQuestion().getCorrectAnswers().isEmpty()
-        || answer.getValues() == null
-        || answer.getValues().isEmpty()
-      ) {
-        return;
-      }
+  @Transactional
+  public Score get(UUID id) {
+    Score score = scoreRepository.findById(id)
+      .orElseGet(() -> scoreRepository.save(new Score().setUserOrFamilyId(id).setUpdatedAt(Instant.now())));
 
-      HashSet<String> intersectionOfCorrectAnswers = new HashSet<>(
-        answer.getQuestion().getCorrectAnswers());
-      intersectionOfCorrectAnswers.retainAll(answer.getValues());
+    if (score.isValid()) {
+      return score;
+    }
 
-      if (intersectionOfCorrectAnswers.isEmpty()) {
-        return;
-      }
+    return generateUserScore(score)
+      .or(() -> generateFamilyScore(score))
+      .orElseThrow(NotFoundException::new)
+      .setUpdatedAt(Instant.now());
+  }
 
-      User user = userId2User.get(answer.getAnswerPk().getUserId(),
-        userId -> userRepository.findById(userId).orElseThrow());
+  private Optional<Score> generateUserScore(Score userScore) {
+    return userRepository.findById(userScore.getUserOrFamilyId())
+      .map(user -> userScore.setScore(
+        calculateUserScore(userScore.getUserOrFamilyId())));
+  }
 
-      if (Objects.equals(user.getIsAdmin(), true)) {
-        return;
-      }
+  private long calculateUserScore(UUID userId) {
+    return answerRepository.findByAnswerPk_UserId(userId)
+      .stream()
+      .mapToLong(Answer::getScore)
+      .sum();
+  }
 
-      long pointValue = intersectionOfCorrectAnswers.size() * answer.getQuestion().getPointValue();
-
-      user2Score.put(user.getUsername(),
-        user2Score.computeIfAbsent(user.getUsername(), username -> 0L) + pointValue);
-      family2Score.put(user.getFamily().getName(),
-        family2Score.computeIfAbsent(user.getFamily().getName(), username -> 0L) + pointValue);
-    });
-
-    this.user2Score = user2Score;
-    this.family2Score = family2Score;
+  private Optional<Score> generateFamilyScore(Score familyScore) {
+    return familyRepository.findById(familyScore.getUserOrFamilyId())
+      .map(family -> {
+          var average = family.getUsers()
+            .stream()
+            .map(user -> get(user.getId()))
+            .mapToLong(Score::getScore)
+            .filter(value -> value > 0)
+            .average()
+            .orElse(0);
+          return familyScore.setScore(Math.round(Math.ceil(average)));
+        }
+      );
   }
 }

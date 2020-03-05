@@ -1,23 +1,31 @@
 package com.craftmaster.lds.fgc.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @Accessors(chain = true)
-public class Family {
+public class Family implements Serializable {
+  private static final long serialVersionUID = 20200305L;
 
   @Id
-  @GeneratedValue
-  private UUID id;
+  private UUID id = UUID.randomUUID();
 
   @NotBlank
+  @Column(columnDefinition = "text")
   private String name;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "familyId")
+  @ToString.Exclude
+  @JsonIgnore
+  private Set<User> users;
 }

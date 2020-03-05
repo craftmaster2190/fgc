@@ -9,6 +9,10 @@ public class QuestionService {
 
   private final QuestionRepository questionRepository;
 
+  public Iterable<Question> findAll() {
+    return questionRepository.findAll();
+  }
+
   public Question getOrCreateById(long questionId) {
     return questionRepository.findById(questionId)
       .orElseGet(() ->

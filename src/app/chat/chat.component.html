@@ -4,8 +4,10 @@
   <div class="chat-values" #chatValues>
     <div *ngFor="let chat of chats">
       <b
-        >{{ chat.user.username }}
-        <small class="text-mutes">({{ chat.user.family.name }})</small></b
+        >{{ chat.user.name }}
+        <small class="text-mutes" *ngIf="chat.user.family"
+          >({{ chat.user.family.name }})</small
+        ></b
       >:&nbsp;{{ chat.value }}
       <span class="time-stamp">{{ renderTimeAgo(chat) }}</span>
     </div>

@@ -6,17 +6,22 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @Accessors(chain = true)
-public class Device {
+public class Device implements Serializable {
+  private static final long serialVersionUID = 20200305L;
 
   @Id
-  private UUID id;
+  private UUID id = UUID.randomUUID();
 
   @ManyToMany(mappedBy = "devices", fetch = FetchType.EAGER)
   @ToString.Exclude
