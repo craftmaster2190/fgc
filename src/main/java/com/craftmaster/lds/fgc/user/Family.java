@@ -9,7 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -28,4 +30,12 @@ public class Family implements Serializable {
   @ToString.Exclude
   @JsonIgnore
   private Set<User> users;
+
+  @Transient
+  public Set<String> getUserNames() {
+    return getUsers()
+      .stream()
+      .map(User::getName)
+      .collect(Collectors.toCollection(TreeSet::new));
+  }
 }

@@ -37,7 +37,7 @@ public class AnswerController {
     }
   }
 
-  @SubscribeMapping("/answer")
+  @SubscribeMapping("answer")
   public List<Answer> getAllMine(Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     return answerRepository.findByAnswerPk_UserId(user.getId());

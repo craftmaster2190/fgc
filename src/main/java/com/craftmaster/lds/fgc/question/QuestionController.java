@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("api/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
@@ -21,7 +21,7 @@ public class QuestionController {
   private final AnswerRepository answerRepository;
   private final SimpMessageSendingOperations simpMessageSendingOperations;
 
-  @SubscribeMapping("/question")
+  @SubscribeMapping("question")
   public Iterable<Question> getAll() {
     return questionService.findAll();
   }

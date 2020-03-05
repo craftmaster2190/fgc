@@ -21,10 +21,7 @@ export class ChatBusService {
   }
 
   listen(next: (chat: Chat) => void) {
-    return merge(
-      this.messageBusService.topicWatcher("chat")
-      // this.messageBusService.userTopicWatcher("chat")
-    ).subscribe(message => {
+    return this.messageBusService.topicWatcher("chat").subscribe(message => {
       try {
         const parsedChats = JSON.parse(message.body) as Chat | Chat[];
         const chats = Array.isArray(parsedChats) ? parsedChats : [parsedChats];

@@ -8,28 +8,48 @@ import { Question } from "../question/question";
 @Injectable()
 export class AnswerBusService {
   private readonly answerSender: JSONMessageSender;
+
+  private questionsCache: { [questionId: number]: Question } = {};
   private answersCache: { [questionId: number]: Answer } = {};
   private selectedAnswersCache: { [questionId: number]: Set<string> } = {};
 
   constructor(
-    messageBusService: MessageBusService,
+    private readonly messageBusService: MessageBusService,
     private readonly httpClient: HttpClient
   ) {
     this.answerSender = messageBusService.messageSender("answer");
   }
 
-  getAll() {
-    return this.httpClient
-      .get<Array<Answer>>("/api/answer/mine")
-      .toPromise()
-      .then(answers => {
+  listenForQuestionsAndAnswers() {
+    return this.messageBusService
+      .topicWatcher("answer")
+      .subscribe(message => {
+        const parsedAnswers = JSON.parse(message.body) as Answer | Answer[];
+        const answers = Array.isArray(parsedAnswers)
+          ? parsedAnswers
+          : [parsedAnswers];
+
         answers.forEach(answer => {
           this.answersCache[answer.questionId] = answer;
           answer.values.forEach(value =>
             this.getSelectedAnswers(answer.questionId).add(value)
           );
         });
-      });
+      })
+      .add(
+        this.messageBusService.topicWatcher("question").subscribe(message => {
+          const parsedQuestions = JSON.parse(message.body) as
+            | Question
+            | Question[];
+          const questions = Array.isArray(parsedQuestions)
+            ? parsedQuestions
+            : [parsedQuestions];
+
+          questions.forEach(question => {
+            this.questionsCache[question.id] = question;
+          });
+        })
+      );
   }
 
   getSelectedAnswers(questionId: number) {
@@ -41,8 +61,8 @@ export class AnswerBusService {
     return this.answersCache[questionId];
   }
 
-  fetchQuestion(id: number) {
-    return this.httpClient.get<Question>(`/api/question/${id}`).toPromise();
+  getQuestion(questionId: number) {
+    return this.questionsCache[questionId];
   }
 
   answer(questionId: number, answerText: Array<string>) {

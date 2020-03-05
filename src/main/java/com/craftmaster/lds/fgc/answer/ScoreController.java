@@ -44,7 +44,7 @@ public class ScoreController {
     });
   }
 
-  @SubscribeMapping("/score")
+  @SubscribeMapping("score")
   public Score listenToScores(Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     return transactionalContext.run(() -> get(user.getId()));

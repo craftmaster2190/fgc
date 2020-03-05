@@ -21,7 +21,6 @@ import { ImagesService } from "../answers/images.service";
   styleUrls: ["./question.component.scss"]
 })
 export class QuestionComponent implements OnInit, OnDestroy {
-  interval;
   constructor(
     private readonly answersBus: AnswerBusService,
     private readonly authService: DeviceUsersService,
@@ -38,7 +37,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   value: string;
   selectedAnswers: Set<string>;
-  question?: Question;
   possibleAnswers: Array<string> = [];
   correctAnswers?: Set<string>;
 
@@ -67,12 +65,6 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.selectedAnswers = this.answersBus.getSelectedAnswers(this.id);
-    const answer = this.answersBus.getAnswer(this.id);
-    this.question = answer && this.question;
-    if (!this.question) {
-      this.fetchQuestion();
-    }
-    this.interval = setInterval(this.fetchQuestion, 15000);
 
     if (this.isAdmin()) {
       this.answersBus
@@ -88,9 +80,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    clearInterval(this.interval);
-  }
+  ngOnDestroy() {}
 
   search = (text$: Observable<string>) => {
     const debouncedText$ = text$.pipe(
@@ -169,37 +159,38 @@ export class QuestionComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (!this.question) {
+    const question = this.getQuestion();
+    if (!question) {
       return false;
     }
 
-    return this.question.enabled;
+    return question.enabled;
   };
 
   isQuestionClosed = () => {
-    if (!this.question) {
+    const question = this.getQuestion();
+    if (!question) {
       return false;
     }
 
-    return !this.question.enabled;
+    return !question.enabled;
   };
 
-  private fetchQuestion = () => {
-    this.answersBus.fetchQuestion(this.id).then(question => {
-      this.question = question;
-      (this.question.correctAnswers || []).sort().forEach(c => {
-        this.correctAnswers.add(c);
-        this.addToPossibleAnswers(c);
-      });
+  getQuestion = () => {
+    const question = this.answersBus.getQuestion(this.id);
+    (question.correctAnswers || []).sort().forEach(c => {
+      this.correctAnswers.add(c);
+      this.addToPossibleAnswers(c);
     });
+    return question;
   };
 
   getPointValue() {
-    return this.question && this.question.pointValue;
+    return this.getQuestion()?.pointValue;
   }
 
   updateQuestion() {
-    this.answersBus.updateQuestion(this.question);
+    this.answersBus.updateQuestion(this.getQuestion());
   }
 
   toggleCorrectAnswer(answerValue: string) {
@@ -208,14 +199,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
     } else {
       this.correctAnswers.add(answerValue);
     }
-    this.question.correctAnswers = Array.from(this.correctAnswers);
+    this.getQuestion().correctAnswers = Array.from(this.correctAnswers);
     this.updateQuestion();
   }
 
   getAverageValue() {
-    const score = this.question?.pointValue || 1;
+    const score = this.getQuestion()?.pointValue || 1;
     const guesses = this.countOfAnswers;
-    const likely = this.question?.likelyCorrectCount || this.countOfAnswers;
+    const likely =
+      this.getQuestion()?.likelyCorrectCount || this.countOfAnswers;
     const possible = this.answers?.length;
     if (!possible) {
       return 0;

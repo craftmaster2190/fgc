@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -47,7 +47,7 @@ public class AuthController {
     return patchUser(user, createUserRequest);
   }
 
-  @PostMapping("/login")
+  @PostMapping("login")
   public User loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
     var user = userRepository.findById(loginUserRequest.getUserId()).orElseThrow(accessDeniedExceptionFactory::get);
@@ -55,7 +55,7 @@ public class AuthController {
     return user;
   }
 
-  @PostMapping("/logout")
+  @PostMapping("logout")
   public void logoutUser(HttpServletRequest request) {
     new SecurityContextLogoutHandler().logout(request, null, null);
   }
@@ -79,7 +79,7 @@ public class AuthController {
     return userRepository.save(user);
   }
 
-  @GetMapping("/users")
+  @GetMapping("users")
   public Set<User> getUsersForDevice(@RequestParam UUID deviceId) {
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
   }
