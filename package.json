@@ -2,18 +2,18 @@
   "name": "fgc",
   "version": "0.0.1",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve --proxy-config proxy-conf.json",
-    "build-dev": "ng build",
     "build": "ng build --prod",
-    "predeploy": "rimraf src/main/resources/static/ && mkdirp src/main/resources/static/",
-    "deploy": "cp -r dist/fgc/* src/main/resources/static/",
-    "test": "ng test",
-    "test-ci": "ng test --watch=false --browsers=ChromeHeadless",
-    "lint": "ng lint --fix=true --files src/app",
-    "e2e": "ng e2e",
+    "build-dev": "ng build",
     "clean": "rimraf dist && yarn predeploy",
-    "format": "prettier --write \"src/**/*.{ts,js,json,html,css,scss}\""
+    "deploy": "cp -r dist/fgc/* src/main/resources/static/",
+    "e2e": "ng e2e",
+    "format": "prettier --write \"src/**/*.{ts,js,json,html,css,scss}\"",
+    "lint": "ng lint --fix=true --files src/app",
+    "ng": "ng",
+    "predeploy": "rimraf src/main/resources/static/ && mkdirp src/main/resources/static/",
+    "start": "ng serve --proxy-config proxy-conf.json",
+    "test": "ng test",
+    "test-ci": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "husky": {
     "hooks": {
