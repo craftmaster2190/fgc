@@ -35,8 +35,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
   annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  // runtimeOnly 'com.h2database:h2'
-  // runtimeOnly group: 'org.postgresql', name: 'postgresql'
+  testImplementation group: 'com.opentable.components', name: 'otj-pg-embedded', version: '0.13.3'
   implementation "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3"
   compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
