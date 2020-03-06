@@ -1,16 +1,12 @@
 package com.craftmaster.lds.fgc.db;
 
-import com.impossibl.postgres.jdbc.PGDataSource;
-import com.impossibl.postgres.jdbc.xa.PGXADataSource;
-import lombok.Data;
+import javax.sql.DataSource;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
 
 @Setter
 @Configuration

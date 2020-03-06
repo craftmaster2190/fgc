@@ -5,20 +5,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Slf4j
 @Service
@@ -51,26 +50,26 @@ public class PostgresSubscriptions {
   @PostConstruct
   public void setupPostgresListener() throws SQLException {
     PGConnection pgConnection = getConnection();
-    pgConnection.addNotificationListener(new PGNotificationListener() {
-      @Override
-      public void notification(int processId, String channelName, String payload) {
-        log.trace("Postgres Message: {} {} {}", processId, channelName, payload);
-        topic2Type.get(channelName).sendPayload(payload);
-      }
+    pgConnection.addNotificationListener(
+        new PGNotificationListener() {
+          @Override
+          public void notification(int processId, String channelName, String payload) {
+            log.trace("Postgres Message: {} {} {}", processId, channelName, payload);
+            topic2Type.get(channelName).sendPayload(payload);
+          }
 
-      @Override
-      public void closed() {
-        log.warn("Listener closed!");
-      }
-    });
+          @Override
+          public void closed() {
+            log.warn("Listener closed!");
+          }
+        });
   }
 
   private PGConnection getConnection() {
     try {
       return dataSource.getConnection().unwrap(PGConnection.class);
     } catch (SQLException e) {
-      throw new RuntimeException(e)
-        ;
+      throw new RuntimeException(e);
     }
   }
 
@@ -78,28 +77,32 @@ public class PostgresSubscriptions {
     try {
       getConnection().createStatement().execute(sql);
     } catch (SQLException e) {
-      throw new RuntimeException(e)
-        ;
+      throw new RuntimeException(e);
     }
   }
 
   public <T> void subscribe(String topicName, Consumer<T> subscription) {
-    TypeReference<T> typeReference = new TypeReference<>() {
-    };
+    TypeReference<T> typeReference = new TypeReference<>() {};
     String normalizedTopicName = topicName.toLowerCase();
 
-    Set<? extends Consumer<?>> consumers = topic2Type.computeIfAbsent(normalizedTopicName, ignored -> {
-      executeSQL("LISTEN " + normalizedTopicName + ";");
-      return new TypeConsumers<T>(typeReference);
-    })
-      .getConsumers();
+    Set<? extends Consumer<?>> consumers =
+        topic2Type
+            .computeIfAbsent(
+                normalizedTopicName,
+                ignored -> {
+                  executeSQL("LISTEN " + normalizedTopicName + ";");
+                  return new TypeConsumers<T>(typeReference);
+                })
+            .getConsumers();
     ((Set<Consumer<T>>) consumers).add(subscription);
   }
 
   public <T> void send(String topicName, T payload) {
     try {
       String payloadString = objectMapper.writeValueAsString(payload);
-      Assert.isTrue(!payloadString.contains("'"), () -> "Payload must not contain ' (single quotes): " + payloadString);
+      Assert.isTrue(
+          !payloadString.contains("'"),
+          () -> "Payload must not contain ' (single quotes): " + payloadString);
       executeSQL("NOTIFY " + topicName + ", '" + payloadString + "';");
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);

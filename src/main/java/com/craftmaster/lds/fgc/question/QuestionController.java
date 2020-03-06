@@ -2,9 +2,11 @@ package com.craftmaster.lds.fgc.question;
 
 import com.craftmaster.lds.fgc.answer.Answer;
 import com.craftmaster.lds.fgc.answer.AnswerRepository;
+import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -18,7 +20,17 @@ public class QuestionController {
 
   private final QuestionService questionService;
   private final AnswerRepository answerRepository;
+  private final PostgresSubscriptions postgresSubscriptions;
   private final SimpMessageSendingOperations simpMessageSendingOperations;
+
+  @PostConstruct
+  public void subscribeToNewChats() {
+    postgresSubscriptions.<Long>subscribe(
+        "UpdatedQuestionId",
+        (id) ->
+            simpMessageSendingOperations.convertAndSend(
+                "/topic/question", questionService.getOrCreateById(id)));
+  }
 
   @SubscribeMapping("question")
   public Iterable<Question> getAll() {
@@ -29,7 +41,7 @@ public class QuestionController {
   @RolesAllowed("ROLE_ADMIN")
   public Question updateQuestion(@RequestBody Question question) {
     Question savedQuestion = questionService.updateQuestion(question);
-    simpMessageSendingOperations.convertAndSend("/topic/question", savedQuestion);
+    postgresSubscriptions.send("UpdatedQuestionId", savedQuestion.getId());
     return savedQuestion;
   }
 

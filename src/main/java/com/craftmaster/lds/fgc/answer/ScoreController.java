@@ -32,7 +32,7 @@ public class ScoreController {
   private final SimpMessageSendingOperations simpMessageSendingOperations;
   private final TransactionalContext transactionalContext;
 
-//  @Scheduled(fixedDelay = 15000L)
+  //  @Scheduled(fixedDelay = 15000L)
   public void sendUsersScores() {
     simpUserRegistry
         .getUsers()
