@@ -2,15 +2,14 @@ package com.craftmaster.lds.fgc.question;
 
 import com.craftmaster.lds.fgc.answer.Answer;
 import com.craftmaster.lds.fgc.answer.AnswerRepository;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/question")
@@ -37,11 +36,10 @@ public class QuestionController {
   @GetMapping("possible/{id}")
   @RolesAllowed("ROLE_ADMIN")
   public Set<String> getPossibleAnswers(@PathVariable long id) {
-    return answerRepository.findByAnswerPk_QuestionId(id)
-      .stream()
-      .map(Answer::getValues)
-      .flatMap(Collection::stream)
-      .collect(Collectors.toSet());
+    return answerRepository.findByAnswerPk_QuestionId(id).stream()
+        .map(Answer::getValues)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   @PostMapping("disable-all")
@@ -53,10 +51,12 @@ public class QuestionController {
   @PostMapping("enabled-all")
   @RolesAllowed("ROLE_ADMIN")
   public void enableAll() {
-    getAll().forEach(question -> {
-      if (question.getCorrectAnswers() == null || question.getCorrectAnswers().isEmpty()) {
-        updateQuestion(question.setEnabled(true));
-      }
-    });
+    getAll()
+        .forEach(
+            question -> {
+              if (question.getCorrectAnswers() == null || question.getCorrectAnswers().isEmpty()) {
+                updateQuestion(question.setEnabled(true));
+              }
+            });
   }
 }

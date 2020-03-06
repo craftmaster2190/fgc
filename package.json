@@ -17,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn clean && yarn format"
+      "pre-commit": "yarn clean && yarn format && ./gradlew clean spotlessJavaApply"
     }
   },
   "private": true,

@@ -1,13 +1,12 @@
 package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   public User loadUserByUsername(String uuid) throws UsernameNotFoundException {
     return Optional.ofNullable(uuid)
-      .map(UUID::fromString)
-      .flatMap(userRepository::findById)
-      .orElseThrow(accessDeniedExceptionFactory::get);
+        .map(UUID::fromString)
+        .flatMap(userRepository::findById)
+        .orElseThrow(accessDeniedExceptionFactory::get);
   }
 }

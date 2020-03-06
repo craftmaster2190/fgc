@@ -2,22 +2,21 @@ package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -40,7 +39,8 @@ public class AuthController {
 
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
-  public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
+  public User createUser(
+      @RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     var user = userRepository.save(new User());
     authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
@@ -48,9 +48,13 @@ public class AuthController {
   }
 
   @PostMapping("login")
-  public User loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
+  public User loginUser(
+      @RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
-    var user = userRepository.findById(loginUserRequest.getUserId()).orElseThrow(accessDeniedExceptionFactory::get);
+    var user =
+        userRepository
+            .findById(loginUserRequest.getUserId())
+            .orElseThrow(accessDeniedExceptionFactory::get);
     authenticationManager.authenticate(user, session, loginUserRequest.getDeviceId());
     return user;
   }
@@ -63,18 +67,23 @@ public class AuthController {
   @PreAuthorize("isAuthenticated()")
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
-  public User patchUser(@AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
+  public User patchUser(
+      @AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
     Optional.ofNullable(patchUserRequest.getName())
-//      .filter((name) -> {
-//        if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent()) {
-//          throw new UsernameAlreadyTakenException();
-//        }
-//        return true;
-//      })
-      .ifPresent(user::setName);
+        //      .filter((name) -> {
+        //        if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())
+        // {
+        //          throw new UsernameAlreadyTakenException();
+        //        }
+        //        return true;
+        //      })
+        .ifPresent(user::setName);
     if (patchUserRequest.getFamily() != null) {
-      user.setFamily(familyRepository.findByNameIgnoreCase(patchUserRequest.getFamily())
-        .orElseGet(() -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+      user.setFamily(
+          familyRepository
+              .findByNameIgnoreCase(patchUserRequest.getFamily())
+              .orElseGet(
+                  () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
     }
     return userRepository.save(user);
   }
@@ -94,12 +103,15 @@ public class AuthController {
   @PostConstruct
   public void generateAdmin() {
     String adminName = "Admin";
-    userRepository.findByNameIgnoreCase(adminName)
-      .ifPresentOrElse(existingAdmin -> {
-        log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
-      }, () -> {
-        var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
-        log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
-      });
+    userRepository
+        .findByNameIgnoreCase(adminName)
+        .ifPresentOrElse(
+            existingAdmin -> {
+              log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
+            },
+            () -> {
+              var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
+              log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
+            });
   }
 }

@@ -1,15 +1,14 @@
 package com.craftmaster.lds.fgc.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
 @Entity
@@ -17,8 +16,7 @@ import java.util.stream.Collectors;
 public class Family implements Serializable {
   private static final long serialVersionUID = 20200305L;
 
-  @Id
-  private UUID id = UUID.randomUUID();
+  @Id private UUID id = UUID.randomUUID();
 
   @NotBlank
   @Column(columnDefinition = "text")
@@ -31,10 +29,9 @@ public class Family implements Serializable {
 
   @Transient
   public Set<String> getUserNames() {
-    return Optional.ofNullable(getUsers())
-      .stream()
-      .flatMap(Collection::stream)
-      .map(User::getName)
-      .collect(Collectors.toCollection(TreeSet::new));
+    return Optional.ofNullable(getUsers()).stream()
+        .flatMap(Collection::stream)
+        .map(User::getName)
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 }

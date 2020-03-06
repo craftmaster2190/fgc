@@ -3,6 +3,10 @@ package com.craftmaster.lds.fgc.answer;
 import com.craftmaster.lds.fgc.question.Question;
 import com.craftmaster.lds.fgc.question.QuestionService;
 import com.craftmaster.lds.fgc.user.User;
+import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,11 +16,6 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.security.Principal;
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -34,14 +33,13 @@ public class AnswerController {
     log.debug("Received answer {} {}", answer, user);
     answer.getAnswerPk().setUserId(user.getId());
     Question question = questionService.getOrCreateById(answer.getAnswerPk().getQuestionId());
-    Boolean enabled = question
-      .getEnabled();
+    Boolean enabled = question.getEnabled();
     if (Objects.equals(enabled, true)) {
       simpMessageSendingOperations.convertAndSendToUser(
-        user.getUsername(), "/topic/answer", answerRepository.save(answer));
+          user.getUsername(), "/topic/answer", answerRepository.save(answer));
     }
     simpMessageSendingOperations.convertAndSendToUser(
-      user.getUsername(), "/topic/question", question);
+        user.getUsername(), "/topic/question", question);
   }
 
   @SubscribeMapping("answer")

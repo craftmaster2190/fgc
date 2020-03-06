@@ -1,6 +1,8 @@
 package com.craftmaster.lds.fgc.chat;
 
 import com.craftmaster.lds.fgc.user.User;
+import java.security.Principal;
+import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -9,9 +11,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.NotBlank;
-import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -35,4 +34,3 @@ public class ChatController {
     return chatRepository.findAll();
   }
 }
-

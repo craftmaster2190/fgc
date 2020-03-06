@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.1.8.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+  id "com.diffplug.gradle.spotless" version "3.27.2"
 	id 'java'
 }
 
@@ -40,7 +41,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile 'com.github.ben-manes.caffeine:caffeine:2.8.0'
   compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.3.0-rc1'
-
+  compile 'com.google.googlejavaformat:google-java-format:1.7'
 }
 
 // if using sub-project with eclipse
@@ -51,4 +52,10 @@ eclipse {
     // this is the name of the parent dir
         name = 'repo'
     }
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+  }
 }

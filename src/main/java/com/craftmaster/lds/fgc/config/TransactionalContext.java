@@ -1,9 +1,8 @@
 package com.craftmaster.lds.fgc.config;
 
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.function.Supplier;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionalContext {

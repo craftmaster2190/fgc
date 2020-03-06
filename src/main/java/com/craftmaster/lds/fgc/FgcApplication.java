@@ -13,6 +13,4 @@ public class FgcApplication {
   public static void main(String[] args) {
     SpringApplication.run(FgcApplication.class, args);
   }
-
 }
-

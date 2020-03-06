@@ -1,10 +1,9 @@
 package com.craftmaster.lds.fgc.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +20,4 @@ public class ObjectMapperHolder {
   public void init() {
     OBJECT_MAPPER = objectMapper;
   }
-
 }
-

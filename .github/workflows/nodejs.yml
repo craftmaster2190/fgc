@@ -35,10 +35,13 @@ jobs:
 
       - name: Yarn Install
         run: yarn install
+
       - name: Yarn Test
         run: yarn test-ci
+
       - name: Yarn Build
         run: yarn build
+
       - name: Yarn Deploy
         run: yarn deploy
 

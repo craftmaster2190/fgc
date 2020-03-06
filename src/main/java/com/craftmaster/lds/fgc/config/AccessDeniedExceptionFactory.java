@@ -9,6 +9,4 @@ public class AccessDeniedExceptionFactory {
   public AccessDeniedException get() {
     return new AccessDeniedException("Access is denied");
   }
-
 }
-

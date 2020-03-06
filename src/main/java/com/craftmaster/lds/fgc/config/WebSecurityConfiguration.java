@@ -25,8 +25,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable()// TODO Enable?
-      .sessionManagement();
+    http.csrf()
+        .disable() // TODO Enable?
+        .sessionManagement();
   }
 }
-

@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -13,12 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
 @Entity
 @Data
 @Accessors(chain = true)
@@ -26,28 +25,20 @@ import java.util.UUID;
 public class User implements UserDetails {
   private static final long serialVersionUID = 20200226L;
 
-  @Transient
-  @JsonIgnore
-  private final boolean accountNonExpired = true;
-  @Transient
-  @JsonIgnore
-  private final boolean accountNonLocked = true;
-  @Transient
-  @JsonIgnore
-  private final boolean credentialsNonExpired = true;
-  @Transient
-  @JsonIgnore
-  private final boolean enabled = true;
-  @Transient
-  @JsonIgnore
-  private final String password = null;
-  @Id
-  private UUID id = UUID.randomUUID();
+  @Transient @JsonIgnore private final boolean accountNonExpired = true;
+  @Transient @JsonIgnore private final boolean accountNonLocked = true;
+  @Transient @JsonIgnore private final boolean credentialsNonExpired = true;
+  @Transient @JsonIgnore private final boolean enabled = true;
+  @Transient @JsonIgnore private final String password = null;
+  @Id private UUID id = UUID.randomUUID();
+
   @Column(columnDefinition = "text")
   private String name;
+
   @JsonInclude(Include.NON_NULL)
   @JsonProperty(access = Access.READ_ONLY)
   private Boolean isAdmin;
+
   @Column(insertable = false, updatable = false)
   @JsonIgnore
   private UUID familyId;
@@ -78,4 +69,3 @@ public class User implements UserDetails {
     return Set.of();
   }
 }
-

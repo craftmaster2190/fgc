@@ -21,11 +21,21 @@ public class MethodLoggingAspect {
       final var returnValue = joinPoint.proceed();
       stopWatch.stop();
 
-      logger.debug("{} ({}) => {} [{}ms]", joinPoint.getSignature().getName(), joinPoint.getArgs(), returnValue, stopWatch.getTotalTimeMillis());
+      logger.debug(
+          "{} ({}) => {} [{}ms]",
+          joinPoint.getSignature().getName(),
+          joinPoint.getArgs(),
+          returnValue,
+          stopWatch.getTotalTimeMillis());
       return returnValue;
     } catch (Throwable ex) {
       stopWatch.stop();
-      logger.debug("{} ({}) threw {} [{}ms]", joinPoint.getSignature().getName(), joinPoint.getArgs(), ex, stopWatch.getTotalTimeMillis());
+      logger.debug(
+          "{} ({}) threw {} [{}ms]",
+          joinPoint.getSignature().getName(),
+          joinPoint.getArgs(),
+          ex,
+          stopWatch.getTotalTimeMillis());
 
       throw ex;
     }

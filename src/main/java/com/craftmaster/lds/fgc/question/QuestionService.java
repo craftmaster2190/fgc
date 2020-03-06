@@ -14,10 +14,10 @@ public class QuestionService {
   }
 
   public Question getOrCreateById(long questionId) {
-    return questionRepository.findById(questionId)
-      .orElseGet(() ->
-        questionRepository.save(new Question().setId(questionId).setEnabled(true))
-      );
+    return questionRepository
+        .findById(questionId)
+        .orElseGet(
+            () -> questionRepository.save(new Question().setId(questionId).setEnabled(true)));
   }
 
   public Question updateQuestion(Question question) {
