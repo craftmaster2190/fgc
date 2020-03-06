@@ -13,7 +13,7 @@
     <br />
     <small
       >Correct Answers:
-      {{ question?.correctAnswers?.join(", ") || "None yet." }}</small
+      {{ getQuestion()?.correctAnswers?.join(", ") || "None yet." }}</small
     >
   </ng-template>
 </label>
@@ -54,7 +54,9 @@
     <span
       class="badge"
       (click)="removeAnswer(answer)"
-      [class.badge-success]="question?.correctAnswers?.indexOf(answer) > -1"
+      [class.badge-success]="
+        getQuestion()?.correctAnswers?.indexOf(answer) > -1
+      "
       [class.badge-primary]="!isQuestionClosed()"
       [class.badge-secondary]="isQuestionClosed()"
     >
@@ -74,12 +76,12 @@
   </div>
 </ng-template>
 
-<div class="admin-tools" *ngIf="question && isAdmin()">
+<div class="admin-tools" *ngIf="getQuestion() && isAdmin()">
   <div>
     Set enabled:
     <input
       type="checkbox"
-      [(ngModel)]="question.enabled"
+      [(ngModel)]="getQuestion().enabled"
       (change)="updateQuestion()"
     />
   </div>
@@ -87,7 +89,7 @@
     Set point value:
     <input
       type="number"
-      [(ngModel)]="question.pointValue"
+      [(ngModel)]="getQuestion().pointValue"
       (change)="updateQuestion()"
     />
   </div>
@@ -95,7 +97,7 @@
     Set Likely Number of Correct Answers:
     <input
       type="number"
-      [(ngModel)]="question.likelyCorrectCount"
+      [(ngModel)]="getQuestion().likelyCorrectCount"
       (change)="updateQuestion()"
     />
   </div>

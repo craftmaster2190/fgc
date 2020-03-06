@@ -66,10 +66,7 @@ export class WelcomeComponent implements OnInit {
   registerUser() {
     this.loading = true;
     this.authService
-      .createUser()
-      .then(() =>
-        this.authService.updateUser({ name: this.name, family: this.family })
-      )
+      .createUser({ name: this.name, family: this.family })
       .then(() => this.router.navigate(["game"]))
       .then(
         () => (this.loading = false),

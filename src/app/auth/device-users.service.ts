@@ -27,11 +27,12 @@ export class DeviceUsersService {
       .then(users => (this.deviceUsers = users));
   }
 
-  createUser() {
+  createUser(updates: { name: string; family: string }) {
     // Should only be run if not logged in at all
     return this.http
       .post<User>("/api/auth/", {
-        deviceId: this.deviceId.get()
+        deviceId: this.deviceId.get(),
+        ...updates
       })
       .toPromise()
       .then(user => (this.currentUser = user));

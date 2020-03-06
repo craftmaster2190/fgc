@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.answer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -25,6 +26,7 @@ public class Score {
   @NotNull
   private Instant updatedAt = Instant.now();
 
+  @JsonIgnore
   @Transient
   public boolean isValid() {
     return getUpdatedAt().plus(1, ChronoUnit.MINUTES).isAfter(Instant.now());

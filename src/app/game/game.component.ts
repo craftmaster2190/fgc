@@ -9,8 +9,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./game.component.scss"]
 })
 export class GameComponent implements OnInit, OnDestroy {
-  openPanel: string;
-  loading = true;
+  openPanel: string = "firstPresidency";
   subscription: Subscription;
 
   constructor(
@@ -19,8 +18,7 @@ export class GameComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.answerBusService.listenForAnswers();
-    this.loading = false;
+    this.subscription = this.answerBusService.listenForQuestionsAndAnswers();
   }
 
   ngOnDestroy(): void {

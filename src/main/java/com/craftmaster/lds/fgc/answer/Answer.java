@@ -57,6 +57,7 @@ public class Answer {
     }
   }
 
+  @JsonIgnore
   @Transient
   public boolean isScorable() {
     return getQuestion() != null

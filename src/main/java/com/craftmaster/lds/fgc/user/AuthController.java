@@ -38,7 +38,7 @@ public class AuthController {
     return user;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
   public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
@@ -61,16 +61,16 @@ public class AuthController {
   }
 
   @PreAuthorize("isAuthenticated()")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
   public User patchUser(@AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
     Optional.ofNullable(patchUserRequest.getName())
-      .filter((name) -> {
-        if (userRepository.findByNameIgnoreCase(name).isPresent()) {
-          throw new UsernameAlreadyTakenException();
-        }
-        return true;
-      })
+//      .filter((name) -> {
+//        if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent()) {
+//          throw new UsernameAlreadyTakenException();
+//        }
+//        return true;
+//      })
       .ifPresent(user::setName);
     if (patchUserRequest.getFamily() != null) {
       user.setFamily(familyRepository.findByNameIgnoreCase(patchUserRequest.getFamily())

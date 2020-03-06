@@ -3,6 +3,7 @@ import { AnswersService } from "src/app/answers/answers.service";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { GameComponent } from "./game.component";
+import { of } from "rxjs";
 
 describe("GameComponent", () => {
   let component: GameComponent;
@@ -12,15 +13,12 @@ describe("GameComponent", () => {
     TestBed.configureTestingModule({
       declarations: [GameComponent],
       providers: [
-        {
-          provide: AnswersService,
-          useValue: { getAll: () => Promise.resolve() }
-        },
+        AnswersService,
         {
           provide: AnswerBusService,
           useValue: {
-            getAll: () => Promise.resolve(),
-            getAnswer: () => void 0
+            getAnswer: () => void 0,
+            listenForQuestionsAndAnswers: () => of().subscribe()
           }
         }
       ],

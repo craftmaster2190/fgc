@@ -8,9 +8,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -33,8 +31,9 @@ public class Family implements Serializable {
 
   @Transient
   public Set<String> getUserNames() {
-    return getUsers()
+    return Optional.ofNullable(getUsers())
       .stream()
+      .flatMap(Collection::stream)
       .map(User::getName)
       .collect(Collectors.toCollection(TreeSet::new));
   }

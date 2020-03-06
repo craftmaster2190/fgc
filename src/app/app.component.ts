@@ -12,9 +12,9 @@ export class AppComponent implements OnDestroy {
   subscription: Subscription;
 
   constructor(toastService: ToastService) {
-    this.subscription = toastService.subscribe((value: Toast) => {
-      this.toasts.push(value);
-    });
+    this.subscription = toastService.subscribe((value: Toast) =>
+      this.toasts.push(value)
+    );
   }
 
   ngOnDestroy() {

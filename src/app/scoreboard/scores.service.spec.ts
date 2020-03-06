@@ -2,11 +2,12 @@ import { TestBed } from "@angular/core/testing";
 
 import { ScoresService } from "./scores.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MessageBusService } from "src/app/messaging/message-bus.service";
 
 describe("ScoresService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [ScoresService],
+      providers: [ScoresService, { provide: MessageBusService, useValue: {} }],
       imports: [HttpClientTestingModule]
     })
   );

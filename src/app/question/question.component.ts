@@ -178,7 +178,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   getQuestion = () => {
     const question = this.answersBus.getQuestion(this.id);
-    (question.correctAnswers || []).sort().forEach(c => {
+    (question?.correctAnswers || []).sort().forEach(c => {
       this.correctAnswers.add(c);
       this.addToPossibleAnswers(c);
     });

@@ -4,6 +4,7 @@ import { Answer } from "../answers/answer";
 import { JSONMessageSender } from "./json-message-sender";
 import { MessageBusService } from "./message-bus.service";
 import { Question } from "../question/question";
+import { merge } from "rxjs";
 
 @Injectable()
 export class AnswerBusService {
@@ -21,8 +22,10 @@ export class AnswerBusService {
   }
 
   listenForQuestionsAndAnswers() {
-    return this.messageBusService
-      .topicWatcher("answer")
+    return merge(
+      this.messageBusService.topicWatcher("answer"),
+      this.messageBusService.userTopicWatcher("answer")
+    )
       .subscribe(message => {
         const parsedAnswers = JSON.parse(message.body) as Answer | Answer[];
         const answers = Array.isArray(parsedAnswers)
@@ -37,7 +40,10 @@ export class AnswerBusService {
         });
       })
       .add(
-        this.messageBusService.topicWatcher("question").subscribe(message => {
+        merge(
+          this.messageBusService.topicWatcher("question"),
+          this.messageBusService.userTopicWatcher("question")
+        ).subscribe(message => {
           const parsedQuestions = JSON.parse(message.body) as
             | Question
             | Question[];
@@ -61,8 +67,8 @@ export class AnswerBusService {
     return this.answersCache[questionId];
   }
 
-  getQuestion(questionId: number) {
-    return this.questionsCache[questionId];
+  getQuestion(questionId: number): Question {
+    return this.questionsCache[questionId] || ({ enabled: true } as any);
   }
 
   answer(questionId: number, answerText: Array<string>) {

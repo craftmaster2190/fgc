@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { ScoreboardComponent } from "./scoreboard.component";
 import { ScoresService } from "./scores.service";
+import { of } from "rxjs";
 
 describe("ScoreboardComponent", () => {
   let component: ScoreboardComponent;
@@ -15,7 +16,7 @@ describe("ScoreboardComponent", () => {
           provide: ScoresService,
           useValue: {
             getUserCount: () => Promise.resolve(),
-            get: () => Promise.resolve({})
+            listenToScores: () => of().subscribe()
           }
         },
         {
