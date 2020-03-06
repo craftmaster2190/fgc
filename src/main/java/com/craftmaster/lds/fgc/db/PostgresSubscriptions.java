@@ -7,6 +7,7 @@ import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,12 +17,14 @@ import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Profile("!test")
 public class PostgresSubscriptions {
   private final DataSource dataSource;
   private final ObjectMapper objectMapper;
@@ -74,8 +77,8 @@ public class PostgresSubscriptions {
   }
 
   private void executeSQL(String sql) {
-    try {
-      getConnection().createStatement().execute(sql);
+    try (Statement statement = getConnection().createStatement()) {
+      statement.execute(sql);
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
