@@ -40,10 +40,10 @@ public class ScoreController {
         .forEach(
             user -> {
               var userId = user.getName();
-              simpMessageSendingOperations.convertAndSendToUser(
-                  userId,
-                  "/topic/score",
-                  transactionalContext.run(() -> get(UUID.fromString(userId))));
+              Score score = transactionalContext.run(() -> get(UUID.fromString(userId)));
+              if (score.getScore() > 0) {
+                simpMessageSendingOperations.convertAndSendToUser(userId, "/topic/score", score);
+              }
             });
   }
 

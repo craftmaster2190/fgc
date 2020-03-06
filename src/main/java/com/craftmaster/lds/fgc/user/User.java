@@ -48,7 +48,7 @@ public class User implements UserDetails {
   @EqualsAndHashCode.Exclude
   private Set<Device> devices;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.EAGER, optional = true)
   @JoinColumn(name = "familyId")
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
@@ -61,6 +61,7 @@ public class User implements UserDetails {
     return getId().toString();
   }
 
+  @ToString.Include
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     if (Objects.equals(getIsAdmin(), Boolean.TRUE)) {

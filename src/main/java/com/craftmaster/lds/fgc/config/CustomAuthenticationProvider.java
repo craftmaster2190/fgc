@@ -8,7 +8,6 @@ import com.craftmaster.lds.fgc.user.User;
 import com.craftmaster.lds.fgc.user.UserRepository;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
   public Authentication authenticate(User user, HttpSession session, UUID deviceId) {
     UsernamePasswordAuthenticationToken authReq =
-        new UsernamePasswordAuthenticationToken(user, deviceId, Set.of());
+        new UsernamePasswordAuthenticationToken(user, deviceId, user.getAuthorities());
     Authentication auth = authenticate(authReq);
 
     SecurityContext sc = SecurityContextHolder.getContext();
@@ -61,7 +60,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     return new UsernamePasswordAuthenticationToken(
-        authentication.getPrincipal(), authentication.getCredentials(), Set.of());
+        authentication.getPrincipal(),
+        authentication.getCredentials(),
+        ((User) authentication.getPrincipal()).getAuthorities());
   }
 
   @Override

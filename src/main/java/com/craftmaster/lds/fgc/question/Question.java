@@ -21,6 +21,8 @@ public class Question {
   @NotNull private Boolean enabled;
   private Long pointValue;
 
+  private Long likelyCorrectCount;
+
   @JsonIgnore
   @Column(columnDefinition = "text")
   private String correctAnswersPersisted;
