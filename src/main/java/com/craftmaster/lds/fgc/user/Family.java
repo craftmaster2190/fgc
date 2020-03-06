@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Data
 @Entity
@@ -29,6 +30,9 @@ public class Family implements Serializable {
 
   @Transient
   public Set<String> getUserNames() {
+    if (!TransactionSynchronizationManager.isActualTransactionActive()) {
+      return Set.of();
+    }
     return Optional.ofNullable(getUsers()).stream()
         .flatMap(Collection::stream)
         .map(User::getName)

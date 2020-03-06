@@ -1,6 +1,6 @@
 package com.craftmaster.lds.fgc.answer;
 
-import com.craftmaster.lds.fgc.config.TransactionalContext;
+import com.craftmaster.lds.fgc.db.TransactionalContext;
 import com.craftmaster.lds.fgc.user.FamilyRepository;
 import com.craftmaster.lds.fgc.user.NotFoundException;
 import com.craftmaster.lds.fgc.user.User;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +32,7 @@ public class ScoreController {
   private final SimpMessageSendingOperations simpMessageSendingOperations;
   private final TransactionalContext transactionalContext;
 
-  @Scheduled(fixedDelay = 15000L)
+//  @Scheduled(fixedDelay = 15000L)
   public void sendUsersScores() {
     simpUserRegistry
         .getUsers()

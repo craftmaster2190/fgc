@@ -1,4 +1,4 @@
-package com.craftmaster.lds.fgc.config;
+package com.craftmaster.lds.fgc.db;
 
 import java.util.function.Supplier;
 import javax.transaction.Transactional;

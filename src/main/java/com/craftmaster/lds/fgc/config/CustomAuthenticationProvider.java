@@ -2,6 +2,7 @@ package com.craftmaster.lds.fgc.config;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
+import com.craftmaster.lds.fgc.db.TransactionalContext;
 import com.craftmaster.lds.fgc.user.Device;
 import com.craftmaster.lds.fgc.user.DeviceRepository;
 import com.craftmaster.lds.fgc.user.User;

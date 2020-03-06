@@ -1,6 +1,6 @@
 package com.craftmaster.lds.fgc.question;
 
-import com.craftmaster.lds.fgc.config.ObjectMapperHolder;
+import com.craftmaster.lds.fgc.db.ObjectMapperHolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
