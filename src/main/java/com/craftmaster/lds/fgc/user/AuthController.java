@@ -44,7 +44,7 @@ public class AuthController {
     log.debug("createUser: {}", createUserRequest);
     var user = userRepository.save(new User());
     authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
-    return patchUser(user, createUserRequest);
+    return patchUser(user, createUserRequest, session);
   }
 
   @PostMapping("login")
@@ -68,7 +68,9 @@ public class AuthController {
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
   public User patchUser(
-      @AuthenticationPrincipal User user, @RequestBody @Valid PatchUserRequest patchUserRequest) {
+      @AuthenticationPrincipal User user,
+      @RequestBody @Valid PatchUserRequest patchUserRequest,
+      HttpSession session) {
     Optional.ofNullable(patchUserRequest.getName())
         //      .filter((name) -> {
         //        if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())
@@ -85,7 +87,9 @@ public class AuthController {
               .orElseGet(
                   () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
     }
-    return userRepository.save(user);
+    User savedUser = userRepository.save(user);
+    authenticationManager.updateSession(savedUser, session);
+    return savedUser;
   }
 
   @GetMapping("users")

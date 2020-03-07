@@ -1,16 +1,23 @@
 package com.craftmaster.lds.fgc.user;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -41,5 +48,27 @@ public class UserController {
                         .map(familyName -> " (" + familyName + ")")
                         .orElse(""))
         .collect(Collectors.toCollection(TreeSet::new));
+  }
+
+  @GetMapping("profile/{userId}")
+  public ResponseEntity<Resource> serveFile(@PathVariable UUID userId) {
+    return userRepository
+        .findById(userId)
+        .map(User::getProfileImage)
+        .map(ByteArrayResource::new)
+        .map(
+            resource ->
+                ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+                    .<Resource>body(resource))
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+  @PostMapping("profile")
+  public void handleFileUpload(
+      @AuthenticationPrincipal User user, @RequestParam("file") MultipartFile file)
+      throws IOException {
+    byte[] bytes = file.getBytes();
+    userRepository.save(user.setProfileImage(bytes));
   }
 }

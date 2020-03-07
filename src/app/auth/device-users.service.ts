@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -23,6 +24,9 @@ export class DeviceUsersService {
       .get<Array<User>>("/api/auth/users", {
         params: { deviceId: this.deviceId.get() }
       })
+      .pipe(
+        map(users => (users || []).sort((a, b) => a.name.localeCompare(b.name)))
+      )
       .toPromise()
       .then(users => (this.deviceUsers = users));
   }

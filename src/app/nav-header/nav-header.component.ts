@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Observable } from "rxjs";
+import { Observable, Subject, interval, Subscription } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   tap,
   switchMap,
-  map
+  map,
+  debounce
 } from "rxjs/operators";
 import { Family } from "../family/family";
 
@@ -18,21 +19,35 @@ import { Family } from "../family/family";
   templateUrl: "./nav-header.component.html",
   styleUrls: ["./nav-header.component.scss"]
 })
-export class NavHeaderComponent implements OnInit {
+export class NavHeaderComponent implements OnInit, OnDestroy {
   name: string;
   family: string;
+  private updateUserSubject = new Subject();
+  private subscription: Subscription;
 
   constructor(
     public readonly authService: DeviceUsersService,
-    private modalService: NgbModal
+    private readonly modalService: NgbModal
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.subscription = this.updateUserSubject
+      .pipe(debounce(() => interval(300)))
+      .subscribe(() =>
+        this.authService.updateUser({ name: this.name, family: this.family })
+      );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   openModal(content) {
-    this.name = this.getUsername();
-    this.family = this.getFamilyName();
-    this.modalService.open(content);
+    if (this.authService.getCurrentUser()) {
+      this.name = this.getUsername();
+      this.family = this.getFamilyName();
+      this.modalService.open(content);
+    }
   }
 
   getUsername() {
@@ -71,9 +86,5 @@ export class NavHeaderComponent implements OnInit {
 
   familyValid() {
     return (this.family?.length || 0) >= 4;
-  }
-
-  updateUser() {
-    // TODO
   }
 }

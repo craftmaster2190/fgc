@@ -28,7 +28,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
   private final DeviceRepository deviceRepository;
   private final UserRepository userRepository;
 
-  public Authentication authenticate(User user, HttpSession session, UUID deviceId) {
+  public Authentication updateSession(User savedUser, HttpSession session) {
+    return updateSession(savedUser, session, (UUID) session.getAttribute("DEVICE_ID"));
+  }
+
+  public Authentication updateSession(User user, HttpSession session, UUID deviceId) {
     UsernamePasswordAuthenticationToken authReq =
         new UsernamePasswordAuthenticationToken(user, deviceId, user.getAuthorities());
     Authentication auth = authenticate(authReq);
@@ -36,6 +40,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     SecurityContext sc = SecurityContextHolder.getContext();
     sc.setAuthentication(auth);
     session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+    return auth;
+  }
+
+  public Authentication authenticate(User user, HttpSession session, UUID deviceId) {
+    Authentication auth = updateSession(user, session, deviceId);
+
     session.setAttribute("DEVICE_ID", deviceId);
     transactionalContext.run(
         () -> {

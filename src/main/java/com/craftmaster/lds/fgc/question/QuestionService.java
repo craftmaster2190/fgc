@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.question;
 
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class QuestionService {
     return questionRepository.findAll();
   }
 
+  @Transactional
   public Question getOrCreateById(long questionId) {
     return questionRepository
         .findById(questionId)

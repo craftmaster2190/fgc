@@ -7,7 +7,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -17,7 +20,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Question {
 
-  @Id @GeneratedValue @NotNull private Long id;
+  @Id @NotNull private Long id;
   @NotNull private Boolean enabled;
   private Long pointValue;
 

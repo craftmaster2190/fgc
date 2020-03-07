@@ -68,7 +68,7 @@ public class ScoreController {
 
     return generateUserScore(score)
         .or(() -> generateFamilyScore(score))
-        .orElseThrow(NotFoundException::new)
+        .orElseThrow(() -> new NotFoundException(id + " is neither a user or family."))
         .setUpdatedAt(Instant.now());
   }
 

@@ -69,4 +69,9 @@ public class User implements UserDetails {
     }
     return Set.of();
   }
+
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  @Column(columnDefinition = "BYTEA")
+  private byte[] profileImage;
 }

@@ -55,6 +55,7 @@
       class="badge"
       (click)="removeAnswer(answer)"
       [class.badge-success]="
+        getQuestion()?.correctAnswers &&
         getQuestion()?.correctAnswers?.indexOf(answer) > -1
       "
       [class.badge-primary]="!isQuestionClosed()"

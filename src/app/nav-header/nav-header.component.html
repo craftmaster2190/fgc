@@ -42,7 +42,7 @@
           name="name"
           [(ngModel)]="name"
           autocomplete="name"
-          (change)="updateUser()"
+          (change)="updateUserSubject.next()"
         />
         <small class="form-text text-muted"
           ><app-valid-text
@@ -62,7 +62,7 @@
           [(ngModel)]="family"
           autocomplete="off"
           [ngbTypeahead]="searchFamilies"
-          (change)="updateUser()"
+          (change)="updateUserSubject.next()"
         />
         <small class="form-text text-muted"
           ><app-valid-text
