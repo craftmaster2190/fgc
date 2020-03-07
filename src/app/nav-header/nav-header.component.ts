@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  NgZone
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -23,12 +30,13 @@ import ResizeImage from "image-resize";
 export class NavHeaderComponent implements OnInit, OnDestroy {
   name: string;
   family: string;
-  private updateUserSubject = new Subject();
+  readonly updateUserSubject = new Subject();
   private subscription: Subscription;
 
   constructor(
     public readonly authService: DeviceUsersService,
-    private readonly modalService: NgbModal
+    private readonly modalService: NgbModal,
+    private readonly ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -89,12 +97,79 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     return (this.family?.length || 0) >= 4;
   }
 
+  loadingImage: boolean;
+  canvasImage: HTMLImageElement;
+  rotation = 0;
+
   onFileSelected(event) {
+    this.loadingImage = true;
+    this.rotation = 0;
     const fileInputNode: HTMLInputElement = event.target;
-    const resizeImage = new ResizeImage({
-      format: "png",
-      width: 1000
+    new Promise<string>((resolve, reject) => {
+      var fileReader = new FileReader();
+      fileReader.onload = () => resolve(fileReader.result as string);
+      fileReader.onerror = err => reject(err);
+      fileReader.readAsDataURL(fileInputNode.files[0]);
+    })
+      .then(
+        imageToUpload =>
+          new Promise((resolve, reject) => {
+            var imageObj = new Image();
+            imageObj.onload = () => {
+              this.canvasImage = imageObj;
+              this.drawImage(false);
+              resolve();
+            };
+            imageObj.onerror = err => reject(err);
+            imageObj.src = imageToUpload;
+          })
+      )
+      .then(
+        () => (this.loadingImage = false),
+        err => {
+          this.loadingImage = false;
+          return Promise.reject(err);
+        }
+      );
+  }
+
+  drawImage(rotate = true) {
+    this.ngZone.runOutsideAngular(() => {
+      if (rotate) {
+        this.rotation += 90;
+        this.rotation = this.rotation % 360;
+      }
+
+      const canvas = document.querySelector(
+        "#uploadCanvas"
+      ) as HTMLCanvasElement;
+      const context = canvas.getContext("2d");
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // save the unrotated context of the canvas so we can restore it later
+      // the alternative is to untranslate & unrotate after drawing
+      context.save();
+
+      context.translate(canvas.width / 2, canvas.height / 2);
+      context.rotate((this.rotation * Math.PI) / 180);
+      var wrh = this.canvasImage.width / this.canvasImage.height;
+      var newWidth = canvas.width;
+      var newHeight = newWidth / wrh;
+      if (newHeight > canvas.height) {
+        newHeight = canvas.height;
+        newWidth = newHeight * wrh;
+      }
+      context.drawImage(
+        this.canvasImage,
+        -canvas.width / 2,
+        -canvas.height / 2,
+        newWidth,
+        newHeight
+      );
+
+      // we’re done with the rotating so restore the unrotated context
+      context.restore();
     });
-    return resizeImage.play(fileInputNode);
   }
 }

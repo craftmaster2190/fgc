@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Formula;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,8 +71,13 @@ public class User implements UserDetails {
     return Set.of();
   }
 
+  @ToString.Exclude
+  @JsonIgnore
   @Lob
   @Basic(fetch = FetchType.LAZY)
   @Column(columnDefinition = "BYTEA")
   private byte[] profileImage;
+
+  @Formula("(CASE WHEN profile_image IS NULL THEN 'FALSE' ELSE 'TRUE' END)")
+  private boolean hasProfileImage;
 }

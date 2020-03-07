@@ -1,0 +1,39 @@
+<!-- <app-image [target]="/assets/profile.png"></app-image> -->
+<img
+  [src]="finalImage || '/assets/profile.png'"
+  style="width: 100px; border-radius: 5px;"
+/>
+
+<div class="form-group">
+  <div>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="fileInput.click()"
+    >
+      Upload
+    </button>
+    <input
+      hidden
+      (change)="onFileSelected($event)"
+      #fileInput
+      type="file"
+      id="file"
+      accept="image/*"
+    />
+
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      style="margin-left: 8px; margin-right: 8px;"
+      (click)="rotate()"
+    >
+      Rotate
+    </button>
+    <button type="button" class="btn btn-outline-dark">
+      Save
+    </button>
+  </div>
+</div>
+
+<div id="cropperjs-holder"></div>

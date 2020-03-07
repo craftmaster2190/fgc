@@ -3,7 +3,7 @@ set -x
 echo "Loading FGC..."
 sudo amazon-linux-extras install java-openjdk11
 sudo aws s3 cp s3://fantasygc/deploy/fgc-latest.jar /bin/
-nohup java -jar /bin/fgc-latest.jar >>/var/log/fgc.log 2>&1 &
+nohup java -Dfgc.db.url=jdbc:pgsql://localhost:5432/fgc -jar /bin/fgc-latest.jar >>/var/log/fgc.log 2>&1 &
 
 export DOCKERIZE_VERSION='v0.6.1'
 wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \

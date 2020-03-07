@@ -28,6 +28,9 @@ import { ValidTextComponent } from "./valid-text/valid-text.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
 import { LogoutComponent } from "./logout/logout.component";
 import { ImagesService } from "./answers/images.service";
+import { ImageComponent } from "./image/image.component";
+
+import { ProfileImageEditorComponent } from "./profile-image-editor/profile-image-editor.component";
 
 @NgModule({
   declarations: [
@@ -42,7 +45,9 @@ import { ImagesService } from "./answers/images.service";
     ChatComponent,
     ScoreboardComponent,
     WelcomeComponent,
-    LogoutComponent
+    LogoutComponent,
+    ImageComponent,
+    ProfileImageEditorComponent
   ],
   imports: [
     BrowserModule,
