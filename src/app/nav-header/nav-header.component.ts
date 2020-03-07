@@ -13,6 +13,7 @@ import {
   debounce
 } from "rxjs/operators";
 import { Family } from "../family/family";
+import ResizeImage from "image-resize";
 
 @Component({
   selector: "app-nav-header",
@@ -86,5 +87,14 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
   familyValid() {
     return (this.family?.length || 0) >= 4;
+  }
+
+  onFileSelected(event) {
+    const fileInputNode: HTMLInputElement = event.target;
+    const resizeImage = new ResizeImage({
+      format: "png",
+      width: 1000
+    });
+    return resizeImage.play(fileInputNode);
   }
 }
