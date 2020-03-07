@@ -27,5 +27,5 @@ public class Chat {
   @Column(columnDefinition = "text")
   private String value;
 
-  @Id private Instant time = Instant.now();
+  @Id private Instant id = Instant.now();
 }

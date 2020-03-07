@@ -42,7 +42,7 @@ public class ChatController {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Adding chat: {} for: {}", chatString, user);
     Chat chat = chatRepository.save(new Chat().setValue(chatString).setUserId(user.getId()));
-    postgresSubscriptions.send("newChatId", chat.getTime());
+    postgresSubscriptions.send("newChatId", chat.getId());
   }
 
   @SubscribeMapping("/chat")
