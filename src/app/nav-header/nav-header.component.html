@@ -20,51 +20,7 @@
       <div class="form-group profile-picture">
         <label for="name">My Profile Picture</label>
         <div>
-          <app-image
-            *ngIf="
-              authService.getCurrentUser()?.hasProfileImage;
-              else elseProfileImage
-            "
-            [target]="'/api/user/profile/' + authService.getCurrentUser().id"
-          ></app-image>
-          <ng-template #elseProfileImage>
-            <app-image target="/assets/profile.png"></app-image>
-          </ng-template>
           <app-profile-image-editor></app-profile-image-editor>
-          <!-- <div class="form-group">
-            <div>
-              <button
-                type="button"
-                class="btn btn-outline-dark"
-                (click)="fileInput.click()"
-              >
-                Upload a new profile picture
-              </button>
-              <input
-                hidden
-                (change)="onFileSelected($event)"
-                #fileInput
-                type="file"
-                id="file"
-                accept="image/*"
-              />
-            </div>
-            <div>
-              <button
-                type="button"
-                class="btn btn-outline-dark"
-                (click)="drawImage()"
-              >
-                Rotate
-              </button>
-            </div>
-          </div>
-          <canvas
-            id="uploadCanvas"
-            [ngStyle]="{ display: canvasImage ? null : 'none' }"
-            height="100"
-            width="100"
-          ></canvas> -->
         </div>
       </div>
 

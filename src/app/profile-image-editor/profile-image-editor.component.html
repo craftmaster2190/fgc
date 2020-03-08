@@ -1,15 +1,24 @@
-<!-- <app-image [target]="/assets/profile.png"></app-image> -->
-<img
-  [src]="finalImage || '/assets/profile.png'"
-  style="width: 100px; border-radius: 5px;"
-/>
+<div style="margin-bottom: 24px;">
+  <img
+    *ngIf="finalImage; else existingProfileImage"
+    [src]="finalImage || '/assets/profile.png'"
+    style="width: 100px; border-radius: 5px;"
+  />
 
-<div class="form-group">
-  <div>
+  <ng-template #existingProfileImage>
+    <app-image
+      [target]="'/api/user/profile/' + authService.getCurrentUser().id"
+      imgStyle="width: 100px; border-radius: 5px;"
+    ></app-image>
+  </ng-template>
+
+  <span>
     <button
       type="button"
       class="btn btn-outline-dark"
       (click)="fileInput.click()"
+      style="margin-left: 24px;"
+      [disabled]="loading"
     >
       Upload
     </button>
@@ -22,18 +31,43 @@
       accept="image/*"
     />
 
-    <button
-      type="button"
-      class="btn btn-outline-dark"
-      style="margin-left: 8px; margin-right: 8px;"
-      (click)="rotate()"
-    >
-      Rotate
-    </button>
-    <button type="button" class="btn btn-outline-dark">
-      Save
-    </button>
-  </div>
+    <ng-template [ngIf]="finalImage">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        style="margin-left: 8px; margin-right: 8px;"
+        (click)="rotate()"
+        [disabled]="loading"
+      >
+        Rotate
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="upload()"
+        [disabled]="loading"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        style="margin-left: 8px;"
+        (click)="cancel()"
+        [disabled]="loading"
+      >
+        Cancel
+      </button>
+    </ng-template>
+  </span>
+</div>
+
+<div *ngIf="loading" class="text-center" style="margin-top: 50px;">
+  <div
+    class="spinner-border"
+    style="width: 12rem; height: 12rem;"
+    role="status"
+  ></div>
 </div>
 
 <div id="cropperjs-holder"></div>

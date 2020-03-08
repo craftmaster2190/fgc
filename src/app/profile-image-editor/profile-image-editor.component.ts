@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, NgZone, OnDestroy } from "@angular/core";
 import ResizeImage from "image-resize";
 import Cropper from "cropperjs";
+import { HttpClient } from "@angular/common/http";
+import { DeviceUsersService } from "../auth/device-users.service";
 @Component({
   selector: "app-profile-image-editor",
   templateUrl: "./profile-image-editor.component.html",
@@ -11,7 +13,10 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
     aspectRatio: 1
   };
 
-  constructor() {}
+  constructor(
+    public readonly authService: DeviceUsersService,
+    private readonly http: HttpClient
+  ) {}
 
   ngOnInit(): void {}
 
@@ -19,7 +24,7 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
     this.destroyCropper();
   }
 
-  loadingImage: boolean;
+  loading: boolean;
   imageUrl: string;
   rotation: 0 | 90 | 180 | 270 = 0;
   cropper: Cropper;
@@ -27,7 +32,7 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
   finalImage;
 
   onFileSelected(event) {
-    this.loadingImage = true;
+    this.loading = true;
     this.rotation = 0;
     const fileInputNode: HTMLInputElement = event.target;
     const resizeImage = new ResizeImage({
@@ -41,9 +46,9 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
         this.showCropper();
       })
       .then(
-        () => (this.loadingImage = false),
+        () => (this.loading = false),
         err => {
-          this.loadingImage = false;
+          this.loading = false;
           return Promise.reject(err);
         }
       );
@@ -79,10 +84,33 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
   }
 
   upload() {
+    this.loading = true;
+    this.cropper.disable();
     const resizeImage = new ResizeImage({
       format: "png",
       width: 100
     });
-    return resizeImage.play(this.finalImage).then(imageToUpload => {});
+    return resizeImage
+      .play(this.finalImage)
+      .then(imageToUpload =>
+        this.http.post("/api/user/profile", imageToUpload).toPromise()
+      )
+      .then(
+        () => {
+          this.loading = false;
+          this.cancel();
+        },
+        err => {
+          this.loading = false;
+          this.cropper.enable();
+          return Promise.reject(err);
+        }
+      );
+  }
+
+  cancel() {
+    this.destroyCropper();
+    document.querySelector("#cropperjs-holder").innerHTML = "";
+    this.finalImage = null;
   }
 }

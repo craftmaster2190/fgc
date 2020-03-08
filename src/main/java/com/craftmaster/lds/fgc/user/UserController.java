@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
+import javax.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -65,10 +65,10 @@ public class UserController {
   }
 
   @PostMapping("profile")
-  public void handleFileUpload(
-      @AuthenticationPrincipal User user, @RequestParam("file") MultipartFile file)
+  public void handleFileUpload(@AuthenticationPrincipal User user, @RequestBody String dataUri)
       throws IOException {
-    byte[] bytes = file.getBytes();
-    userRepository.save(user.setProfileImage(bytes));
+    byte[] imagedata =
+        DatatypeConverter.parseBase64Binary(dataUri.substring(dataUri.indexOf(",") + 1));
+    userRepository.save(user.setProfileImage(imagedata));
   }
 }

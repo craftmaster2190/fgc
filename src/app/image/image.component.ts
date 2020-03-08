@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
 })
 export class ImageComponent implements OnChanges {
   @Input() target: string;
+  @Input() imgStyle: string;
   src: Observable<string>;
 
   constructor(private readonly imagesCache: ImagesCacheService) {}

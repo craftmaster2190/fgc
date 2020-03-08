@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProfileImageEditorComponent } from "./profile-image-editor.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 describe("ProfileImageEditorComponent", () => {
   let component: ProfileImageEditorComponent;
@@ -8,7 +10,14 @@ describe("ProfileImageEditorComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProfileImageEditorComponent]
+      declarations: [ProfileImageEditorComponent],
+      providers: [
+        {
+          provide: DeviceUsersService,
+          useValue: { getCurrentUser: () => ({}) }
+        }
+      ],
+      imports: [HttpClientTestingModule]
     }).compileComponents();
   }));
 
