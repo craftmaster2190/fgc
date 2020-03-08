@@ -21,7 +21,7 @@ public class MethodLoggingAspect {
       final var returnValue = joinPoint.proceed();
       stopWatch.stop();
 
-      logger.debug(
+      logger.trace(
           "{} ({}) => {} [{}ms]",
           joinPoint.getSignature().getName(),
           joinPoint.getArgs(),

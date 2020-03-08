@@ -4,5 +4,5 @@ import { Time } from "./time";
 export interface Chat {
   value: string;
   user: User;
-  time: Time;
+  id: Time;
 }

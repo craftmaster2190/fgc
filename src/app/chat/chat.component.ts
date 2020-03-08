@@ -12,6 +12,7 @@ import { Optional } from "../util/optional";
 import { Chat } from "./chat";
 import { ChatBusService } from "./chat-bus.service";
 import { ToastService } from "../toast/toast.service";
+import { Time } from "./time";
 
 @Component({
   selector: "app-chat",
@@ -19,7 +20,9 @@ import { ToastService } from "../toast/toast.service";
   styleUrls: ["./chat.component.scss"]
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  chats: Array<Chat> = [];
+  chatIds: Array<string> = [];
+
+  chats: { [time: string]: Chat } = {};
   chatValue: string;
 
   @ViewChild("chatValues", { static: false }) chatValues: ElementRef;
@@ -34,13 +37,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.chatBusService.listen(chat => {
-      this.chats.push(chat);
-      this.chats.sort((a, b) => {
-        if (a.time.epochSecond === b.time.epochSecond) {
-          return a.time.nano > b.time.nano ? 1 : -1;
-        }
-        return a.time.epochSecond > b.time.epochSecond ? 1 : -1;
-      });
+      this.chats[`${chat.id.epochSecond}.${chat.id.nano}`] = chat;
+      this.chatIds = Object.keys(this.chats).sort();
       this.scrollToBottomOfChats();
       this.notifyIfNeeded(chat);
     });
@@ -66,7 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   renderTimeAgo(chat: Chat) {
-    return Optional.of(chat?.time?.epochSecond)
+    return Optional.of(chat?.id?.epochSecond)
       .map(moment.unix)
       .filter(time => time.isBefore(moment().subtract(30, "seconds")))
       .map(time => " - " + time.fromNow())
@@ -76,7 +74,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   notifyIfNeeded(chat: Chat) {
     if (
       this.authService.getCurrentUser()?.id !== chat.user?.id &&
-      Optional.of(chat?.time?.epochSecond)
+      Optional.of(chat?.id?.epochSecond)
         .map(moment.unix)
         .map(time => time.isAfter(moment().subtract(30, "seconds")))
         .orElse(false)

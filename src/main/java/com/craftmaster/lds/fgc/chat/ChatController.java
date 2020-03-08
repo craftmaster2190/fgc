@@ -4,7 +4,6 @@ import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import com.craftmaster.lds.fgc.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.security.Principal;
-import java.time.Instant;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +26,12 @@ public class ChatController {
 
   @PostConstruct
   public void subscribeToNewChats() {
-    postgresSubscriptions.<Instant>subscribe(
+    postgresSubscriptions.subscribe(
         "NewChatId",
+        InstantDeserializer.class,
         (id) ->
             chatRepository
-                .findById(id)
+                .findById(id.toInstant())
                 .ifPresent(
                     chat -> simpMessageSendingOperations.convertAndSend("/topic/chat", chat)));
   }
@@ -42,7 +42,7 @@ public class ChatController {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Adding chat: {} for: {}", chatString, user);
     Chat chat = chatRepository.save(new Chat().setValue(chatString).setUserId(user.getId()));
-    postgresSubscriptions.send("newChatId", chat.getId());
+    postgresSubscriptions.send("NewChatId", chat.getId());
   }
 
   @SubscribeMapping("/chat")

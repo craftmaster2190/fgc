@@ -25,8 +25,9 @@ public class QuestionController {
 
   @PostConstruct
   public void subscribeToNewChats() {
-    postgresSubscriptions.<Long>subscribe(
+    postgresSubscriptions.subscribe(
         "UpdatedQuestionId",
+        Long.class,
         (id) ->
             simpMessageSendingOperations.convertAndSend(
                 "/topic/question", questionService.getOrCreateById(id)));

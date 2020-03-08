@@ -2,15 +2,17 @@
   <h1><i class="far fa-comments"></i>&nbsp;Chat</h1>
 
   <div class="chat-values" #chatValues>
-    <div *ngFor="let chat of chats">
-      <b
-        >{{ chat.user.name }}
-        <small class="text-mutes" *ngIf="chat.user.family"
-          >({{ chat.user.family.name }})</small
-        ></b
-      >:&nbsp;{{ chat.value }}
-      <span class="time-stamp">{{ renderTimeAgo(chat) }}</span>
-    </div>
+    <ng-template ngFor let-chatId [ngForOf]="chatIds">
+      <div>
+        <b
+          >{{ chats[chatId].user.name }}
+          <small class="text-mutes" *ngIf="chats[chatId].user.family"
+            >({{ chats[chatId].user.family.name }})</small
+          ></b
+        >:&nbsp;{{ chats[chatId].value }}
+        <span class="time-stamp">{{ renderTimeAgo(chats[chatId]) }}</span>
+      </div>
+    </ng-template>
   </div>
   <form class="chat-controls" (ngSubmit)="sendChat()">
     <div class="input-group mb-3">
