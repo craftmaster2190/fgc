@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { of, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, of, Subject } from "rxjs";
+import { switchMap, tap } from "rxjs/operators";
 import { Optional } from "../util/optional";
-import { map, tap, switchMap } from "rxjs/operators";
 
 const KEY = "IMAGES_";
 
@@ -13,7 +13,7 @@ export class ImagesCacheService {
   constructor(private readonly http: HttpClient) {}
 
   get(target: string): Observable<string> {
-    return Optional.of(localStorage.getItem(KEY + target))
+    return Optional.of(sessionStorage.getItem(KEY + target))
       .map(imageData => of(imageData))
       .orElseGet(() =>
         this.http.get(target, { responseType: "blob" }).pipe(
@@ -26,10 +26,12 @@ export class ImagesCacheService {
             fileReader.readAsDataURL(blob);
             return resultSubject;
           }),
-          tap(dataUrl => console.log("DataUrl", dataUrl))
+          tap(dataUrl => sessionStorage.setItem(KEY + target, dataUrl))
         )
       );
   }
 
-  postProfileImage;
+  invalidate(target: string) {
+    sessionStorage.removeItem(KEY + target);
+  }
 }

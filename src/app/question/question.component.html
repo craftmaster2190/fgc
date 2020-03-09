@@ -1,6 +1,11 @@
 <label for="typeahead-basic">
   {{ text }}<br />
-  <img *ngIf="imageLink" src="{{ imageLink }}" class="question-image" />
+  <app-image
+    *ngIf="imageLink"
+    [target]="imageLink"
+    class="question-image"
+    imgStyle="width: 50px; border-radius: 5px;"
+  ></app-image>
   <small
     >Point value for each correct answer: {{ getPointValue() || "??" }}</small
   >&nbsp; <br class="d-md-none" /><small
@@ -61,11 +66,11 @@
       [class.badge-primary]="!isQuestionClosed()"
       [class.badge-secondary]="isQuestionClosed()"
     >
-      <img
+      <app-image
         *ngIf="images.getPerson(answer)"
-        src="{{ images.getPerson(answer) }}"
-        class="answer-image"
-      />
+        [target]="images.getPerson(answer)"
+        imgStyle="max-width: 30px; border-radius: 3px;"
+      ></app-image>
       <span
         class="color-square"
         *ngIf="isColors"

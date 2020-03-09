@@ -97,6 +97,7 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
       )
       .then(
         () => {
+          this.authService.getCurrentUser().hasProfileImage = true;
           this.loading = false;
           this.cancel();
         },

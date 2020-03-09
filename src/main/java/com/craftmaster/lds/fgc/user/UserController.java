@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.user;
 
+import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
@@ -7,6 +8,8 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +27,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/user")
 @RequiredArgsConstructor
 public class UserController {
-
+  private final CustomAuthenticationProvider authenticationManager;
   private final UserRepository userRepository;
+  private final EntityManager entityManager;
 
   @GetMapping("count")
   @Transactional
@@ -65,10 +69,14 @@ public class UserController {
   }
 
   @PostMapping("profile")
-  public void handleFileUpload(@AuthenticationPrincipal User user, @RequestBody String dataUri)
+  @Transactional
+  public void handleFileUpload(
+      @AuthenticationPrincipal User user, @RequestBody String dataUri, HttpSession session)
       throws IOException {
     byte[] imagedata =
         DatatypeConverter.parseBase64Binary(dataUri.substring(dataUri.indexOf(",") + 1));
-    userRepository.save(user.setProfileImage(imagedata));
+    User updatedUser = userRepository.save(user.setProfileImage(imagedata));
+    entityManager.refresh(updatedUser);
+    authenticationManager.updateSession(updatedUser, session);
   }
 }

@@ -7,7 +7,11 @@
 
   <ng-template #existingProfileImage>
     <app-image
-      [target]="'/api/user/profile/' + authService.getCurrentUser().id"
+      [target]="
+        authService.getCurrentUser().hasProfileImage
+          ? '/api/user/profile/' + authService.getCurrentUser().id
+          : '/assets/profile.png'
+      "
       imgStyle="width: 100px; border-radius: 5px;"
     ></app-image>
   </ng-template>

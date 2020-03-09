@@ -10,7 +10,6 @@ import { Score } from "./score";
   styleUrls: ["./scoreboard.component.scss"]
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
-  private interval;
   userCount: number;
   usernames: Array<string>;
   userScores: Array<{ name: string; value: number }> = [];
@@ -24,18 +23,6 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadScores();
-    this.interval = setInterval(() => {
-      this.loadScores();
-    }, 30000);
-  }
-
-  private loadScores() {
-    if (this.authService.getCurrentUser()?.isAdmin) {
-      this.scoresService
-        .getUsernames()
-        .then(usernames => (this.usernames = usernames));
-    }
     this.scoresService
       .getUserCount()
       .then(userCount => (this.userCount = userCount));
@@ -44,7 +31,6 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    clearInterval(this.interval);
     this.subscription.unsubscribe();
   }
 }

@@ -39,7 +39,14 @@
     >
       <div *ngFor="let user of authService.getUsers()" class="user">
         <a (click)="login(user)">
-          <img [src]="user?.profileImage || '/assets/profile.png'" />
+          <app-image
+            [target]="
+              user?.hasProfileImage
+                ? '/api/user/profile/' + user.id
+                : '/assets/profile.png'
+            "
+            imgStyle="width: 50px; border-radius: 5px;"
+          ></app-image>
           <div class="user-name">{{ user?.name }}</div>
           <div class="family-name">{{ user?.family?.name }}</div>
         </a>

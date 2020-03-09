@@ -4,7 +4,12 @@
   <div class="chat-values" #chatValues>
     <ng-template ngFor let-chatId [ngForOf]="chatIds">
       <div>
-        <b
+        <app-image
+          *ngIf="chats[chatId].user?.hasProfileImage"
+          [target]="'/api/user/profile/' + chats[chatId].user.id"
+          imgStyle="width: 30px; border-radius: 4px;"
+        ></app-image>
+        <b class="chat-name"
           >{{ chats[chatId].user.name }}
           <small class="text-mutes" *ngIf="chats[chatId].user.family"
             >({{ chats[chatId].user.family.name }})</small
@@ -17,9 +22,10 @@
   <form class="chat-controls" (ngSubmit)="sendChat()">
     <div class="input-group mb-3">
       <input
-        type="text"
+        type="search"
         class="form-control"
         name="chatValue"
+        autocomplete="off"
         [(ngModel)]="chatValue"
       />
       <div class="input-group-append">

@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { GameComponent } from "./game.component";
 import { of } from "rxjs";
+import { UserUpdatesService } from "../auth/user-updates.service";
 
 describe("GameComponent", () => {
   let component: GameComponent;
@@ -20,6 +21,10 @@ describe("GameComponent", () => {
             getAnswer: () => void 0,
             listenForQuestionsAndAnswers: () => of().subscribe()
           }
+        },
+        {
+          provide: UserUpdatesService,
+          useValue: { startListener: () => of().subscribe() }
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
