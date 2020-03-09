@@ -61,9 +61,9 @@ public class QuestionController {
     getAll().forEach(question -> updateQuestion(question.setEnabled(false)));
   }
 
-  @PostMapping("enabled-all")
+  @PostMapping("enable-unanswered")
   @RolesAllowed("ROLE_ADMIN")
-  public void enableAll() {
+  public void enableUnanswered() {
     getAll()
         .forEach(
             question -> {

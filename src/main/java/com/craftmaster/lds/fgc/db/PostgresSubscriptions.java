@@ -5,19 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -27,7 +28,9 @@ import org.springframework.util.Assert;
 @Profile("!test")
 public class PostgresSubscriptions {
   private final DataSource dataSource;
+  private final JdbcTemplate jdbcTemplate;
   private final ObjectMapper objectMapper;
+  private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
   @Value
   private static class TypeConsumers<T> {
@@ -58,20 +61,6 @@ public class PostgresSubscriptions {
     }
   }
 
-  private void executeSQL(String sql) {
-    executeSQL(sql, getConnection());
-  }
-
-  private void executeSQL(String sql, PGConnection connection) {
-    try (Statement statement = connection.createStatement()) {
-      boolean execute = statement.execute(sql);
-      ResultSet resultSet = statement.getResultSet();
-      log.debug("SQL: {} => {} {}", sql, execute, resultSet);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public <T> void subscribe(String topicName, Class<T> clazz, Consumer<T> subscription) {
     String normalizedTopicName = topicName.toLowerCase();
 
@@ -87,7 +76,8 @@ public class PostgresSubscriptions {
                         public void notification(
                             int processId, String channelName, String payload) {
                           log.debug("Postgres Message: {} {} {}", processId, channelName, payload);
-                          topic2Type.get(channelName).sendPayload(payload);
+                          executorService.submit(
+                              () -> topic2Type.get(channelName).sendPayload(payload));
                         }
 
                         @Override
@@ -95,21 +85,24 @@ public class PostgresSubscriptions {
                           log.warn("{} listener closed!", normalizedTopicName);
                         }
                       });
-                  executeSQL("LISTEN " + normalizedTopicName + ";", pgConnection);
+                  try (Statement statement = pgConnection.createStatement()) {
+                    statement.execute("LISTEN " + normalizedTopicName + ";");
+                  } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                  }
                   return new TypeConsumers<T>(clazz);
                 })
             .getConsumers();
     ((Set<Consumer<T>>) consumers).add(subscription);
   }
 
-  @Transactional(Transactional.TxType.REQUIRES_NEW)
   public <T> void send(String topicName, T payload) {
     try {
       String payloadString = objectMapper.writeValueAsString(payload);
       Assert.isTrue(
           !payloadString.contains("'"),
           () -> "Payload must not contain ' (single quotes): " + payloadString);
-      executeSQL("NOTIFY " + topicName.toLowerCase() + ", '" + payloadString + "';");
+      jdbcTemplate.execute("NOTIFY " + topicName.toLowerCase() + ", '" + payloadString + "';");
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }

@@ -89,4 +89,12 @@ export class AnswerBusService {
       .get<Array<string>>(`/api/question/possible/${id}`)
       .toPromise();
   }
+
+  disableAll() {
+    this.httpClient.post("/api/question/disable-all", null).toPromise();
+  }
+
+  enableUnanswered() {
+    this.httpClient.post("/api/question/enable-unanswered", null).toPromise();
+  }
 }

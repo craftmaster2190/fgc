@@ -4,3 +4,12 @@
   margin-bottom: 200px;
   display: block;
 }
+
+.admin-only {
+  padding: 8px;
+  border: 1px black solid;
+
+  .btn {
+    margin-left: 8px;
+  }
+}

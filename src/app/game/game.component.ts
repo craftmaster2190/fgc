@@ -4,6 +4,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ImagesCacheService } from "../image/images-cache.service";
 import { UserUpdatesService } from "../auth/user-updates.service";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 @Component({
   selector: "app-game",
@@ -15,8 +16,9 @@ export class GameComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
+    public readonly authService: DeviceUsersService,
     public readonly answersService: AnswersService,
-    private readonly answerBusService: AnswerBusService,
+    public readonly answerBusService: AnswerBusService,
     private readonly userUpdates: UserUpdatesService
   ) {}
 

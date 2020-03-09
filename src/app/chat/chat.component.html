@@ -9,7 +9,7 @@
           [target]="'/api/user/profile/' + chats[chatId].user.id"
           imgStyle="width: 30px; border-radius: 4px;"
         ></app-image>
-        <b class="chat-name"
+        <b class="chat-name" [class.is-admin]="chats[chatId].user.isAdmin"
           >{{ chats[chatId].user.name }}
           <small class="text-mutes" *ngIf="chats[chatId].user.family"
             >({{ chats[chatId].user.family.name }})</small

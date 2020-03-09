@@ -16,6 +16,19 @@
   To switch users, click the organ pipes in the top right.
 </p>
 
+<div *ngIf="authService.getCurrentUser().isAdmin" class="admin-only">
+  <b>Admin Only</b>
+  <button class="btn btn-outline-dark" (click)="answerBusService.disableAll()">
+    Disable All
+  </button>
+  <button
+    class="btn btn-outline-dark"
+    (click)="answerBusService.enableUnanswered()"
+  >
+    Enable Unanswered
+  </button>
+</div>
+
 <app-section
   title="When is the First Presidency speaking?"
   [isOpen]="openPanel === 'firstPresidency'"

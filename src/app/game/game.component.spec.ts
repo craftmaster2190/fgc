@@ -5,6 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { GameComponent } from "./game.component";
 import { of } from "rxjs";
 import { UserUpdatesService } from "../auth/user-updates.service";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 describe("GameComponent", () => {
   let component: GameComponent;
@@ -15,6 +16,10 @@ describe("GameComponent", () => {
       declarations: [GameComponent],
       providers: [
         AnswersService,
+        {
+          provide: DeviceUsersService,
+          useValue: { getCurrentUser: () => ({}) }
+        },
         {
           provide: AnswerBusService,
           useValue: {
