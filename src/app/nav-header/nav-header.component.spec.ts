@@ -3,6 +3,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { NavHeaderComponent } from "./nav-header.component";
 import { NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { ImageComponent } from "../image/image.component";
 
 describe("NavHeaderComponent", () => {
   let component: NavHeaderComponent;
@@ -10,7 +11,7 @@ describe("NavHeaderComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavHeaderComponent],
+      declarations: [NavHeaderComponent, ImageComponent],
       providers: [
         {
           provide: DeviceUsersService,

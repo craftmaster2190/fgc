@@ -1,8 +1,46 @@
-import { Component, OnInit, ViewChild, NgZone, OnDestroy } from "@angular/core";
-import ResizeImage from "image-resize";
-import Cropper from "cropperjs";
 import { HttpClient } from "@angular/common/http";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import Cropper from "cropperjs";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { ImagesCacheService } from "../image/images-cache.service";
+import { readAndCompressImage } from "browser-image-resizer";
+
+function dataURIToBlob(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  var byteString = atob(dataURI.split(",")[1]);
+
+  // separate out the mime component
+  var mimeString = dataURI
+    .split(",")[0]
+    .split(":")[1]
+    .split(";")[0];
+
+  // write the bytes of the string to an ArrayBuffer
+  var ab = new ArrayBuffer(byteString.length);
+
+  // create a view into the buffer
+  var ia = new Uint8Array(ab);
+
+  // set the bytes of the buffer to the correct values
+  for (var i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  // write the ArrayBuffer to a blob, and you're done
+  var blob = new Blob([ab], { type: mimeString });
+  return blob;
+}
+
+function blobToDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    var fileReader = new FileReader();
+    fileReader.onload = event => resolve(event.target.result);
+    fileReader.onerror = err => reject(err);
+    fileReader.readAsDataURL(blob);
+  });
+}
+
 @Component({
   selector: "app-profile-image-editor",
   templateUrl: "./profile-image-editor.component.html",
@@ -15,6 +53,7 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly authService: DeviceUsersService,
+    private readonly imagesCache: ImagesCacheService,
     private readonly http: HttpClient
   ) {}
 
@@ -35,20 +74,28 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.rotation = 0;
     const fileInputNode: HTMLInputElement = event.target;
-    const resizeImage = new ResizeImage({
-      format: "png",
-      width: 1000
-    });
-    return resizeImage
-      .play(fileInputNode)
+    const config = {
+      maxWidth: 600,
+      maxHeight: 600,
+      autoRotate: true,
+      debug: true,
+      mimeType: "image/png"
+    };
+
+    return readAndCompressImage(fileInputNode.files[0], config)
+      .then(resizedImage => blobToDataURL(resizedImage))
       .then(imageToUpload => {
         this.imageUrl = imageToUpload;
         this.showCropper();
       })
       .then(
-        () => (this.loading = false),
+        () => {
+          this.loading = false;
+          fileInputNode.value = "";
+        },
         err => {
           this.loading = false;
+          fileInputNode.value = "";
           return Promise.reject(err);
         }
       );
@@ -86,17 +133,29 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
   upload() {
     this.loading = true;
     this.cropper.disable();
-    const resizeImage = new ResizeImage({
-      format: "png",
-      width: 100
-    });
-    return resizeImage
-      .play(this.finalImage)
-      .then(imageToUpload =>
-        this.http.post("/api/user/profile", imageToUpload).toPromise()
-      )
+
+    const config = {
+      maxWidth: 100,
+      maxHeight: 100,
+      debug: true,
+      mimeType: "image/png"
+    };
+
+    return readAndCompressImage(dataURIToBlob(this.finalImage), config)
+      .then(resizedImage => blobToDataURL(resizedImage))
+      .then(imageToUpload2 => {
+        console.log(
+          "Uploading:",
+          this.finalImage.slice(-30),
+          imageToUpload2.slice(-30)
+        );
+        return this.http.post("/api/user/profile", imageToUpload2).toPromise();
+      })
       .then(
         () => {
+          this.imagesCache.invalidate(
+            "/api/user/profile/" + this.authService.getCurrentUser().id
+          );
           this.authService.getCurrentUser().hasProfileImage = true;
           this.loading = false;
           this.cancel();

@@ -1,26 +1,16 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  NgZone
-} from "@angular/core";
-import { Router } from "@angular/router";
-import { DeviceUsersService } from "../auth/device-users.service";
+import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Observable, Subject, interval, Subscription } from "rxjs";
+import { interval, Observable, Subject, Subscription } from "rxjs";
 import {
+  debounce,
   debounceTime,
   distinctUntilChanged,
   filter,
-  tap,
-  switchMap,
   map,
-  debounce
+  switchMap,
+  tap
 } from "rxjs/operators";
-import { Family } from "../family/family";
-import ResizeImage from "image-resize";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 @Component({
   selector: "app-nav-header",

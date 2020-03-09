@@ -11,6 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,6 +39,7 @@ public class QuestionController {
     return questionService.findAll();
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PostMapping
   @RolesAllowed("ROLE_ADMIN")
   public Question updateQuestion(@RequestBody Question question) {
@@ -46,6 +48,7 @@ public class QuestionController {
     return savedQuestion;
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("possible/{id}")
   @RolesAllowed("ROLE_ADMIN")
   public Set<String> getPossibleAnswers(@PathVariable long id) {
@@ -55,12 +58,14 @@ public class QuestionController {
         .collect(Collectors.toSet());
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("disable-all")
   @RolesAllowed("ROLE_ADMIN")
   public void disableAll() {
     getAll().forEach(question -> updateQuestion(question.setEnabled(false)));
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("enable-unanswered")
   @RolesAllowed("ROLE_ADMIN")
   public void enableUnanswered() {

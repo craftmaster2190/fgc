@@ -19,6 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +32,14 @@ public class UserController {
   private final UserRepository userRepository;
   private final EntityManager entityManager;
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("count")
   @Transactional
   public long getAllCount() {
     return userRepository.findByIsAdminIsNullOrIsAdminIsFalse().count();
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("all")
   @Transactional
   @RolesAllowed("ROLE_ADMIN")
@@ -68,6 +71,7 @@ public class UserController {
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("profile")
   @Transactional
   public void handleFileUpload(
@@ -76,7 +80,8 @@ public class UserController {
     byte[] imagedata =
         DatatypeConverter.parseBase64Binary(dataUri.substring(dataUri.indexOf(",") + 1));
     User updatedUser = userRepository.save(user.setProfileImage(imagedata));
-    entityManager.refresh(updatedUser);
-    authenticationManager.updateSession(updatedUser, session);
+
+    authenticationManager.updateSession(
+        userRepository.findById(updatedUser.getId()).orElseThrow(), session);
   }
 }

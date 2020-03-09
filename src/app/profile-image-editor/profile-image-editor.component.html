@@ -16,15 +16,14 @@
     ></app-image>
   </ng-template>
 
-  <span>
+  <span style="margin-left: 24px;">
     <button
       type="button"
       class="btn btn-outline-dark"
       (click)="fileInput.click()"
-      style="margin-left: 24px;"
       [disabled]="loading"
     >
-      Upload
+      {{ !!finalImage ? "Pick File" : "Set Profile Picture" }}
     </button>
     <input
       hidden
@@ -51,7 +50,7 @@
         (click)="upload()"
         [disabled]="loading"
       >
-        Save
+        Upload
       </button>
       <button
         type="button"
