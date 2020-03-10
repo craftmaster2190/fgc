@@ -78,13 +78,13 @@ public class ScoreController {
         .map(user -> userScore.setScore(calculateUserScore(userScore.getUserOrFamilyId())));
   }
 
-  private long calculateUserScore(UUID userId) {
+  long calculateUserScore(UUID userId) {
     return answerRepository.findByAnswerPk_UserId(userId).stream()
         .mapToLong(Answer::getScore)
         .sum();
   }
 
-  private Optional<Score> generateFamilyScore(Score familyScore) {
+  Optional<Score> generateFamilyScore(Score familyScore) {
     return familyRepository
         .findById(familyScore.getUserOrFamilyId())
         .map(
