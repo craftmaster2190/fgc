@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -246,6 +247,7 @@ public class TestUtil {
 	}
 
 	protected static void test(Object testObject, String[] propertyNames, Boolean include) {
+		List<Exception> exceptions = new LinkedList<>();
 		Map<String, PropertyInfo> propertyMap = collectProperties(testObject,
 				propertyNames == null ? new ArrayList<String>() : Arrays.asList(propertyNames),
 				include == null ? false : include);
@@ -257,15 +259,27 @@ public class TestUtil {
 						propertyName);
 			} else {
 				for (Method writeMethod : propertyInfo.getWriteMethods()) {
-					testReadAndOrWriteMethods(testObject, propertyInfo.getReadMethod(), writeMethod, propertyInfo.getField(),
-							propertyName);
+					try {
+						testReadAndOrWriteMethods(testObject, propertyInfo.getReadMethod(), writeMethod, propertyInfo.getField(),
+								propertyName);
+					} catch (Exception e) {
+						exceptions.add(e);
+					}
 				}
 			}
+		}
+		if (!exceptions.isEmpty()) {
+			StringBuilder buf = new StringBuilder();
+			for (Exception e : exceptions) {
+				e.printStackTrace();
+				buf.append(format("%s\n", e.getLocalizedMessage()));
+			}
+			throw new RuntimeException(format("\n%s", buf.toString()));
 		}
 	}
 
 	/**
-	 * This method collects all of the propeties (meaning readMethod, writeMethods,
+	 * This method collects all of the properties (meaning readMethod, writeMethods,
 	 * associated field) in the given test object and adds them to a map of
 	 * PropertyInfo objects. This is done by looking for all methods that start with
 	 * a get or is, and have a return type not equal to void and no parameters, or
