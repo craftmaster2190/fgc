@@ -37,13 +37,13 @@ jobs:
         run: yarn --cwd client install
 
       - name: Yarn Test
-        run: yarn --cwd client itest-ci
+        run: yarn --cwd client test-ci
 
       - name: Yarn Build
-        run: yarn --cwd client ibuild
+        run: yarn --cwd client build
 
       - name: Yarn Deploy
-        run: yarn --cwd client ideploy
+        run: yarn --cwd client deploy
 
       - name: Setup Java
         uses: actions/setup-java@v1
