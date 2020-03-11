@@ -1,23 +1,32 @@
 #!/bin/bash
 
+mydir="$PWD"
+
 function pidOfPort() {
     lsof -Pi ":${1}" -sTCP:LISTEN -t
 }
 
 function clean() {
+    cd "$mydir/server"
     ./gradlew clean
-    mkdir build
-    yarn install 2>&1 | tee build/yarnInstall.log
+    cd "$mydir/client"
+    mkdir "$mydir/build"
+    yarn install 2>&1 | tee "$mydir/build/yarnInstall.log"
+    cd "$mydir"
 }
 
 function frontEnd() {
-    nohup yarn start <<</dev/null >build/frontEnd.log 2>&1 &
-    echo $! >build/frontEnd.pid
+    cd "$mydir/client"
+    nohup yarn start <<</dev/null >"$mydir/build/frontEnd.log" 2>&1 &
+    echo $! >"$mydir/build/frontEnd.pid"
+    cd "$mydir"
 }
 
 function backEnd() {
-    nohup ./gradlew bootRun <<</dev/null >build/backEnd.log 2>&1 &
-    echo $! >build/backEnd.pid
+    cd "$mydir/server"
+    nohup ./gradlew bootRun <<</dev/null >"$mydir/build/backEnd.log" 2>&1 &
+    echo $! >"$mydir/build/backEnd.pid"
+    cd "$mydir"
 }
 
 echo "Cleaning..."
@@ -30,7 +39,7 @@ START_TIME=`date +%s`
 echo -n 'Loading...'
 while : ; do
     FRONT_END_STATUS="startup"
-    if [ -f build/frontEnd.pid ] ; then
+    if [ -f "$mydir/build/frontEnd.pid" ] ; then
         FRONT_END_STATUS="port 4200"
         if lsof -Pi :4200 -sTCP:LISTEN -t >/dev/null ; then
             FRONT_END_STATUS="ready"
@@ -38,7 +47,7 @@ while : ; do
     fi
 
     BACK_END_STATUS="startup"
-    if [ -f build/backEnd.pid ] ; then
+    if [ -f "$mydir/build/backEnd.pid" ] ; then
         BACK_END_STATUS="port 8080"
         if lsof -Pi :8080 -sTCP:LISTEN -t >/dev/null ; then
             BACK_END_STATUS="ready"

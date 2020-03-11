@@ -34,16 +34,16 @@ jobs:
         run: curl -o- -L https://yarnpkg.com/install.sh | bash
 
       - name: Yarn Install
-        run: yarn install
+        run: yarn --cwd client install
 
       - name: Yarn Test
-        run: yarn test-ci
+        run: yarn --cwd client itest-ci
 
       - name: Yarn Build
-        run: yarn build
+        run: yarn --cwd client ibuild
 
       - name: Yarn Deploy
-        run: yarn deploy
+        run: yarn --cwd client ideploy
 
       - name: Setup Java
         uses: actions/setup-java@v1
@@ -51,19 +51,19 @@ jobs:
           java-version: "13"
 
       - name: Gradle Compile
-        run: ./gradlew clean classes testClasses
+        run: ./server/gradlew clean classes testClasses
 
       - name: Gradle Test
-        run: ./gradlew test check
+        run: ./server/gradlew test check
 
       - name: Gradle Build
-        run: ./gradlew build
+        run: ./server/gradlew build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
         with:
           name: Build Files
-          path: build/libs/
+          path: server/build/libs/
 
       - name: Setup AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
@@ -76,7 +76,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Upload Versioned Artifacts to S3
-        run: aws s3 sync build/libs/ s3://fantasygc/deploy/
+        run: aws s3 sync server/build/libs/ s3://fantasygc/deploy/
 
       - name: Upload Latest Artifacts to S3
-        run: aws s3 cp build/libs/fgc-*.jar s3://fantasygc/deploy/fgc-latest.jar
+        run: aws s3 cp server/build/libs/fgc-*.jar s3://fantasygc/deploy/fgc-latest.jar

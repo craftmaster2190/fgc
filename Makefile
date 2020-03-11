@@ -1,11 +1,13 @@
 default: build-jar
 
 build-jar:
-	npm run build
-	npm run deploy
-	./gradlew clean build
+	cd client \
+	&& npm run build \
+	&& npm run deploy \
+	&& cd ../server \
+	&& ./gradlew clean build
 
 run: 
-	java -jar build/libs/fgc*.jar
+	java -jar server/build/libs/fgc*.jar
 
 build-and-run: build-jar run
