@@ -1,73 +1,78 @@
 package com.craftmaster.lds.fgc.answer;
 
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
-
 import com.craftmaster.lds.fgc.db.TransactionalContext;
 import com.craftmaster.lds.fgc.user.FamilyRepository;
 import com.craftmaster.lds.fgc.user.UserRepository;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 
 public class ScoreControllerBuilder {
 
-	public static final ScoreControllerBuilder get() {
-		return new ScoreControllerBuilder();
-	}
+  public static final ScoreControllerBuilder get() {
+    return new ScoreControllerBuilder();
+  }
 
-	private ScoreControllerBuilder() {
-	}
+  private ScoreControllerBuilder() {}
 
-	public ScoreController build() {
-		return new ScoreController(answerRepository, scoreRepository, userRepository, familyRepository, simpUserRegistry,
-				simpMessageSendingOperations, transactionalContext);
-	}
+  public ScoreController build() {
+    return new ScoreController(
+        answerRepository,
+        scoreRepository,
+        userRepository,
+        familyRepository,
+        simpUserRegistry,
+        simpMessageSendingOperations,
+        transactionalContext);
+  }
 
-	private AnswerRepository answerRepository;
+  private AnswerRepository answerRepository;
 
-	public ScoreControllerBuilder withAnswerRepository(AnswerRepository answerRepository) {
-		this.answerRepository = answerRepository;
-		return this;
-	}
+  public ScoreControllerBuilder withAnswerRepository(AnswerRepository answerRepository) {
+    this.answerRepository = answerRepository;
+    return this;
+  }
 
-	private ScoreRepository scoreRepository;
+  private ScoreRepository scoreRepository;
 
-	public ScoreControllerBuilder withScoreRepository(ScoreRepository scoreRepository) {
-		this.scoreRepository = scoreRepository;
-		return this;
-	}
+  public ScoreControllerBuilder withScoreRepository(ScoreRepository scoreRepository) {
+    this.scoreRepository = scoreRepository;
+    return this;
+  }
 
-	private UserRepository userRepository;
+  private UserRepository userRepository;
 
-	public ScoreControllerBuilder withUserRepository(UserRepository userRepository) {
-		this.userRepository = userRepository;
-		return this;
-	}
+  public ScoreControllerBuilder withUserRepository(UserRepository userRepository) {
+    this.userRepository = userRepository;
+    return this;
+  }
 
-	private FamilyRepository familyRepository;
+  private FamilyRepository familyRepository;
 
-	public ScoreControllerBuilder withFamilyRepository(FamilyRepository familyRepository) {
-		this.familyRepository = familyRepository;
-		return this;
-	}
+  public ScoreControllerBuilder withFamilyRepository(FamilyRepository familyRepository) {
+    this.familyRepository = familyRepository;
+    return this;
+  }
 
-	private SimpUserRegistry simpUserRegistry;
+  private SimpUserRegistry simpUserRegistry;
 
-	public ScoreControllerBuilder withSimpUserRegistry(SimpUserRegistry simpUserRegistry) {
-		this.simpUserRegistry = simpUserRegistry;
-		return this;
-	}
+  public ScoreControllerBuilder withSimpUserRegistry(SimpUserRegistry simpUserRegistry) {
+    this.simpUserRegistry = simpUserRegistry;
+    return this;
+  }
 
-	private SimpMessageSendingOperations simpMessageSendingOperations;
+  private SimpMessageSendingOperations simpMessageSendingOperations;
 
-	public ScoreControllerBuilder withSimpMessageSendingOperations(
-			SimpMessageSendingOperations simpMessageSendingOperations) {
-		this.simpMessageSendingOperations = simpMessageSendingOperations;
-		return this;
-	}
+  public ScoreControllerBuilder withSimpMessageSendingOperations(
+      SimpMessageSendingOperations simpMessageSendingOperations) {
+    this.simpMessageSendingOperations = simpMessageSendingOperations;
+    return this;
+  }
 
-	private TransactionalContext transactionalContext;
+  private TransactionalContext transactionalContext;
 
-	public ScoreControllerBuilder withTransactionalContext(TransactionalContext transactionalContext) {
-		this.transactionalContext = transactionalContext;
-		return this;
-	}
+  public ScoreControllerBuilder withTransactionalContext(
+      TransactionalContext transactionalContext) {
+    this.transactionalContext = transactionalContext;
+    return this;
+  }
 }

@@ -6,42 +6,41 @@ import java.util.UUID;
 
 public class FamilyBuilder {
 
-	public static final FamilyBuilder get() {
-		return new FamilyBuilder();
-	}
+  public static final FamilyBuilder get() {
+    return new FamilyBuilder();
+  }
 
-	private FamilyBuilder() {
-	}
+  private FamilyBuilder() {}
 
-	public Family build() {
-		Family family = new Family();
-		family.setId(id);
-		family.setName(name);
-		family.setUsers(users);
-		return family;
-	}
+  public Family build() {
+    Family family = new Family();
+    family.setId(id);
+    family.setName(name);
+    family.setUsers(users);
+    return family;
+  }
 
-	private UUID id;
+  private UUID id;
 
-	public FamilyBuilder withId(UUID id) {
-		this.id = id;
-		return this;
-	}
+  public FamilyBuilder withId(UUID id) {
+    this.id = id;
+    return this;
+  }
 
-	private String name;
+  private String name;
 
-	public FamilyBuilder withName(String name) {
-		this.name = name;
-		return this;
-	}
+  public FamilyBuilder withName(String name) {
+    this.name = name;
+    return this;
+  }
 
-	private Set<User> users;
+  private Set<User> users;
 
-	public FamilyBuilder withUser(User user) {
-		if (users == null) {
-			users = new HashSet<>();
-		}
-		this.users.add(user);
-		return this;
-	}
+  public FamilyBuilder withUser(User user) {
+    if (users == null) {
+      users = new HashSet<>();
+    }
+    this.users.add(user);
+    return this;
+  }
 }
