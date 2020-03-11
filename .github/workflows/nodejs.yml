@@ -51,13 +51,16 @@ jobs:
           java-version: "13"
 
       - name: Gradle Compile
-        run: ./server/gradlew clean classes testClasses
+        working-directory: ./server
+        run: ./gradlew clean classes testClasses
 
       - name: Gradle Test
-        run: ./server/gradlew test check
+        working-directory: ./server
+        run: ./gradlew test check
 
       - name: Gradle Build
-        run: ./server/gradlew build
+        working-directory: ./server
+        run: ./gradlew build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
