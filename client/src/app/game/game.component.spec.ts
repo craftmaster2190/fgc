@@ -6,6 +6,7 @@ import { GameComponent } from "./game.component";
 import { of } from "rxjs";
 import { UserUpdatesService } from "../auth/user-updates.service";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { ServerMessagesService } from "./server-messages.service";
 
 describe("GameComponent", () => {
   let component: GameComponent;
@@ -30,6 +31,10 @@ describe("GameComponent", () => {
         {
           provide: UserUpdatesService,
           useValue: { startListener: () => of().subscribe() }
+        },
+        {
+          provide: ServerMessagesService,
+          useValue: { subscribe: () => of().subscribe() }
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

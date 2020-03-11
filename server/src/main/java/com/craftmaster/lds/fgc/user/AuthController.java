@@ -1,6 +1,7 @@
 package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
+import com.craftmaster.lds.fgc.config.ConfigService;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class AuthController {
   private final DeviceRepository deviceRepository;
   private final FamilyRepository familyRepository;
   private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
+  private final ConfigService configService;
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("me")
@@ -42,6 +44,7 @@ public class AuthController {
   public User createUser(
       @RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
+    configService.validateAcceptingNewUsers();
     var user = userRepository.save(new User());
     authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
     return patchUser(user, createUserRequest, session);

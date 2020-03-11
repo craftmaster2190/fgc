@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class RouteToAngular implements ErrorController {
 
+  @RequestMapping({"/welcome", "/game"})
+  public String handleGameRoute() {
+    return "/";
+  }
+
   @RequestMapping("/error")
   public String handleError(HttpServletRequest request) {
     log.error(

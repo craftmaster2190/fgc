@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 import { ImagesCacheService } from "../image/images-cache.service";
 import { UserUpdatesService } from "../auth/user-updates.service";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { ServerMessagesService } from "./server-messages.service";
 
 @Component({
   selector: "app-game",
@@ -14,17 +15,24 @@ import { DeviceUsersService } from "../auth/device-users.service";
 export class GameComponent implements OnInit, OnDestroy {
   openPanel: string = "firstPresidency";
   subscription: Subscription;
+  serverMessages: Array<string>;
 
   constructor(
     public readonly authService: DeviceUsersService,
     public readonly answersService: AnswersService,
     public readonly answerBusService: AnswerBusService,
-    private readonly userUpdates: UserUpdatesService
+    private readonly userUpdates: UserUpdatesService,
+    private readonly serverMessagesService: ServerMessagesService
   ) {}
 
   ngOnInit() {
     this.subscription = this.answerBusService.listenForQuestionsAndAnswers();
     this.subscription.add(this.userUpdates.startListener());
+    this.subscription.add(
+      this.serverMessagesService.subscribe(
+        serverMessages => (this.serverMessages = serverMessages)
+      )
+    );
   }
 
   ngOnDestroy(): void {
