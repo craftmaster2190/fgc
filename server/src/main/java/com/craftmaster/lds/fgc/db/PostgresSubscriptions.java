@@ -61,6 +61,7 @@ public class PostgresSubscriptions {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public <T> void subscribe(String topicName, Class<T> clazz, Consumer<T> subscription) {
     String normalizedTopicName = topicName.toLowerCase();
 

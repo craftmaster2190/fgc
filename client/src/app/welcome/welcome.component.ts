@@ -106,7 +106,7 @@ export class WelcomeComponent implements OnInit {
   };
 
   nameValid() {
-    return (this.name?.length || 0) >= 4;
+    return (this.name?.length || 0) >= 2;
   }
 
   familyValid() {

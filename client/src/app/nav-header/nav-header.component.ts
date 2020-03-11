@@ -80,7 +80,7 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   };
 
   nameValid() {
-    return (this.name?.length || 0) >= 4;
+    return (this.name?.length || 0) >= 2;
   }
 
   familyValid() {

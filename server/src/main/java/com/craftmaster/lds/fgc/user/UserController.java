@@ -8,7 +8,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
@@ -21,7 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -30,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
   private final CustomAuthenticationProvider authenticationManager;
   private final UserRepository userRepository;
-  private final EntityManager entityManager;
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("count")

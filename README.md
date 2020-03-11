@@ -2,6 +2,22 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.3.
 
+## ChangeLog
+
+March 11, 2020 Joe separated the client and server code.
+    we have a parent package.json to handle the husky tasks
+    and a client package.json to build the app
+
+## Up and running
+
+To build the client, change into the client dir and run yarn 
+To run the client, change into the client dir and call `npm run start`
+
+To build the server change into the server dir and run `gradlew build` 
+To run the server change into thserver dir and run `gradlew runBoot`
+
+There is a make file and a start/stop script in the root dir. Your MMV
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
@@ -38,3 +54,4 @@ On Switch User: Get Users -> Pick User OR Create User
 
 
 For admin???
+

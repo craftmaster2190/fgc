@@ -50,7 +50,7 @@ apply plugin: 'eclipse'
 eclipse {
     project {
     // this is the name of the parent dir
-        name = 'repo'
+        name = 'server'
     }
 }
 
