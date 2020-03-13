@@ -4,6 +4,8 @@ import { JSONMessageSender } from "src/app/messaging/json-message-sender";
 import { MessageBusService } from "src/app/messaging/message-bus.service";
 import { Chat } from "./chat";
 import { ToastService } from "../toast/toast.service";
+import { mapMessageTo } from "../util/map-message-to";
+import { UserUpdatesService } from "../auth/user-updates.service";
 
 @Injectable()
 export class ChatBusService {
@@ -11,6 +13,7 @@ export class ChatBusService {
 
   constructor(
     private readonly messageBusService: MessageBusService,
+    private readonly userUpdates: UserUpdatesService,
     private readonly toastService: ToastService
   ) {
     this.chatSender = messageBusService.messageSender("chat");
@@ -21,17 +24,14 @@ export class ChatBusService {
   }
 
   listen(next: (chat: Chat) => void) {
-    return this.messageBusService.topicWatcher("chat").subscribe(message => {
-      try {
-        const parsedChats = JSON.parse(message.body) as Chat | Chat[];
-        const chats = Array.isArray(parsedChats) ? parsedChats : [parsedChats];
-        chats.forEach(chat => next(chat));
-      } catch (error) {
-        this.toastService.createError(
-          "Unable to read chat",
-          message.body + "\n" + error
-        );
-      }
-    });
+    return this.messageBusService
+      .topicWatcher("chat")
+      .pipe(mapMessageTo<Chat>())
+      .subscribe(chats =>
+        chats.forEach(chat => {
+          this.userUpdates.requestUserIfNeeded(chat.userId);
+          next(chat);
+        })
+      );
   }
 }

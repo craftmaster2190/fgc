@@ -3,6 +3,6 @@ import { Time } from "./time";
 
 export interface Chat {
   value: string;
-  user: User;
+  userId: string;
   id: Time;
 }

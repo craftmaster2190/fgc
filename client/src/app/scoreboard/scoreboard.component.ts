@@ -3,6 +3,10 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { Subscription } from "rxjs";
 import { Score } from "./score";
+import { UserUpdatesService } from "../auth/user-updates.service";
+import { Family } from "../family/family";
+import { User } from "../auth/user";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-scoreboard",
@@ -11,14 +15,13 @@ import { Score } from "./score";
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
   userCount: number;
-  usernames: Array<string>;
-  userScores: Array<{ name: string; value: number }> = [];
-  familyScores: Array<{ name: string; value: number }> = [];
+  scores: Array<Score>;
 
   subscription: Subscription;
 
   constructor(
-    private readonly scoresService: ScoresService,
+    public readonly scoresService: ScoresService,
+    private readonly userUpdates: UserUpdatesService,
     private readonly authService: DeviceUsersService
   ) {}
 
@@ -27,7 +30,50 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
       .getUserCount()
       .then(userCount => (this.userCount = userCount));
 
-    this.subscription = this.scoresService.listenToScores();
+    this.subscription = this.scoresService.listenToScores(scores => {
+      this.scores = scores
+        .filter(score => {
+          const user = this.getUserOrFamily(score);
+          return score.score > 0 && (!user || !(user as User).isAdmin);
+        })
+        .sort((a, b) => {
+          let aIsBeforeB = false;
+          if (a.score > b.score) {
+            aIsBeforeB = true;
+          } else if (a.score === b.score) {
+            const aUser = this.getUserOrFamily(a.userOrFamilyId);
+            const bUser = this.getUserOrFamily(b.userOrFamilyId);
+            if (aUser && bUser) {
+              if (!(aUser as Family)?.isFamily && (bUser as Family)?.isFamily) {
+                aIsBeforeB = true;
+              } else if (
+                (aUser as Family)?.isFamily &&
+                !(bUser as Family)?.isFamily
+              ) {
+                aIsBeforeB = false;
+              } else {
+                aIsBeforeB = aUser.name.localeCompare(bUser.name) === -1;
+              }
+            }
+          }
+          return aIsBeforeB ? -1 : 1;
+        });
+
+      scores.forEach(score =>
+        this.userUpdates.requestUserIfNeeded(score.userOrFamilyId)
+      );
+    });
+  }
+
+  isMe(score: Score) {
+    return this.authService.getCurrentUser().id === score.userOrFamilyId;
+  }
+
+  getUserOrFamily(userOrFamilyId: string): User | Family | undefined {
+    return this.userUpdates.getIfPresent(userOrFamilyId).orElseGet(() => {
+      this.userUpdates.requestUserIfNeeded(userOrFamilyId);
+      return null;
+    });
   }
 
   ngOnDestroy() {

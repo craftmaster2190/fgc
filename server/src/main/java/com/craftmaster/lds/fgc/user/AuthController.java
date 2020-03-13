@@ -3,6 +3,7 @@ package com.craftmaster.lds.fgc.user;
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.ConfigService;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
+import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +31,7 @@ public class AuthController {
   private final DeviceRepository deviceRepository;
   private final FamilyRepository familyRepository;
   private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
+  private final PostgresSubscriptions postgresSubscriptions;
   private final ConfigService configService;
 
   @PreAuthorize("isAuthenticated()")
@@ -92,6 +94,8 @@ public class AuthController {
     }
     User savedUser = userRepository.save(user);
     authenticationManager.updateSession(savedUser, session);
+
+    postgresSubscriptions.send("UpdatedUserId", savedUser.getId());
     return savedUser;
   }
 

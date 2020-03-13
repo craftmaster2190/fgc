@@ -1,35 +1,57 @@
 import { Injectable } from "@angular/core";
-import { MessageBusService } from "../messaging/message-bus.service";
+import { merge } from "rxjs";
+import { Family } from "../family/family";
 import { ImagesCacheService } from "../image/images-cache.service";
+import { MessageBusService } from "../messaging/message-bus.service";
+import { mapMessageTo } from "../util/map-message-to";
+import { Optional } from "../util/optional";
+import { User } from "./user";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserUpdatesService {
+  private readonly users: { [userOrFamilyId: string]: User | Family } = {};
+
   constructor(
     private readonly messageBusService: MessageBusService,
     private readonly imagesCache: ImagesCacheService
   ) {}
 
   startListener() {
-    return this.messageBusService
-      .topicWatcher("updated-userid")
-      .subscribe(message => {
-        try {
-          const parsedUserIds = JSON.parse(message.body) as string | string[];
-          const userIds = Array.isArray(parsedUserIds)
-            ? parsedUserIds
-            : [parsedUserIds];
-          userIds.forEach(userId =>
+    return merge(
+      this.messageBusService.topicWatcher("updated-user"),
+      this.messageBusService.userTopicWatcher("updated-user")
+    )
+      .pipe(mapMessageTo<User>())
+      .subscribe(users => {
+        users
+          .map(user => {
+            this.users[user.id] = user;
+            Optional.of(user.family).map(family => {
+              family.isFamily = true;
+              this.users[family.id] = family;
+            });
+
+            return user.id;
+          })
+          .forEach(userId =>
             this.imagesCache.invalidate("/api/user/profile/" + userId)
           );
-        } catch (error) {
-          console.error(
-            "Unable to read invalidate user id",
-            message.body,
-            error
-          );
-        }
       });
+  }
+
+  requestUser(userId) {
+    this.messageBusService.messageSender(`get-user`).convertAndSend(userId);
+  }
+
+  requestUserIfNeeded(userId) {
+    if (!this.users[userId]) {
+      this.requestUser(userId);
+    }
+  }
+
+  getIfPresent(userId): Optional<User> {
+    return Optional.of(this.users[userId]);
   }
 }

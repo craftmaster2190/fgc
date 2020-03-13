@@ -5,14 +5,16 @@
     <ng-template ngFor let-chatId [ngForOf]="chatIds">
       <div>
         <app-image
-          *ngIf="chats[chatId].user?.hasProfileImage"
-          [target]="'/api/user/profile/' + chats[chatId].user.id"
+          *ngIf="getUserFromChatId(chatId)?.hasProfileImage"
+          [target]="'/api/user/profile/' + getUserFromChatId(chatId).id"
           imgStyle="width: 30px; border-radius: 4px;"
         ></app-image>
-        <b class="chat-name" [class.is-admin]="chats[chatId].user.isAdmin"
-          >{{ chats[chatId].user.name }}
-          <small class="text-mutes" *ngIf="chats[chatId].user.family"
-            >({{ chats[chatId].user.family.name }})</small
+        <b
+          class="chat-name"
+          [class.is-admin]="getUserFromChatId(chatId)?.isAdmin"
+          >{{ getUserFromChatId(chatId)?.name }}
+          <small class="text-mutes" *ngIf="getUserFromChatId(chatId)?.family"
+            >({{ getUserFromChatId(chatId).family.name }})</small
           ></b
         >:&nbsp;{{ chats[chatId].value }}
         <span class="time-stamp">{{ renderTimeAgo(chats[chatId]) }}</span>

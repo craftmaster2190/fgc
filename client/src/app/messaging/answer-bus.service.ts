@@ -5,6 +5,7 @@ import { JSONMessageSender } from "./json-message-sender";
 import { MessageBusService } from "./message-bus.service";
 import { Question } from "../question/question";
 import { merge } from "rxjs";
+import { mapMessageTo } from "../util/map-message-to";
 
 @Injectable()
 export class AnswerBusService {
@@ -26,35 +27,26 @@ export class AnswerBusService {
       this.messageBusService.topicWatcher("answer"),
       this.messageBusService.userTopicWatcher("answer")
     )
-      .subscribe(message => {
-        const parsedAnswers = JSON.parse(message.body) as Answer | Answer[];
-        const answers = Array.isArray(parsedAnswers)
-          ? parsedAnswers
-          : [parsedAnswers];
-
+      .pipe(mapMessageTo<Answer>())
+      .subscribe(answers =>
         answers.forEach(answer => {
           this.answersCache[answer.questionId] = answer;
           answer.values.forEach(value =>
             this.getSelectedAnswers(answer.questionId).add(value)
           );
-        });
-      })
+        })
+      )
       .add(
         merge(
           this.messageBusService.topicWatcher("question"),
           this.messageBusService.userTopicWatcher("question")
-        ).subscribe(message => {
-          const parsedQuestions = JSON.parse(message.body) as
-            | Question
-            | Question[];
-          const questions = Array.isArray(parsedQuestions)
-            ? parsedQuestions
-            : [parsedQuestions];
-
-          questions.forEach(question => {
-            this.questionsCache[question.id] = question;
-          });
-        })
+        )
+          .pipe(mapMessageTo<Question>())
+          .subscribe(questions =>
+            questions.forEach(question => {
+              this.questionsCache[question.id] = question;
+            })
+          )
       );
   }
 

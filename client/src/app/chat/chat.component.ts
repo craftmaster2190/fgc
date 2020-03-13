@@ -13,6 +13,7 @@ import { Chat } from "./chat";
 import { ChatBusService } from "./chat-bus.service";
 import { ToastService } from "../toast/toast.service";
 import { Time } from "./time";
+import { UserUpdatesService } from "../auth/user-updates.service";
 
 @Component({
   selector: "app-chat",
@@ -30,6 +31,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(
+    private readonly userUpdates: UserUpdatesService,
     private readonly chatBusService: ChatBusService,
     private readonly toastService: ToastService,
     private readonly authService: DeviceUsersService
@@ -73,16 +75,26 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   notifyIfNeeded(chat: Chat) {
     if (
-      this.authService.getCurrentUser()?.id !== chat.user?.id &&
+      this.authService.getCurrentUser()?.id !== chat.userId &&
       Optional.of(chat?.id?.epochSecond)
         .map(moment.unix)
         .map(time => time.isAfter(moment().subtract(30, "seconds")))
         .orElse(false)
     ) {
       this.toastService.create({
-        message: chat.user?.name + ": " + chat.value,
+        message:
+          this.userUpdates
+            .getIfPresent(chat.userId)
+            .map(user => user.name + ": ")
+            .orElse("") + chat.value,
         classname: "bg-secondary"
       });
     }
+  }
+
+  getUserFromChatId(chatId) {
+    return this.userUpdates
+      .getIfPresent(this.chats[chatId].userId)
+      .orElse(null);
   }
 }

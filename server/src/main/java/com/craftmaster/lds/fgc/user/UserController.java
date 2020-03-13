@@ -1,13 +1,11 @@
 package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
+import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.security.Principal;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
@@ -18,14 +16,15 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -33,7 +32,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
   private final CustomAuthenticationProvider authenticationManager;
+  private final PostgresSubscriptions postgresSubscriptions;
+  private final SimpMessageSendingOperations simpMessageSendingOperations;
   private final UserRepository userRepository;
+
+  @PostConstruct
+  public void subscribeToNewChats() {
+    postgresSubscriptions.subscribe(
+        "UpdatedUserId",
+        UUID.class,
+        (id) ->
+            userRepository
+                .findById(id)
+                .ifPresent(
+                    user ->
+                        simpMessageSendingOperations.convertAndSend("/topic/updated-user", user)));
+  }
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping("count")
@@ -42,22 +56,16 @@ public class UserController {
     return userRepository.findByIsAdminIsNullOrIsAdminIsFalse().count();
   }
 
-  @PreAuthorize("isAuthenticated()")
-  @GetMapping("all")
-  @Transactional
-  @RolesAllowed("ROLE_ADMIN")
-  public Set<String> getAllUsernames() {
-    log.info("Getting all usernames");
-    return userRepository
-        .findByIsAdminIsNullOrIsAdminIsFalse()
-        .map(
-            user ->
-                user.getName()
-                    + Optional.ofNullable(user.getFamily())
-                        .map(Family::getName)
-                        .map(familyName -> " (" + familyName + ")")
-                        .orElse(""))
-        .collect(Collectors.toCollection(TreeSet::new));
+  @SubscribeMapping("/updated-user")
+  public User getUser(Principal principal) {
+    User user = (User) ((Authentication) principal).getPrincipal();
+    return getUser(user.getId());
+  }
+
+  @MessageMapping("/get-user")
+  @SendToUser("/topic/updated-user")
+  public User getUser(@Payload UUID userId) {
+    return userRepository.findById(userId).orElse(null);
   }
 
   @GetMapping("profile/{userId}")
@@ -86,5 +94,7 @@ public class UserController {
 
     authenticationManager.updateSession(
         userRepository.findById(updatedUser.getId()).orElseThrow(), session);
+
+    postgresSubscriptions.send("UpdatedUserId", user.getId());
   }
 }

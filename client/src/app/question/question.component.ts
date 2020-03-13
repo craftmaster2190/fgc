@@ -178,10 +178,12 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   getQuestion = () => {
     const question = this.answersBus.getQuestion(this.id);
-    (question?.correctAnswers || []).sort().forEach(c => {
-      this.correctAnswers.add(c);
-      this.addToPossibleAnswers(c);
-    });
+    if (this.authService.getCurrentUser()?.isAdmin) {
+      (question?.correctAnswers || []).sort().forEach(c => {
+        this.correctAnswers.add(c);
+        this.addToPossibleAnswers(c);
+      });
+    }
     return question;
   };
 

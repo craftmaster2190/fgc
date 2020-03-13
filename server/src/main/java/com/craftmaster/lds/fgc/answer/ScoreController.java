@@ -7,6 +7,7 @@ import com.craftmaster.lds.fgc.user.User;
 import com.craftmaster.lds.fgc.user.UserRepository;
 import java.security.Principal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +32,7 @@ public class ScoreController {
   private final SimpMessageSendingOperations simpMessageSendingOperations;
   private final TransactionalContext transactionalContext;
 
-  // @Scheduled(fixedDelay = 15000L)
+  @Scheduled(fixedDelay = 15000L)
   public void sendUsersScores() {
     simpUserRegistry
         .getUsers()
@@ -44,10 +46,26 @@ public class ScoreController {
             });
   }
 
+  @Scheduled(fixedDelay = 60000L)
+  public void sendTop25Scores() {
+    userRepository.findAll().forEach(user -> transactionalContext.run(() -> get(user.getId())));
+    familyRepository
+        .findAll()
+        .forEach(family -> transactionalContext.run(() -> get(family.getId())));
+    simpMessageSendingOperations.convertAndSend(
+        "/topic/score", scoreRepository.findTop25ByOrderByScoreDesc());
+  }
+
   @SubscribeMapping("score")
-  public Score listenToScores(Principal principal) {
+  public List<Score> listenToScores(Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
-    return transactionalContext.run(() -> get(user.getId()));
+
+    List<Score> topScores = scoreRepository.findTop25ByOrderByScoreDesc();
+    if (topScores.stream().noneMatch(score -> score.getUserOrFamilyId().equals(user.getId()))) {
+      topScores.add(transactionalContext.run(() -> get(user.getId())));
+    }
+
+    return topScores;
   }
 
   @Transactional
@@ -92,8 +110,8 @@ public class ScoreController {
               var average =
                   family.getUsers().stream()
                       .filter(user -> get(user.getId()).getScore() > 0)
-                      .map(user -> (double) get(user.getId()).getScore() * weight)
-                      .reduce(0.0, (a, b) -> a + b);
+                      .mapToDouble(user -> (double) get(user.getId()).getScore() * weight)
+                      .sum();
               long score = Math.round(Math.ceil(average));
               return familyScore.setScore(score);
             });

@@ -3,6 +3,8 @@ import { DeviceUsersService } from "../auth/device-users.service";
 import { ScoreboardComponent } from "./scoreboard.component";
 import { ScoresService } from "./scores.service";
 import { of } from "rxjs";
+import { UserUpdatesService } from "../auth/user-updates.service";
+import { Optional } from "../util/optional";
 
 describe("ScoreboardComponent", () => {
   let component: ScoreboardComponent;
@@ -18,6 +20,10 @@ describe("ScoreboardComponent", () => {
             getUserCount: () => Promise.resolve(),
             listenToScores: () => of().subscribe()
           }
+        },
+        {
+          provide: UserUpdatesService,
+          useValue: { getIfPresent: () => Optional.of() }
         },
         {
           provide: DeviceUsersService,

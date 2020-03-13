@@ -5,6 +5,8 @@ import { DeviceUsersService } from "../auth/device-users.service";
 import { ToastService } from "../toast/toast.service";
 import { ChatBusService } from "./chat-bus.service";
 import { ChatComponent } from "./chat.component";
+import { UserUpdatesService } from "../auth/user-updates.service";
+import { Optional } from "../util/optional";
 
 describe("ChatComponent", () => {
   let component: ChatComponent;
@@ -14,6 +16,10 @@ describe("ChatComponent", () => {
     TestBed.configureTestingModule({
       declarations: [ChatComponent],
       providers: [
+        {
+          provide: UserUpdatesService,
+          useValue: { getIfPresent: () => Optional.of() }
+        },
         {
           provide: ChatBusService,
           useValue: { listen: () => of().subscribe() }
