@@ -383,4 +383,23 @@
 </ng-template>
 
 <app-chat></app-chat>
+<div>
+  <a
+    href="https://twitter.com/intent/tweet?text=Let%27s%20play%20fantasygc.org&amp;url=fantasygc.org"
+    target="_blank"
+    class="share-twitter"
+  >
+    <i class="fab fa-twitter"></i>
+  </a>
+  <a
+    href="https://www.facebook.com/sharer/sharer.php?display=page&u=fantasygc.org"
+    target="_blank"
+    class="share-facebook"
+  >
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a *ngIf="showShareButton()" (click)="share()" class="share-native">
+    <i class="fas fa-share-alt"></i>
+  </a>
+</div>
 <app-scoreboard></app-scoreboard>

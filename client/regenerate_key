@@ -1,0 +1,7 @@
+#!/bin/bash
+openssl req -new -x509 \
+	-newkey rsa:8192 \
+	-sha256 -nodes \
+	-keyout localhost.key \
+	-days 365 -out localhost.crt \
+	-config certificate.cnf

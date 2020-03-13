@@ -55,5 +55,8 @@ out/
 .nb-gradle/
 bin/
 
+client/localhost.crt
+client/localhost.key
+
 server/src/main/resources/static/
 deploy

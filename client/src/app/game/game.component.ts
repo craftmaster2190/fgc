@@ -49,4 +49,15 @@ export class GameComponent implements OnInit, OnDestroy {
       }, 100);
     }
   }
+
+  showShareButton() {
+    return !!(navigator as any).share;
+  }
+
+  share() {
+    (navigator as any).share({
+      title: "Let's Play FantasyGC.org",
+      url: "https://fantasygc.org"
+    });
+  }
 }

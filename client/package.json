@@ -12,7 +12,8 @@
     "lint": "ng lint --fix=true --files src/app",
     "ng": "ng",
     "predeploy": "rimraf ../server/src/main/resources/static/ && mkdirp ../server/src/main/resources/static/",
-    "start": "ng serve --proxy-config proxy-conf.json",
+    "start": "ng serve",
+    "start-ssl": "./regenerate_key && ng serve --ssl=true --sslKey=localhost.key --sslCert=localhost.crt",
     "test": "ng test",
     "test-ci": "ng test --watch=false --browsers=ChromeHeadless"
   },
