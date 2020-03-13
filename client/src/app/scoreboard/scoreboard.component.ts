@@ -33,7 +33,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
     this.subscription = this.scoresService.listenToScores(scores => {
       this.scores = scores
         .filter(score => {
-          const user = this.getUserOrFamily(score);
+          const user = this.getUserOrFamily(score.userOrFamilyId);
           return score.score > 0 && (!user || !(user as User).isAdmin);
         })
         .sort((a, b) => {
