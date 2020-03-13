@@ -5,6 +5,7 @@
     "build": "ng build --prod",
     "build-dev": "ng build",
     "clean": "rimraf dist && yarn predeploy",
+    "dev": "npm run start",
     "deploy": "cp -r dist/fgc/* ../server/src/main/resources/static/",
     "e2e": "ng e2e",
     "format": "prettier --write \"src/**/*.{ts,js,json,html,css,scss}\"",

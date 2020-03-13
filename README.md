@@ -10,11 +10,14 @@ March 11, 2020 Joe separated the client and server code.
 
 ## Up and running
 
+Install yarn
 To build the client, change into the client dir and run yarn 
 To run the client, change into the client dir and call `npm run start`
 
+Install postgres and setup with username/passowrd `postgress`
 To build the server change into the server dir and run `gradlew build` 
 To run the server change into thserver dir and run `gradlew runBoot`
+you may need to pass `-Dspring.session.jdbc.initialize-schema=always` at least once to setup the database
 
 There is a make file and a start/stop script in the root dir. Your MMV
 

@@ -1,47 +1,63 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.8.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-  id "com.diffplug.gradle.spotless" version "3.27.2"
-	id 'java'
+    id 'com.diffplug.gradle.spotless' version '3.27.2'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    id 'org.flywaydb.flyway' version '6.3.0'
+    id 'org.springframework.boot' version '2.1.8.RELEASE'
 }
 
 group = 'com.craftmaster.lds'
-version = '1.0'
 sourceCompatibility = '11'
+version = '1.0'
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    flyway {
+        extendsFrom implementation
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation "org.springframework.boot:spring-boot-starter-security"
-	implementation "org.springframework.boot:spring-boot-starter-aop"
-	implementation "org.springframework.session:spring-session-jdbc"
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-  annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  runtimeOnly 'com.h2database:h2'
-  implementation "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3"
-  compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	compile 'com.github.ben-manes.caffeine:caffeine:2.8.0'
-  compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.3.0-rc1'
-  compile 'com.google.googlejavaformat:google-java-format:1.7'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.3.0-rc1'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+    implementation 'com.google.googlejavaformat:google-java-format:1.7'
+    implementation 'com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.session:spring-session-jdbc'
+    flyway 'org.flywaydb:flyway-core:6.3.0'
+    flyway 'org.postgresql:postgresql:42.2.11.jre7'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+// to postgre dump a schema
+// pg_dump -O -T fgc.flyway_schema_history -U postgres fgc > V1__Base_version.sql
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/fgc'
+    user = 'postgres'
+    password = 'postgres'
+    schemas = ['fgc']    
+    locations = ['filesystem:/src/flyway']
+    configurations = [ 'flyway' ]
 }
 
 // if using sub-project with eclipse
@@ -55,7 +71,7 @@ eclipse {
 }
 
 spotless {
-  java {
-    googleJavaFormat()
-  }
+    java {
+        googleJavaFormat()
+    }
 }
