@@ -18,6 +18,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   scores: Array<Score>;
 
   subscription: Subscription;
+  familyScoringOpen: boolean;
 
   constructor(
     public readonly scoresService: ScoresService,

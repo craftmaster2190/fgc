@@ -1,15 +1,10 @@
 package com.craftmaster.lds.fgc.answer;
 
 import com.craftmaster.lds.fgc.db.TransactionalContext;
-import com.craftmaster.lds.fgc.user.FamilyRepository;
-import com.craftmaster.lds.fgc.user.NotFoundException;
-import com.craftmaster.lds.fgc.user.User;
-import com.craftmaster.lds.fgc.user.UserRepository;
+import com.craftmaster.lds.fgc.user.*;
 import java.security.Principal;
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -101,19 +96,34 @@ public class ScoreController {
   }
 
   Optional<Score> generateFamilyScore(Score familyScore) {
-    return familyRepository
-        .findById(familyScore.getUserOrFamilyId())
-        .map(
-            family -> {
-              var familySize = family.getUsers().size();
-              var weight = (double) 1 / familySize;
-              var average =
-                  family.getUsers().stream()
-                      .filter(user -> get(user.getId()).getScore() > 0)
-                      .mapToDouble(user -> (double) get(user.getId()).getScore() * weight)
-                      .sum();
-              long score = Math.round(Math.ceil(average));
-              return familyScore.setScore(score);
-            });
+    Optional<Family> family = familyRepository.findById(familyScore.getUserOrFamilyId());
+    if (family.isEmpty()) {
+      return Optional.empty();
+    }
+
+    double[] familyScores =
+        family.map(Family::getUsers).orElseGet(Set::of).stream()
+            .map(user -> get(user.getId()))
+            .filter(score -> score.getScore() > 0)
+            .mapToDouble(Score::getScore)
+            .toArray();
+
+    if (familyScores.length < 3) {
+      return Optional.of(familyScore.setScore(0));
+    }
+
+    OptionalDouble familyAverage = Arrays.stream(familyScores).average();
+    if (familyAverage.isEmpty()) {
+      return Optional.of(familyScore.setScore(0));
+    }
+
+    var familyPoints = rootMeanSquare(familyScores);
+
+    return Optional.of(familyScore.setScore(Math.round(familyPoints) + familyScores.length));
+  }
+
+  public static double rootMeanSquare(double... numbers) {
+    var meanSquare = Arrays.stream(numbers).map(num -> Math.pow(num, 2)).sum() / numbers.length;
+    return Math.sqrt(meanSquare);
   }
 }

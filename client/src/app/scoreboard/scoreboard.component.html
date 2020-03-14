@@ -1,30 +1,47 @@
 <h3>Top Players</h3>
-<h4 *ngIf="!scores?.length">No scores yet.</h4>
-<table class="table table-striped">
-  <tbody>
-    <tr *ngFor="let score of scores" [class.me]="isMe(score)">
-      <th scope="row">{{ score.score }}</th>
-      <td>
-        <app-image
-          *ngIf="getUserOrFamily(score.userOrFamilyId)?.hasProfileImage"
-          [target]="'/api/user/profile/' + score.userOrFamilyId"
-          imgStyle="width: 30px; border-radius: 4px;"
-        ></app-image>
-        <span [class.family]="getUserOrFamily(score.userOrFamilyId)?.isFamily">
-          {{ getUserOrFamily(score.userOrFamilyId)?.name }}
-        </span>
-        <span
-          *ngIf="!getUserOrFamily(score.userOrFamilyId)?.isFamily"
-          class="family"
-          >({{ getUserOrFamily(score.userOrFamilyId)?.family?.name }})</span
-        >
-      </td>
-      <td>
-        {{
-          getUserOrFamily(score.userOrFamilyId)?.isFamily ? "Family" : "Player"
-        }}
-      </td>
-    </tr>
-  </tbody>
-</table>
+<ng-template [ngIf]="!scores?.length">
+  <h4>No scores yet.</h4>
+  <table class="table table-striped">
+    <tbody>
+      <tr *ngFor="let score of scores" [class.me]="isMe(score)">
+        <th scope="row">{{ score.score }}</th>
+        <td>
+          <app-image
+            *ngIf="getUserOrFamily(score.userOrFamilyId)?.hasProfileImage"
+            [target]="'/api/user/profile/' + score.userOrFamilyId"
+            imgStyle="width: 30px; border-radius: 4px;"
+          ></app-image>
+          <span
+            [class.family]="getUserOrFamily(score.userOrFamilyId)?.isFamily"
+          >
+            {{ getUserOrFamily(score.userOrFamilyId)?.name }}
+          </span>
+          <span
+            *ngIf="!getUserOrFamily(score.userOrFamilyId)?.isFamily"
+            class="family"
+            >({{ getUserOrFamily(score.userOrFamilyId)?.family?.name }})</span
+          >
+        </td>
+        <td>
+          {{
+            getUserOrFamily(score.userOrFamilyId)?.isFamily
+              ? "Family"
+              : "Player"
+          }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+<div class="family-scoring" [class.family-scoring-open]="familyScoringOpen">
+  <a (click)="familyScoringOpen = !familyScoringOpen"
+    >Understand Family Scoring <i class="fas fa-chevron-right"></i
+  ></a>
+  <div class="family-scoring-details">
+    Family scores are calculated as the quadratic mean of all scoring players in
+    a family plus a slight bonus for larger family size. <br />
+    A family must have at least 3 scoring players to get a family score. <br />
+    To be a scoring player, a player must at least 1 point.
+  </div>
+</div>
 <h3 *ngIf="userCount">Total Players: {{ userCount }}</h3>

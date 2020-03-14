@@ -8,7 +8,7 @@ import com.craftmaster.lds.fgc.db.ObjectMapperHolderBuilder;
 import com.craftmaster.lds.fgc.question.QuestionBuilder;
 import com.craftmaster.lds.fgc.user.FamilyBuilder;
 import com.craftmaster.lds.fgc.user.FamilyRepository;
-import com.craftmaster.lds.fgc.user.UserBuilder;
+import com.craftmaster.lds.fgc.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class ScoreControllerTest {
   @Test
   public void testWithCorrectAnswer() {
     controller = ScoreControllerBuilder.get().withAnswerRepository(answerRepository).build();
-    Long pointValue = 10l;
+    Long pointValue = 10L;
     when(answerRepository.findByAnswerPk_UserId(userId_a))
         .thenReturn(
             AnswerBuilder.asList(
@@ -70,7 +70,7 @@ public class ScoreControllerTest {
   @Test
   public void testWithSomeCorrectAnswer() {
     controller = ScoreControllerBuilder.get().withAnswerRepository(answerRepository).build();
-    Long pointValue = 10l;
+    Long pointValue = 10L;
     when(answerRepository.findByAnswerPk_UserId(userId_a))
         .thenReturn(
             AnswerBuilder.asList(
@@ -89,7 +89,7 @@ public class ScoreControllerTest {
   @Test
   public void testWithOutCorrectAnswer() {
     controller = ScoreControllerBuilder.get().withAnswerRepository(answerRepository).build();
-    Long pointValue = 10l;
+    Long pointValue = 10L;
     when(answerRepository.findByAnswerPk_UserId(userId_a))
         .thenReturn(
             AnswerBuilder.asList(
@@ -101,44 +101,75 @@ public class ScoreControllerTest {
                             .build())
                     .withAnswer("joe")
                     .build()));
-    assertEquals("Our score", 0l, controller.calculateUserScore(userId_a));
+    assertEquals("Our score", 0L, controller.calculateUserScore(userId_a));
   }
 
   @Test
-  public void generateFamilyScore() {
-    Instant now = Instant.now();
-    Score familyScore = ScoreBuilder.get().withScore(10).withUserOrFamilyId(familyId).build();
+  public void generateFamilyScore1() {
+    assertEquals("Starting team", 25L, testFamilyScores(0, 10, 20, 30));
+    assertEquals("Lowest scoring player leaves team", 25L, testFamilyScores(10, 20, 30));
+    assertEquals(
+        "Lowest scoring player leaves team (must have at least 3 players)",
+        0L,
+        testFamilyScores(20, 30));
+
+    assertEquals("Lower scoring player joins team", 24L, testFamilyScores(5, 20, 30));
+    assertEquals("Higher scoring player joins team", 27L, testFamilyScores(20, 20, 30));
+  }
+
+  @Test
+  public void generateFamilyScore2() {
+    assertEquals("Starting team", 30L, testFamilyScores(0, 10, 20, 30, 25, 35));
+    assertEquals("Lowest scoring player leaves team", 30L, testFamilyScores(10, 20, 30, 25, 35));
+    assertEquals("Higher scoring player joins team", 34L, testFamilyScores(10, 20, 30, 25, 35, 40));
+    assertEquals("Lower scoring player gains points", 35, testFamilyScores(15, 20, 30, 25, 35, 40));
+    assertEquals(
+        "Higher scoring player gains points", 36L, testFamilyScores(10, 20, 30, 25, 35, 45));
+    assertEquals("All player gains points", 40, testFamilyScores(15, 25, 35, 30, 40, 50));
+
+    assertEquals(
+        "Lowest scoring player leaves team 5 remaining", 42, testFamilyScores(25, 35, 30, 40, 50));
+    assertEquals(
+        "Lowest scoring player leaves team 4 remaining", 43, testFamilyScores(35, 30, 40, 50));
+    assertEquals("Lowest scoring player leaves team 3 remaining", 45, testFamilyScores(35, 40, 50));
+  }
+
+  @Test
+  public void generateFamilyScore3() {
+    assertEquals("Team of 3 players", 43L, testFamilyScores(40, 40, 40));
+    assertEquals("Team of 4 players", 44L, testFamilyScores(40, 40, 40, 40));
+    assertEquals("Team of 5 players", 45L, testFamilyScores(40, 40, 40, 40, 40));
+    assertEquals("Team of 6 players", 46L, testFamilyScores(40, 40, 40, 40, 40, 40));
+    assertEquals("Team of 7 players", 47L, testFamilyScores(40, 40, 40, 40, 40, 40, 40));
+    assertEquals("Team of 8 players", 48L, testFamilyScores(40, 40, 40, 40, 40, 40, 40, 40));
+    assertEquals("Team of 9 players", 49L, testFamilyScores(40, 40, 40, 40, 40, 40, 40, 40, 40));
+    assertEquals(
+        "Team of 10 players", 50L, testFamilyScores(40, 40, 40, 40, 40, 40, 40, 40, 40, 40));
+  }
+
+  private long testFamilyScores(long... scores) {
     controller =
         ScoreControllerBuilder.get()
             .withFamilyRepository(familyRepository)
             .withScoreRepository(scoreRepository)
             .build();
 
-    when(familyRepository.findById(familyId))
-        .thenReturn(
-            Optional.of(
-                FamilyBuilder.get()
-                    .withId(familyId)
-                    .withUser(UserBuilder.get().withId(userId_a).build())
-                    .withUser(UserBuilder.get().withId(userId_b).build())
-                    .withUser(UserBuilder.get().withId(userId_c).build())
-                    .withUser(UserBuilder.get().withId(userId_d).build())
-                    .build()));
-    // the average of 10,20,30 is 20, but in a family of 4, each gets .25% of their
-    // score so the weighted average is 15
-    when(scoreRepository.findById(userId_a))
-        .thenReturn(Optional.of(ScoreBuilder.get().withScore(10).withUpdatedAt(now).build()));
-    when(scoreRepository.findById(userId_b))
-        .thenReturn(Optional.of(ScoreBuilder.get().withScore(20).withUpdatedAt(now).build()));
-    when(scoreRepository.findById(userId_c))
-        .thenReturn(Optional.of(ScoreBuilder.get().withScore(30).withUpdatedAt(now).build()));
-    // this one is dragging everyone down
-    when(scoreRepository.findById(userId_d)).thenReturn(Optional.ofNullable(null));
+    Instant now = Instant.now();
+    Score familyScore = ScoreBuilder.get().withScore(10).withUserOrFamilyId(familyId).build();
 
-    // deal with any missing scores. Fake out the save on null (userId_d above)
+    FamilyBuilder familyBuilder = FamilyBuilder.get().withId(familyId);
+
+    for (long score : scores) {
+      UUID userId = UUID.randomUUID();
+      familyBuilder.withUser(new User().setId(userId));
+      when(scoreRepository.findById(userId))
+          .thenReturn(Optional.of(new Score().setScore(score).setUpdatedAt(now)));
+    }
+
+    when(familyRepository.findById(familyId)).thenReturn(Optional.of(familyBuilder.build()));
     when(scoreRepository.save(any(Score.class)))
-        .thenReturn(ScoreBuilder.get().withScore(0).withUpdatedAt(now).build());
+        .thenAnswer(invocation -> invocation.getArgument(0));
 
-    assertEquals("Family Score", 15l, controller.generateFamilyScore(familyScore).get().getScore());
+    return controller.generateFamilyScore(familyScore).orElseThrow().getScore();
   }
 }

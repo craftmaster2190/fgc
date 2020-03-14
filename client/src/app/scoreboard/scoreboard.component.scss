@@ -9,3 +9,28 @@ p {
 .me {
   font-weight: bold;
 }
+
+.family-scoring {
+  margin-bottom: 20px;
+
+  .fa-chevron-right {
+    transition: transform 600ms;
+  }
+
+  .family-scoring-details {
+    transition: height 600ms;
+  }
+
+  &.family-scoring-open {
+    .fa-chevron-right {
+      transform: rotate(90deg);
+    }
+  }
+
+  &:not(.family-scoring-open) {
+    .family-scoring-details {
+      height: 0;
+      overflow: hidden;
+    }
+  }
+}
