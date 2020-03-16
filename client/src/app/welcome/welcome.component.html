@@ -6,6 +6,10 @@
   ></div>
 </div>
 
+<div *ngIf="serverError" class="alert alert-danger">
+  Something seems to have gone wrong. We're working on it.
+</div>
+
 <ng-template #state>
   <div *ngIf="isStateUnknown()">
     <p class="fade-in-0"><b>Welcome to Fantasy General Conference.</b></p>

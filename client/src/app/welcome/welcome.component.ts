@@ -21,6 +21,7 @@ import timeout from "../util/timeout";
 export class WelcomeComponent implements OnInit {
   loading: boolean = true;
   showRegisterUser: boolean;
+  serverError: boolean;
   constructor(
     public readonly authService: DeviceUsersService,
     private readonly router: Router
@@ -35,7 +36,11 @@ export class WelcomeComponent implements OnInit {
     ])
       .then(
         () => (this.loading = false),
-        () => (this.loading = false)
+        err => {
+          this.loading = false;
+          this.serverError = true;
+          return Promise.reject(err);
+        }
       )
       .then(() => {
         if (this.isStateUnknown()) {
