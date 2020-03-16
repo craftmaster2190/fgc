@@ -40,7 +40,7 @@ jobs:
         run: yarn --cwd client test-ci
 
       - name: Setup Sentry
-        run: sed -i '' "s|XXX_SENTRY_DSN_XXX|${SENTRY_DSN}|" client/src/index.html
+        run: sed -i '' "s|XXX_SENTRY_DSN_XXX|${{ secrets.SENTRY_DSN }}|" client/src/index.html
 
       - name: Yarn Build
         run: yarn --cwd client build
