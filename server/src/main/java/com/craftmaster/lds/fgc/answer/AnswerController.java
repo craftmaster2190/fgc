@@ -6,6 +6,7 @@ import com.craftmaster.lds.fgc.user.User;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class AnswerController {
 
   @MessageMapping("answer")
   @SendToUser("/topic/answer")
+  @Transactional
   public void markAnswer(@Valid @Payload Answer answer, Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
     log.debug("Received answer {} {}", answer, user);
