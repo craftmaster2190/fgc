@@ -25,7 +25,7 @@
   </p>
 </ng-template>
 
-<div *ngIf="authService.getCurrentUser().isAdmin" class="admin-only">
+<div *ngIf="authService.getCurrentUser()?.isAdmin" class="admin-only">
   <b>Admin Only</b>
   <button class="btn btn-outline-dark" (click)="answerBusService.disableAll()">
     Disable All
