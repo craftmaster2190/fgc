@@ -1,11 +1,36 @@
 <div>
   Admin
   <div>
-    <label for="switch">Enable Family?</label>
+    <label>Enable Family?</label>
     <input
       type="checkbox"
       [checked]="isFamilyChangeEnabled"
       (change)="toggleFamilyChangeEnabled()"
     />
+  </div>
+  <div>
+    <label>Edit Family</label>
+    <ul>
+      <li *ngFor="let family of families">
+        {{ family.name }}
+        <label for="newName">New Name</label>
+        <input
+          #newName
+          type="text"
+          class="form-control"
+          id="newName"
+          name="newName"
+          [(ngModel)]="family.name"
+          autocomplete="change name"
+        /><button (click)="updateFamilyName(newName.value, family)">
+          Update
+        </button>
+
+        <div *ngIf="family.userNames.length === 0">No user names</div>
+        <ul *ngIf="family.userNames.length > 0">
+          <li *ngFor="let name of family.userNames">{{ name }}</li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </div>
