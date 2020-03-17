@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -104,11 +104,4 @@ jobs:
           aws-region: us-east-2
 
       - name: Upload Versioned Artifacts to S3
-        run: [[ `git rev-parse --abbrev-ref HEAD` = 'master' ]] && aws s3 sync server/build/libs/ s3://fantasygc/deploy/
-
-      - name: Upload Latest Artifacts to S3
-        run: [[ `git rev-parse --abbrev-ref HEAD` = 'master' ]] && aws s3 cp server/build/libs/fgc-*.jar s3://fantasygc/deploy/fgc-latest.jar
-#on:
-#  push:
-#    branches:
-#      - master
+        run: ./push-to-s3.bash
