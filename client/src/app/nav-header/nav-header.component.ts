@@ -49,6 +49,9 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  openAbout(content) {
+    this.modalService.open(content);
+  }
   getUsername() {
     return this.authService.getCurrentUser()?.name || "";
   }

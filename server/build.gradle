@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.0'
     implementation 'com.google.googlejavaformat:google-java-format:1.7'
     implementation 'com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3'
+    implementation 'io.sentry:sentry-spring:1.7.30'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
@@ -48,7 +49,6 @@ dependencies {
     flyway 'org.postgresql:postgresql:42.2.11.jre7'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    compile 'io.sentry:sentry-spring:1.7.30'
 }
 // to postgre dump a schema
 // pg_dump -O -T fgc.flyway_schema_history -U postgres fgc > V1__Base_version.sql

@@ -1,9 +1,37 @@
+<div class="left-side">
+  <a (click)="openAbout(aboutContent)">
+    <img src="assets/slt.png" height="54" width="46" />
+  </a>
+</div>
+
 <marquee behavior="scroll" direction="left">Fantasy General Conference</marquee>
+
 <div class="right-side">
   <a (click)="openModal(modalContent)">
     <img src="assets/logo-small.png" />
   </a>
 </div>
+
+<ng-template #aboutContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">About</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="text-left">
+      <p>I created FGC for some fun</p>
+      <p>copywright Bryce Fisher all rights reserved</p>
+      <p>If I break your computer, boo</p>
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #modalContent let-modal>
   <div class="modal-body">
