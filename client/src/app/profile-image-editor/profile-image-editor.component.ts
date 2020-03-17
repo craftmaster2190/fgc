@@ -144,11 +144,6 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
     return readAndCompressImage(dataURIToBlob(this.finalImage), config)
       .then(resizedImage => blobToDataURL(resizedImage))
       .then(imageToUpload2 => {
-        console.log(
-          "Uploading:",
-          this.finalImage.slice(-30),
-          imageToUpload2.slice(-30)
-        );
         return this.http.post("/api/user/profile", imageToUpload2).toPromise();
       })
       .then(

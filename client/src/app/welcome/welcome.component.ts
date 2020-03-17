@@ -82,7 +82,6 @@ export class WelcomeComponent implements OnInit {
 
   login(user: User) {
     this.loading = true;
-    console.log("Login", user);
     this.authService
       .loginUser(user)
       .then(() => this.router.navigate(["game"]))
