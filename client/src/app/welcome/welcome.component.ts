@@ -1,13 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
   switchMap,
-  tap
+  tap,
+  catchError
 } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { User } from "../auth/user";
@@ -106,7 +107,11 @@ export class WelcomeComponent implements OnInit {
           .searchFamilies(term)
           .pipe(map(family => family.map(f => f.name)))
       ),
-      tap(() => (this.searchingFamilies = false))
+      tap(() => (this.searchingFamilies = false)),
+      catchError(err => {
+        this.serverError = true;
+        return throwError(err);
+      })
     );
   };
 

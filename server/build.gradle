@@ -2,6 +2,8 @@ plugins {
     id 'com.diffplug.gradle.spotless' version '3.27.2'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id 'eclipse'
+    id 'idea'
     id 'org.flywaydb.flyway' version '6.3.0'
     id 'org.owasp.dependencycheck' version '5.3.1'
     id 'org.springframework.boot' version '2.1.8.RELEASE'
@@ -63,13 +65,21 @@ flyway {
     configurations = [ 'flyway' ]
 }
 
-// if using sub-project with eclipse
-apply plugin: 'eclipse'
-
 eclipse {
     project {
     // this is the name of the parent dir
         name = 'server'
+    }
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
 

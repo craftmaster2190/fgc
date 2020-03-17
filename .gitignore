@@ -60,3 +60,7 @@ client/localhost.key
 
 server/src/main/resources/static/
 deploy
+
+server/fgc.iml
+server/fgc.ipr
+server/fgc.iws
