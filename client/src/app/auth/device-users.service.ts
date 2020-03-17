@@ -5,6 +5,7 @@ import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -95,5 +96,13 @@ export class DeviceUsersService {
 
   getCurrentUser() {
     return this.currentUser;
+  }
+
+  toggleFamilyChangeEnabled(): Observable<Boolean> {
+    return this.http.put<Boolean>("/api/auth/familyChangeEnable", {}, {});
+  }
+
+  getFamilyChangeEnabled(): Observable<Boolean> {
+    return this.http.get<Boolean>("/api/auth/familyChangeEnable");
   }
 }

@@ -20,7 +20,7 @@ import { DeviceUsersService } from "../auth/device-users.service";
 export class NavHeaderComponent implements OnInit, OnDestroy {
   name: string;
   family: string;
-  familyChangeEnabled: boolean;
+  isFamilyChangeEnabled: Boolean;
   readonly updateUserSubject = new Subject();
   private subscription: Subscription;
 
@@ -31,12 +31,14 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.familyChangeEnabled = false;
     this.subscription = this.updateUserSubject
       .pipe(debounce(() => interval(300)))
       .subscribe(() =>
         this.authService.updateUser({ name: this.name, family: this.family })
       );
+    this.authService.getFamilyChangeEnabled().subscribe(data => {
+      this.isFamilyChangeEnabled = data;
+    });
   }
 
   ngOnDestroy() {
@@ -55,17 +57,10 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     this.modalService.open(content);
   }
 
-  isAdmin = () => {
-    return this.authService.getCurrentUser()?.isAdmin;
-  };
-
-  toggleFamilyChangeEnabled() {
-    this.familyChangeEnabled = !this.familyChangeEnabled;
-  }
-
   disableFamily() {
     // allow an admin to override during game play
-    if (this.familyChangeEnabled) {
+    if (this.isFamilyChangeEnabled) {
+      // remember to NOT disable
       return false;
     }
     // Date(year, month, day, hours, minutes, seconds, milliseconds)
