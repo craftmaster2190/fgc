@@ -89,11 +89,6 @@ spotless {
     }
 }
 
-apply plugin: 'org.owasp.dependencycheck'
-check.dependsOn dependencyCheckAnalyze
 dependencyCheck {
-    autoUpdate=false
-    cveValidForHours=1
     format='ALL'
-    failOnError=false
 }

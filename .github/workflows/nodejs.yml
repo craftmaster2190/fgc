@@ -1,9 +1,6 @@
 name: Test and Build
 
-on:
- push:
-    branches:
-      - master
+on: [push]
 jobs:
   cancel:
     name: Cancel Previous Runs
@@ -14,6 +11,26 @@ jobs:
         with:
           workflow_id: 617433
           access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  owasp:
+    name: OWASP
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "13"
+
+      - name: Gradle Dependency Check Analyze
+        working-directory: ./server
+        run: ./gradlew dependencyCheckAnalyze
+
+      - name: Upload Artifacts
+          uses: actions/upload-artifact@v1
+          with:
+            name: Build Files
+            path: server/build/reports/
 
   build:
     name: Test and Build
@@ -88,3 +105,8 @@ jobs:
 
       - name: Upload Latest Artifacts to S3
         run: aws s3 cp server/build/libs/fgc-*.jar s3://fantasygc/deploy/fgc-latest.jar
+
+#on:
+#  push:
+#    branches:
+#      - master
