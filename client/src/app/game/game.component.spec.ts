@@ -25,7 +25,8 @@ describe("GameComponent", () => {
           provide: AnswerBusService,
           useValue: {
             getAnswer: () => void 0,
-            listenForQuestionsAndAnswers: () => of().subscribe()
+            listenForQuestionsAndAnswers: () => of().subscribe(),
+            getLoadedFirstAnswer: () => true
           }
         },
         {
