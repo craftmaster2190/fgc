@@ -72,6 +72,10 @@
       </div>
 
       <div class="form-group">
+        <div ng-if="isAdmin() || true">
+          <label for="switch">Enable Family?</label>
+          <input type="checkbox" (change)="toggleFamilyChangeEnabled()" />
+        </div>
         <label for="family">My Family Name (Team Name)</label>
         <input
           type="search"

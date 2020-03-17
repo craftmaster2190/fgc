@@ -14,3 +14,6 @@ public class FgcApplication {
     SpringApplication.run(FgcApplication.class, args);
   }
 }
+
+//notes
+// -Dspring.session.jdbc.initialize-schema=always
