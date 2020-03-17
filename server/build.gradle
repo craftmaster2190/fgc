@@ -85,4 +85,5 @@ dependencyCheck {
     autoUpdate=false
     cveValidForHours=1
     format='ALL'
+    failOnError=false
 }
