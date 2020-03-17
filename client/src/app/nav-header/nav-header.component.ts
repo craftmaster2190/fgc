@@ -52,6 +52,13 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   openAbout(content) {
     this.modalService.open(content);
   }
+
+  disableFamily() {
+    // Date(year, month, day, hours, minutes, seconds, milliseconds)
+    // month is 0 based, jan = 0
+    // so just before midnight april 4th, we disable.
+    return new Date() > new Date(2020, 3, 4, 23, 59, 59, 0);
+  }
   getUsername() {
     return this.authService.getCurrentUser()?.name || "";
   }

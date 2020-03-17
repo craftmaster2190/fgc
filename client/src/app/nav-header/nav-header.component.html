@@ -78,6 +78,7 @@
           class="form-control"
           id="family"
           name="family"
+          [disabled]="disableFamily()"
           [(ngModel)]="family"
           autocomplete="off"
           [ngbTypeahead]="searchFamilies"
