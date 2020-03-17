@@ -44,8 +44,8 @@ public class AuthController {
 
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
-  public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest,
-      HttpSession session) {
+  public User createUser(
+      @RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     configService.validateAcceptingNewUsers();
     var user = userRepository.save(new User());
@@ -54,11 +54,13 @@ public class AuthController {
   }
 
   @PostMapping("login")
-  public User loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest,
-      HttpSession session) {
+  public User loginUser(
+      @RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
-    var user = userRepository.findById(loginUserRequest.getUserId())
-        .orElseThrow(accessDeniedExceptionFactory::get);
+    var user =
+        userRepository
+            .findById(loginUserRequest.getUserId())
+            .orElseThrow(accessDeniedExceptionFactory::get);
     authenticationManager.authenticate(user, session, loginUserRequest.getDeviceId());
     return user;
   }
@@ -71,8 +73,10 @@ public class AuthController {
   @PreAuthorize("isAuthenticated()")
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
-  public User patchUser(@AuthenticationPrincipal User user,
-      @RequestBody @Valid PatchUserRequest patchUserRequest, HttpSession session) {
+  public User patchUser(
+      @AuthenticationPrincipal User user,
+      @RequestBody @Valid PatchUserRequest patchUserRequest,
+      HttpSession session) {
     log.info("Patching user: {} name: {}", user.getId(), user.getName());
     Optional.ofNullable(patchUserRequest.getName())
         // .filter((name) -> {
@@ -84,8 +88,11 @@ public class AuthController {
         // })
         .ifPresent(user::setName);
     if (patchUserRequest.getFamily() != null) {
-      user.setFamily(familyRepository.findByNameIgnoreCase(patchUserRequest.getFamily()).orElseGet(
-          () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+      user.setFamily(
+          familyRepository
+              .findByNameIgnoreCase(patchUserRequest.getFamily())
+              .orElseGet(
+                  () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
     }
     User savedUser = userRepository.save(user);
     authenticationManager.updateSession(savedUser, session);
@@ -98,7 +105,8 @@ public class AuthController {
   public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
     Optional<Family> familyOp = familyRepository.findById(UUID.fromString(request.getFamilyId()));
     if (familyOp.isPresent()) {
-      log.info("Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
+      log.info(
+          "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
       Family family = familyOp.get().setName(request.getNewName());
       familyRepository.save(family);
       return family;
@@ -139,11 +147,15 @@ public class AuthController {
   @PostConstruct
   public void generateAdmin() {
     String adminName = "Admin";
-    userRepository.findByNameIgnoreCase(adminName).ifPresentOrElse(existingAdmin -> {
-      log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
-    }, () -> {
-      var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
-      log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
-    });
+    userRepository
+        .findByNameIgnoreCase(adminName)
+        .ifPresentOrElse(
+            existingAdmin -> {
+              log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
+            },
+            () -> {
+              var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
+              log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
+            });
   }
 }
