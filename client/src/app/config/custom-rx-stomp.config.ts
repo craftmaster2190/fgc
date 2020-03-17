@@ -1,15 +1,7 @@
 import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
+import * as SockJS from "sockjs-client";
 
 export const customRxStompConfig: InjectableRxStompConfig = {
-  // Which server?
-  brokerURL:
-    `${location.protocol.indexOf("https") > -1 ? "wss" : "ws"}` +
-    `://${location.hostname}:${location.port}/game-ws`,
-
-  // Headers
-  // Typical keys: login, passcode, host
-  connectHeaders: {},
-
   // How often to heartbeat?
   // Interval in milliseconds, set to 0 to disable
   heartbeatIncoming: 0, // Typical value 0 - disabled
@@ -18,9 +10,16 @@ export const customRxStompConfig: InjectableRxStompConfig = {
   // Wait in milliseconds before attempting auto reconnect
   // Set to 0 to disable
   // Typical value 500 (500 milli seconds)
-  reconnectDelay: 200,
+  reconnectDelay: 1000,
 
-  beforeConnect: () => {
-    return Promise.resolve();
+  webSocketFactory: () => {
+    if ("WebSocket" in window) {
+      return new WebSocket(
+        `${location.protocol.indexOf("https") > -1 ? "wss" : "ws"}://${
+          location.hostname
+        }:${location.port}/game-ws`
+      );
+    }
+    return new SockJS("/game-sockjs");
   }
 };

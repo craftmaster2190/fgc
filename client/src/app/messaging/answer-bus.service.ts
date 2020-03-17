@@ -6,9 +6,11 @@ import { MessageBusService } from "./message-bus.service";
 import { Question } from "../question/question";
 import { merge } from "rxjs";
 import { mapMessageTo } from "../util/map-message-to";
+import { tap } from "rxjs/operators";
 
 @Injectable()
 export class AnswerBusService {
+  private loadedFirstAnswer: boolean;
   private readonly answerSender: JSONMessageSender;
 
   private questionsCache: { [questionId: number]: Question } = {};
@@ -22,12 +24,19 @@ export class AnswerBusService {
     this.answerSender = messageBusService.messageSender("answer");
   }
 
+  getLoadedFirstAnswer() {
+    return this.loadedFirstAnswer;
+  }
+
   listenForQuestionsAndAnswers() {
     return merge(
       this.messageBusService.topicWatcher("answer"),
       this.messageBusService.userTopicWatcher("answer")
     )
-      .pipe(mapMessageTo<Answer>())
+      .pipe(
+        tap(() => (this.loadedFirstAnswer = true)),
+        mapMessageTo<Answer>()
+      )
       .subscribe(answers =>
         answers.forEach(answer => {
           this.answersCache[answer.questionId] = answer;
