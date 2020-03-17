@@ -1,10 +1,15 @@
-<marquee behavior="scroll" direction="left">Fantasy General Conference</marquee>
+<div class="fixed-header">
+  <marquee behavior="scroll" direction="left"
+    >Fantasy General Conference</marquee
+  >
 
-<div class="right-side">
-  <a (click)="openModal(modalContent)">
-    <img src="assets/logo-small.png" />
-  </a>
+  <div class="right-side">
+    <a (click)="openModal(modalContent)">
+      <img src="assets/logo-small.png" />
+    </a>
+  </div>
 </div>
+<header></header>
 
 <ng-template #aboutContent let-modal>
   <div class="modal-header">

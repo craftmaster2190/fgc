@@ -1,4 +1,25 @@
 :host {
+}
+
+marquee {
+  font-family: "Great Vibes", cursive;
+  font-size: 36px;
+}
+
+.right-side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.left-side {
+  display: flex;
+}
+
+.profile-picture {
+}
+
+.fixed-header {
   display: flex;
   justify-content: space-between;
   // border-bottom: 1px solid black;
@@ -28,22 +49,14 @@
       background-position: 0% 50%;
     }
   }
+
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  top: 0;
 }
 
-marquee {
-  font-family: "Great Vibes", cursive;
-  font-size: 36px;
-}
-
-.right-side {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-.left-side {
-  display: flex;
-}
-
-.profile-picture {
+header {
+  height: 54px;
+  visibility: hidden;
 }
