@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -34,11 +36,11 @@ public class AuthController {
   private final PostgresSubscriptions postgresSubscriptions;
   private final ConfigService configService;
 
-  @PreAuthorize("isAuthenticated()")
   @GetMapping("me")
-  public User getMe(@AuthenticationPrincipal User user) {
-    log.debug("Asking for me: {}", user);
-    return user;
+  public ResponseEntity<User> getMe(@AuthenticationPrincipal User user) {
+    return Optional.ofNullable(user)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
   }
 
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})

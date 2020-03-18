@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
@@ -23,6 +24,7 @@ public class Answer {
 
   @JsonUnwrapped @EmbeddedId private AnswerPk answerPk;
 
+  @EqualsAndHashCode.Exclude
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "questionId", insertable = false, updatable = false)
   @JsonProperty(access = Access.READ_ONLY)

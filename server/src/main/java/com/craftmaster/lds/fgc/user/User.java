@@ -49,11 +49,22 @@ public class User implements UserDetails {
   @EqualsAndHashCode.Exclude
   private Set<Device> devices;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = true)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "familyId")
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private Family family;
+
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  @JsonIgnore
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id")
+  private UserProfile userProfile;
+
+  @EqualsAndHashCode.Exclude
+  @Formula("(CASE WHEN profile_image IS NULL THEN 'FALSE' ELSE 'TRUE' END)")
+  private boolean hasProfileImage;
 
   @Transient
   @JsonIgnore
@@ -70,14 +81,4 @@ public class User implements UserDetails {
     }
     return Set.of();
   }
-
-  @ToString.Exclude
-  @JsonIgnore
-  @Lob
-  @Basic(fetch = FetchType.LAZY)
-  @Column(columnDefinition = "BYTEA")
-  private byte[] profileImage;
-
-  @Formula("(CASE WHEN profile_image IS NULL THEN 'FALSE' ELSE 'TRUE' END)")
-  private boolean hasProfileImage;
 }

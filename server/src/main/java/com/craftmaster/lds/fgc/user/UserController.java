@@ -35,6 +35,7 @@ public class UserController {
   private final PostgresSubscriptions postgresSubscriptions;
   private final SimpMessageSendingOperations simpMessageSendingOperations;
   private final UserRepository userRepository;
+  private final UserProfileRepository userProfileRepository;
 
   @PostConstruct
   public void subscribeToNewChats() {
@@ -69,10 +70,12 @@ public class UserController {
   }
 
   @GetMapping("profile/{userId}")
+  @Transactional
   public ResponseEntity<Resource> serveFile(@PathVariable UUID userId) {
     return userRepository
         .findById(userId)
-        .map(User::getProfileImage)
+        .map(User::getUserProfile)
+        .map(UserProfile::getProfileImage)
         .map(ByteArrayResource::new)
         .map(
             resource ->
@@ -90,10 +93,10 @@ public class UserController {
       throws IOException {
     byte[] imagedata =
         DatatypeConverter.parseBase64Binary(dataUri.substring(dataUri.indexOf(",") + 1));
-    User updatedUser = userRepository.save(user.setProfileImage(imagedata));
+    userProfileRepository.save(new UserProfile().setId(user.getId()).setProfileImage(imagedata));
 
     authenticationManager.updateSession(
-        userRepository.findById(updatedUser.getId()).orElseThrow(), session);
+        userRepository.findById(user.getId()).orElseThrow(), session);
 
     postgresSubscriptions.send("UpdatedUserId", user.getId());
   }

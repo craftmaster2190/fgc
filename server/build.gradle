@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.hibernate:hibernate-gradle-plugin:6.0.0.Alpha4"
+    }
+}
+
 plugins {
     id 'com.diffplug.gradle.spotless' version '3.27.2'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -60,14 +70,14 @@ flyway {
     url = 'jdbc:postgresql://localhost:5432/fgc'
     user = 'postgres'
     password = 'postgres'
-    schemas = ['fgc']    
+    schemas = ['fgc']
     locations = ['filesystem:/src/flyway']
-    configurations = [ 'flyway' ]
+    configurations = ['flyway']
 }
 
 eclipse {
     project {
-    // this is the name of the parent dir
+        // this is the name of the parent dir
         name = 'server'
     }
     classpath {
@@ -90,5 +100,15 @@ spotless {
 }
 
 dependencyCheck {
-    format='ALL'
+    format = 'ALL'
+}
+
+apply plugin: 'org.hibernate.orm'
+hibernate {
+    enhance {
+        enableLazyInitialization = true
+        enableDirtyTracking = true
+        enableAssociationManagement = true
+        enableExtendedEnhancement = false
+    }
 }

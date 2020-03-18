@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -25,6 +26,7 @@ public class Family implements Serializable {
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "familyId")
   @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @JsonIgnore
   private Set<User> users;
 
