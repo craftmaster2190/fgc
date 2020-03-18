@@ -71,12 +71,12 @@ jobs:
       - name: Setup Yarn
         run: curl -o- -L https://yarnpkg.com/install.sh | bash
 
-      - name: Cache NVM
+      - name: Cache Node Modules
         uses: actions/cache@v1
         env:
-          cache-name: node-modules
+          cache-name: node_modules
         with:
-          path: .node_modules
+          path: client/node_modules
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('client/package.json') }}
 
       - name: Yarn Install
