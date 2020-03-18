@@ -8,6 +8,7 @@ import {
   RxStompService,
   rxStompServiceFactory
 } from "@stomp/ng2-stompjs";
+import { AdminComponent } from "./admin/admin.component";
 import { AnswersService } from "./answers/answers.service";
 import { ImagesService } from "./answers/images.service";
 import { AppRoutingModule } from "./app-routing.module";
@@ -34,6 +35,7 @@ import { WelcomeComponent } from "./welcome/welcome.component";
 
 @NgModule({
   declarations: [
+    AdminComponent,
     AppComponent,
     QuestionComponent,
     GameComponent,

@@ -35,6 +35,7 @@ public class AuthController {
   private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
   private final PostgresSubscriptions postgresSubscriptions;
   private final ConfigService configService;
+  private boolean familyChangeEnable = false;
 
   @GetMapping("me")
   public ResponseEntity<User> getMe(@AuthenticationPrincipal User user) {
@@ -78,14 +79,15 @@ public class AuthController {
       @AuthenticationPrincipal User user,
       @RequestBody @Valid PatchUserRequest patchUserRequest,
       HttpSession session) {
+    log.info("Patching user: {} name: {}", user.getId(), user.getName());
     Optional.ofNullable(patchUserRequest.getName())
-        //      .filter((name) -> {
-        //        if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())
+        // .filter((name) -> {
+        // if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())
         // {
-        //          throw new UsernameAlreadyTakenException();
-        //        }
-        //        return true;
-        //      })
+        // throw new UsernameAlreadyTakenException();
+        // }
+        // return true;
+        // })
         .ifPresent(user::setName);
     if (patchUserRequest.getFamily() != null) {
       user.setFamily(
@@ -101,6 +103,20 @@ public class AuthController {
     return savedUser;
   }
 
+  @PutMapping("updateFamilyName")
+  public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
+    Optional<Family> familyOp = familyRepository.findById(UUID.fromString(request.getFamilyId()));
+    if (familyOp.isPresent()) {
+      log.info(
+          "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
+      Family family = familyOp.get().setName(request.getNewName());
+      familyRepository.save(family);
+      return family;
+    }
+    log.warn("No family by id: {}, returning null", request.getFamilyId());
+    return null;
+  }
+
   @GetMapping("users")
   public Set<User> getUsersForDevice(@RequestParam UUID deviceId) {
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
@@ -109,6 +125,23 @@ public class AuthController {
   @GetMapping("family")
   public List<Family> searchFamilies(@RequestParam("search") String partialFamilyName) {
     return familyRepository.findByNameContainingIgnoreCase(partialFamilyName);
+  }
+
+  // @PreAuthorize("isAuthenticated()")
+  @GetMapping("families")
+  public List<Family> getFamilies() {
+    return familyRepository.findAll();
+  }
+
+  @PutMapping("familyChangeEnable")
+  public boolean familyChangeEnable() {
+    this.familyChangeEnable = !this.familyChangeEnable;
+    return this.familyChangeEnable;
+  }
+
+  @GetMapping("familyChangeEnable")
+  public boolean getFamilyChangeEnable() {
+    return this.familyChangeEnable;
   }
 
   // There is no way to become an admin programmatically.

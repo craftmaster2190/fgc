@@ -5,6 +5,7 @@ import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -74,6 +75,12 @@ export class DeviceUsersService {
       .then(user => (this.currentUser = user));
   }
 
+  updateFamilyName(familyId: string, newName: string) {
+    console.log("update family", familyId, newName);
+    return this.http
+      .put("/api/auth/updateFamilyName", { familyId, newName })
+      .subscribe();
+  }
   searchFamilies(partialFamilyName: string) {
     return this.http.get<Array<Family>>("/api/auth/family", {
       params: { search: partialFamilyName }
@@ -95,5 +102,17 @@ export class DeviceUsersService {
 
   getCurrentUser() {
     return this.currentUser;
+  }
+
+  toggleFamilyChangeEnabled(): Observable<Boolean> {
+    return this.http.put<Boolean>("/api/auth/familyChangeEnable", {}, {});
+  }
+
+  getFamilyChangeEnabled(): Observable<Boolean> {
+    return this.http.get<Boolean>("/api/auth/familyChangeEnable");
+  }
+
+  getFamilies(): Observable<[Family]> {
+    return this.http.get<[Family]>("/api/auth/families");
   }
 }

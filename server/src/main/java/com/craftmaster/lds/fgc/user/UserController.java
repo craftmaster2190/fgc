@@ -59,6 +59,7 @@ public class UserController {
 
   @SubscribeMapping("/updated-user")
   public User getUser(Principal principal) {
+    log.info("getUser by principal: {}", principal);
     User user = (User) ((Authentication) principal).getPrincipal();
     return getUser(user.getId());
   }

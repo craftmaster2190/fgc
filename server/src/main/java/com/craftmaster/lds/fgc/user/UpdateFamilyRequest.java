@@ -6,10 +6,10 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class PatchUserRequest {
+public class UpdateFamilyRequest {
   @JsonDeserialize(using = StringTrimDeserializer.class)
-  private String name;
+  private String newName;
 
   @JsonDeserialize(using = StringTrimDeserializer.class)
-  private String family;
+  private String familyId;
 }
