@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -127,10 +129,14 @@ public class AuthController {
     return familyRepository.findByNameContainingIgnoreCase(partialFamilyName);
   }
 
-  // @PreAuthorize("isAuthenticated()")
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("families")
-  public List<Family> getFamilies() {
-    return familyRepository.findAll();
+  @RolesAllowed("ROLE_ADMIN")
+  @Transactional
+  public List<FamilyWithUsers> getFamilies() {
+    return familyRepository.findAll().stream()
+        .map(FamilyWithUsers::new)
+        .collect(Collectors.toList());
   }
 
   @PutMapping("familyChangeEnable")

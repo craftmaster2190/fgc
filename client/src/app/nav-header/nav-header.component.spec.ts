@@ -4,6 +4,7 @@ import { DeviceUsersService } from "../auth/device-users.service";
 import { NavHeaderComponent } from "./nav-header.component";
 import { NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { ImageComponent } from "../image/image.component";
+import { of } from "rxjs";
 
 describe("NavHeaderComponent", () => {
   let component: NavHeaderComponent;
@@ -16,7 +17,8 @@ describe("NavHeaderComponent", () => {
         {
           provide: DeviceUsersService,
           useValue: {
-            getCurrentUser: () => ({})
+            getCurrentUser: () => ({}),
+            getFamilyChangeEnabled: () => of(false)
           }
         }
       ],

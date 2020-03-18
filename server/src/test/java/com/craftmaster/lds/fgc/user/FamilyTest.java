@@ -1,11 +1,8 @@
 package com.craftmaster.lds.fgc.user;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
-import com.craftmaster.lds.fgc.TestUtil;
 import java.util.Set;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,41 +21,17 @@ public class FamilyTest {
   }
 
   @Test
-  public void test() {
-    TestUtil.testPropertiesExclude(FamilyBuilder.get().build(), "id");
-  }
-
-  @Test
-  public void id() {
-    UUID id = UUID.randomUUID();
-    assertEquals(id, FamilyBuilder.get().withId(id).build().getId());
-  }
-
-  @Test
   public void getUserNames() {
-    Family family =
-        FamilyBuilder.get().withUser(UserBuilder.get().withName("someName").build()).build();
-    Set<String> userNames = family.getUserNames();
-    assertNotNull("We should have something", userNames);
-    assertEquals("We should have one", 1, userNames.size());
+    Family family = new Family().setUsers(Set.of(new User().setName("someName")));
+    Set<User> users = family.getUsers();
+    assertNotNull("We should have something", users);
+    assertEquals("We should have one", 1, users.size());
   }
 
   @Test
   public void getUserNamesWithNoUsers() {
-    Family family = FamilyBuilder.get().build();
-    Set<String> userNames = family.getUserNames();
-    assertNotNull("We should have something", userNames);
-    assertEquals("We should have none", 0, userNames.size());
-  }
-
-  @Test
-  public void getUserNamesWithInActiveTransaction() {
-    TransactionSynchronizationManager.setActualTransactionActive(false);
-
-    Family family =
-        FamilyBuilder.get().withUser(UserBuilder.get().withName("someName").build()).build();
-    Set<String> userNames = family.getUserNames();
-    assertNotNull("We should have something", userNames);
-    assertEquals("We should have none", 0, userNames.size());
+    Family family = new Family();
+    Set<User> users = family.getUsers();
+    assertNull("We should have nothing", users);
   }
 }

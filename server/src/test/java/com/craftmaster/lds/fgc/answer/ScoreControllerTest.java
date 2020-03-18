@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 
 import com.craftmaster.lds.fgc.db.ObjectMapperHolderBuilder;
 import com.craftmaster.lds.fgc.question.QuestionBuilder;
-import com.craftmaster.lds.fgc.user.FamilyBuilder;
+import com.craftmaster.lds.fgc.user.Family;
 import com.craftmaster.lds.fgc.user.FamilyRepository;
 import com.craftmaster.lds.fgc.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -157,16 +159,17 @@ public class ScoreControllerTest {
     Instant now = Instant.now();
     Score familyScore = ScoreBuilder.get().withScore(10).withUserOrFamilyId(familyId).build();
 
-    FamilyBuilder familyBuilder = FamilyBuilder.get().withId(familyId);
+    Family family = new Family().setId(familyId);
+    Set<User> users = new HashSet<>();
 
     for (long score : scores) {
       UUID userId = UUID.randomUUID();
-      familyBuilder.withUser(new User().setId(userId));
+      users.add(new User().setId(userId));
       when(scoreRepository.findById(userId))
           .thenReturn(Optional.of(new Score().setScore(score).setUpdatedAt(now)));
     }
 
-    when(familyRepository.findById(familyId)).thenReturn(Optional.of(familyBuilder.build()));
+    when(familyRepository.findById(familyId)).thenReturn(Optional.of(family.setUsers(users)));
     when(scoreRepository.save(any(Score.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 

@@ -1,36 +1,43 @@
 <div>
-  Admin
-  <div>
-    <label>Enable Family?</label>
+  <p>Admin <a href (click)="returnToGame()">Return to Game</a></p>
+
+  <h1>Settings</h1>
+  <div class="form-check">
     <input
+      class="form-check-input"
       type="checkbox"
+      value=""
       [checked]="isFamilyChangeEnabled"
       (change)="toggleFamilyChangeEnabled()"
     />
+    <label class="form-check-label">
+      Users Can Change Families?
+    </label>
   </div>
-  <div>
-    <label>Edit Family</label>
-    <ul>
-      <li *ngFor="let family of families">
-        {{ family.name }}
-        <label for="newName">New Name</label>
-        <input
-          #newName
-          type="text"
-          class="form-control"
-          id="newName"
-          name="newName"
-          [(ngModel)]="family.name"
-          autocomplete="change name"
-        /><button (click)="updateFamilyName(newName.value, family)">
-          Update
-        </button>
 
-        <div *ngIf="family.userNames.length === 0">No user names</div>
-        <ul *ngIf="family.userNames.length > 0">
-          <li *ngFor="let name of family.userNames">{{ name }}</li>
-        </ul>
-      </li>
-    </ul>
+  <h1>Edit Families</h1>
+  <div>
+    <div *ngFor="let family of families" style="margin-bottom: 15px;">
+      <div class="input-group">
+        <input type="text" class="form-control" [(ngModel)]="family.name" />
+        <div class="input-group-append">
+          <button
+            type="button"
+            class="btn  btn-outline-secondary"
+            (click)="updateFamilyName(newName.value, family)"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+      <small class="form-text text-muted">
+        <div *ngIf="!family.users?.length; else hasUsers">No user names</div>
+        <ng-template #hasUsers>
+          <ul>
+            <li *ngFor="let user of family.users">{{ user.name }}</li>
+          </ul>
+        </ng-template>
+      </small>
+    </div>
   </div>
 </div>

@@ -20,7 +20,7 @@ import { DeviceUsersService } from "../auth/device-users.service";
 export class NavHeaderComponent implements OnInit, OnDestroy {
   name: string;
   family: string;
-  isFamilyChangeEnabled: Boolean;
+  isFamilyChangeEnabled: boolean;
   readonly updateUserSubject = new Subject();
   private subscription: Subscription;
 

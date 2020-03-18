@@ -104,15 +104,15 @@ export class DeviceUsersService {
     return this.currentUser;
   }
 
-  toggleFamilyChangeEnabled(): Observable<Boolean> {
-    return this.http.put<Boolean>("/api/auth/familyChangeEnable", {}, {});
+  toggleFamilyChangeEnabled(): Observable<boolean> {
+    return this.http.put<boolean>("/api/auth/familyChangeEnable", null);
   }
 
-  getFamilyChangeEnabled(): Observable<Boolean> {
-    return this.http.get<Boolean>("/api/auth/familyChangeEnable");
+  getFamilyChangeEnabled(): Observable<boolean> {
+    return this.http.get<boolean>("/api/auth/familyChangeEnable");
   }
 
-  getFamilies(): Observable<[Family]> {
-    return this.http.get<[Family]>("/api/auth/families");
+  getFamilies(): Observable<Array<Family>> {
+    return this.http.get<Array<Family>>("/api/auth/families");
   }
 }
