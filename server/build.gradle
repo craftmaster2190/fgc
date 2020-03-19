@@ -10,13 +10,14 @@ buildscript {
 
 plugins {
     id 'com.diffplug.gradle.spotless' version '3.27.2'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'org.flywaydb.flyway' version '6.3.0'
+    id 'org.flywaydb.flyway' version '6.3.1'
     id 'org.owasp.dependencycheck' version '5.3.1'
-    id 'org.springframework.boot' version '2.1.8.RELEASE'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'name.remal.check-dependency-updates' version '1.0.178'
 }
 
 group = 'com.craftmaster.lds'
@@ -45,8 +46,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.3.0-rc1'
-    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.8.1'
     implementation 'com.google.googlejavaformat:google-java-format:1.7'
     implementation 'com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3'
     implementation 'io.sentry:sentry-spring:1.7.30'
@@ -59,7 +60,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.session:spring-session-jdbc'
-    flyway 'org.flywaydb:flyway-core:6.3.0'
+    flyway 'org.flywaydb:flyway-core:6.3.1'
     flyway 'org.postgresql:postgresql:42.2.11.jre7'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -37,6 +37,10 @@ jobs:
         working-directory: ./server
         run: ./gradlew dependencyCheckAnalyze
 
+      - name: Gradle Dependency Updates Analyze
+        working-directory: ./server
+        run: ./gradlew checkDependencyUpdates
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
         with:
