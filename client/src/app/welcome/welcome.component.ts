@@ -115,11 +115,11 @@ export class WelcomeComponent implements OnInit {
   };
 
   nameValid() {
-    return (this.name?.length || 0) >= 2;
+    return (!/\s/g.test(this.name) && (this.name?.length || 0)) >= 2;
   }
 
   familyValid() {
-    return (this.family?.length || 0) >= 4;
+    return (!/\s/g.test(this.family) && (this.family?.length || 0)) >= 4;
   }
 
   formValid() {
