@@ -6,12 +6,14 @@ import { User } from "./user";
 import { Family } from "../family/family";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
+import { UserGroup } from "./userGroup";
 
 @Injectable({
   providedIn: "root"
 })
 export class DeviceUsersService {
   private deviceUsers?: Array<User>;
+  private familyGroups: UserGroup[];
   private currentUser?: User;
 
   constructor(
@@ -26,7 +28,23 @@ export class DeviceUsersService {
         params: { deviceId: this.deviceId.get() }
       })
       .pipe(
-        map(users => (users || []).sort((a, b) => a.name.localeCompare(b.name)))
+        map(users => {
+          let familyGroups = [];
+          users.forEach(user => {
+            if (!familyGroups[user.family.name]) {
+              familyGroups[user.family.name] = {
+                familyName: user.family.name,
+                users: []
+              };
+            }
+            familyGroups[user.family.name].users.push(user);
+          });
+          // I don't know why this sort never gets called!
+          this.familyGroups = familyGroups.sort((a, b) =>
+            a.familyName.localeCompare(b.familyName)
+          );
+          return (users || []).sort((a, b) => a.name.localeCompare(b.name));
+        })
       )
       .toPromise()
       .then(users => (this.deviceUsers = users));
@@ -81,6 +99,7 @@ export class DeviceUsersService {
       .put("/api/auth/updateFamilyName", { familyId, newName })
       .subscribe();
   }
+
   searchFamilies(partialFamilyName: string) {
     return this.http.get<Array<Family>>("/api/auth/family", {
       params: { search: partialFamilyName }
@@ -98,6 +117,11 @@ export class DeviceUsersService {
 
   getUsers() {
     return this.deviceUsers;
+  }
+
+  getFamilyGroups(): UserGroup[] {
+    console.log("returning family groups", this.familyGroups);
+    return this.familyGroups;
   }
 
   getCurrentUser() {
