@@ -2,59 +2,6 @@ name: Test and Build
 
 on: [push]
 jobs:
-  cancel:
-    name: Cancel Previous Runs
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    steps:
-      - uses: styfle/cancel-workflow-action@0.2.0
-        with:
-          workflow_id: 617433
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-
-  owasp:
-    name: OWASP
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: "13"
-
-      - name: Cache Gradle
-        uses: actions/cache@v1
-        env:
-          cache-name: gradle-cache
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/*.gradle*') }}
-
-      - name: Cache CVE Data
-        uses: actions/cache@v1
-        env:
-          cache-name: cve
-        with:
-          path: ~/.gradle/dependency-check-data/
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('server/build.gradle') }}
-
-      - name: Gradle Dependency Check Analyze
-        working-directory: ./server
-        run: ./gradlew dependencyCheckAnalyze
-
-      - name: Gradle Dependency Updates Analyze
-        working-directory: ./server
-        run: ./gradlew checkDependencyUpdates
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: OWASP Files
-          path: server/build/reports/
-
   build:
     name: Test and Build
     runs-on: macos-10.15
@@ -141,6 +88,7 @@ jobs:
 
       - name: Setup AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
+        if: github.ref == 'master'
 
       - name: Setup AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -148,6 +96,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-2
+        if: github.ref == 'master'
 
       - name: Upload Versioned Artifacts to S3
         run: ./push-to-s3.bash
+        if: github.ref == 'master'

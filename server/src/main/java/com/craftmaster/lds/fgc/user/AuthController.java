@@ -107,7 +107,7 @@ public class AuthController {
 
   @PutMapping("updateFamilyName")
   public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
-    Optional<Family> familyOp = familyRepository.findById(UUID.fromString(request.getFamilyId()));
+    Optional<Family> familyOp = familyRepository.findById(request.getFamilyId());
     if (familyOp.isPresent()) {
       log.info(
           "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());

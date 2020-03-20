@@ -35,6 +35,9 @@ configurations {
     flyway {
         extendsFrom implementation
     }
+    compile {
+        exclude module: 'jackson-datatype-jsr310'
+    }
 }
 
 repositories {
@@ -46,13 +49,11 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.1'
     implementation 'com.google.googlejavaformat:google-java-format:1.7'
     implementation 'com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3'
     implementation 'io.sentry:sentry-spring:1.7.30'
     implementation 'org.owasp:dependency-check-gradle:5.3.1'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
