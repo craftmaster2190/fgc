@@ -14,7 +14,7 @@ import { DeviceUsersService } from "../auth/device-users.service";
 import { User } from "../auth/user";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
-import { UserGroup } from "../auth/userGroup";
+import { UserGroup } from "../auth/user-group";
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -27,7 +27,7 @@ export class WelcomeComponent implements OnInit {
   name: string;
   family: string;
   searchingFamilies: boolean;
-  userGroups: UserGroup[];
+  userGroups: Array<UserGroup>;
 
   constructor(
     public readonly authService: DeviceUsersService,
@@ -35,25 +35,27 @@ export class WelcomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // add some mock data till bryce can figure out why getFamilyGroups is broke.
-    this.userGroups = [];
-    this.userGroups.push({
-      familyName: "Family Name 1",
-      users: [{ name: "first User Name", id: "id1" }]
-    });
-    this.userGroups.push({
-      familyName: "Family Name 2",
-      users: [
-        { name: "second User Name", id: "id2" },
-        { name: "third User Name", id: "id3" }
-      ]
-    });
-
     Promise.all([
       Optional.of(this.authService.getCurrentUser())
         .map(currentUser => Promise.resolve(currentUser))
         .orElseGet(() => this.authService.fetchMe().catch(() => void 0)),
-      this.authService.fetchUsers()
+      this.authService.fetchUsers().then((users: Array<User>) => {
+        const familyGroups = {};
+        users.forEach(user => {
+          const familyName = user?.family?.name || "";
+
+          if (!familyGroups[familyName]) {
+            familyGroups[familyName] = [];
+          }
+          familyGroups[familyName].push(user);
+        });
+        this.userGroups = Object.keys(familyGroups)
+          .sort()
+          .map(familyName => ({
+            familyName,
+            users: familyGroups[familyName]
+          }));
+      })
     ])
       .then(
         () => (this.loading = false),

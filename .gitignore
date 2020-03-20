@@ -65,5 +65,5 @@ server/fgc.iml
 server/fgc.ipr
 server/fgc.iws
 
-# we are using yarn, so if we forget, we don't commit
 package-lock.json
+client/package-lock.json

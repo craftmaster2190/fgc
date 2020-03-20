@@ -30,34 +30,32 @@
   }
 }
 
-.selectable-users {
+.user {
+  border: #b0b0b0 solid 1px;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 8px;
+  text-align: center;
+  min-width: 100px;
+  cursor: pointer;
+
+  .user-name {
+    font-size: 120%;
+  }
+}
+
+.family-group {
+  margin-top: 8px;
+}
+
+.family-name {
+  font-size: 18px;
+  color: #b0b0b0;
+  border-bottom: 1px #b0b0b0 dotted;
+}
+
+.family-row {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-
-  .user {
-    border: #b0b0b0 solid 1px;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 8px;
-    text-align: center;
-    min-width: 100px;
-    cursor: pointer;
-
-    .user-name {
-      font-size: 120%;
-    }
-
-    .family-name {
-      color: #b0b0b0;
-    }
-  }
-
-  .family-group {
-    display: flex;
-    flex-direction: column;
-  }
-  .family-row {
-    display: flex;
-    flex-direction: row;
-  }
 }

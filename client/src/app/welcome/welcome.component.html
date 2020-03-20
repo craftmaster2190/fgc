@@ -37,29 +37,28 @@
   </div>
 
   <div *ngIf="!showRegisterUser && isStateMetButUnauthenticated()">
-    <div
-      *ngIf="authService.getUsers()?.length"
-      class="fade-in-1 selectable-users"
-    >
-      <div>
-        <li *ngFor="let userGroup of userGroups" class="family-group">
-          <div>
-            {{ userGroup.familyName }}
+    <div *ngIf="authService.getUsers()?.length" class="fade-in-1">
+      <div *ngFor="let userGroup of userGroups" class="family-group">
+        <h1 class="family-name" *ngIf="userGroup.familyName">
+          {{ userGroup.familyName }}
+        </h1>
+        <div class="family-row">
+          <div
+            (click)="login(user)"
+            class="user"
+            *ngFor="let user of userGroup.users"
+          >
+            <app-image
+              [target]="
+                user?.hasProfileImage
+                  ? '/api/user/profile/' + user.id
+                  : '/assets/profile.png'
+              "
+              imgStyle="width: 50px; border-radius: 5px;"
+            ></app-image>
+            <div class="user-name">{{ user?.name }}</div>
           </div>
-          <div class="family-row">
-            <div *ngFor="let user of userGroup.users">
-              <app-image
-                [target]="
-                  user?.hasProfileImage
-                    ? '/api/user/profile/' + user.id
-                    : '/assets/profile.png'
-                "
-                imgStyle="width: 50px; border-radius: 5px;"
-              ></app-image>
-              <div class="user-name">{{ user?.name }}</div>
-            </div>
-          </div>
-        </li>
+        </div>
       </div>
     </div>
 
