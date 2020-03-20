@@ -41,20 +41,24 @@
       *ngIf="authService.getUsers()?.length"
       class="fade-in-1 selectable-users"
     >
-      <div *ngFor="let userGroup of userGroups">
-        <li>
-          {{ userGroup.familyName }}
-          <ul *ngFor="let user of userGroup.users">
-            <app-image
-              [target]="
-                user?.hasProfileImage
-                  ? '/api/user/profile/' + user.id
-                  : '/assets/profile.png'
-              "
-              imgStyle="width: 50px; border-radius: 5px;"
-            ></app-image>
-            <div class="user-name">{{ user?.name }}</div>
-          </ul>
+      <div>
+        <li *ngFor="let userGroup of userGroups" class="family-group">
+          <div>
+            {{ userGroup.familyName }}
+          </div>
+          <div class="family-row">
+            <div *ngFor="let user of userGroup.users">
+              <app-image
+                [target]="
+                  user?.hasProfileImage
+                    ? '/api/user/profile/' + user.id
+                    : '/assets/profile.png'
+                "
+                imgStyle="width: 50px; border-radius: 5px;"
+              ></app-image>
+              <div class="user-name">{{ user?.name }}</div>
+            </div>
+          </div>
         </li>
       </div>
     </div>
