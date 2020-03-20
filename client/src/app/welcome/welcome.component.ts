@@ -14,7 +14,6 @@ import { DeviceUsersService } from "../auth/device-users.service";
 import { User } from "../auth/user";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
-import { UserGroup } from "../auth/userGroup";
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -24,31 +23,12 @@ export class WelcomeComponent implements OnInit {
   loading: boolean = true;
   showRegisterUser: boolean;
   serverError: boolean;
-  name: string;
-  family: string;
-  searchingFamilies: boolean;
-  userGroups: UserGroup[];
-
   constructor(
     public readonly authService: DeviceUsersService,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
-    // add some mock data till bryce can figure out why getFamilyGroups is broke.
-    this.userGroups = [];
-    this.userGroups.push({
-      familyName: "Family Name 1",
-      users: [{ name: "first User Name", id: "id1" }]
-    });
-    this.userGroups.push({
-      familyName: "Family Name 2",
-      users: [
-        { name: "second User Name", id: "id2" },
-        { name: "third User Name", id: "id3" }
-      ]
-    });
-
     Promise.all([
       Optional.of(this.authService.getCurrentUser())
         .map(currentUser => Promise.resolve(currentUser))
@@ -111,6 +91,10 @@ export class WelcomeComponent implements OnInit {
       );
   }
 
+  name: string;
+  family: string;
+  searchingFamilies: boolean;
+
   searchFamilies = (text$: Observable<string>) => {
     return text$.pipe(
       debounceTime(200),
@@ -131,11 +115,11 @@ export class WelcomeComponent implements OnInit {
   };
 
   nameValid() {
-    return (!/\s/g.test(this.name) && (this.name?.length || 0)) >= 2;
+    return (this.name?.length || 0) >= 2;
   }
 
   familyValid() {
-    return (!/\s/g.test(this.family) && (this.family?.length || 0)) >= 4;
+    return (this.family?.length || 0) >= 4;
   }
 
   formValid() {

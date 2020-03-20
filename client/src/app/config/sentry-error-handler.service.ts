@@ -14,10 +14,9 @@ const sentryIsRunning = Optional.of((window as any)._sentryDsn)
 export class SentryErrorHandler implements ErrorHandler {
   constructor() {}
   handleError(error) {
-    console.log("sentry-error-handler.service: error", error);
     if (sentryIsRunning) {
       const eventId = Sentry.captureException(error.originalError || error);
-      //Sentry.showReportDialog({ eventId });
+      // Sentry.showReportDialog({ eventId });
     }
   }
 }
