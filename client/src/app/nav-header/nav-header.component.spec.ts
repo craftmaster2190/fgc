@@ -18,7 +18,7 @@ describe("NavHeaderComponent", () => {
           provide: DeviceUsersService,
           useValue: {
             getCurrentUser: () => ({}),
-            getFamilyChangeEnabled: () => of(false)
+            canChangeFamily: () => of(false)
           }
         }
       ],

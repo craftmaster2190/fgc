@@ -71,4 +71,15 @@ public class ConfigService {
   public void addServerMessage(String message) {
     put("server-message-" + Instant.now().toString(), message);
   }
+
+  @Transactional
+  public boolean toggleCanChangeFamily() {
+    var canChangeFamily = !getCanChangeFamily();
+    put("can-change-family", canChangeFamily);
+    return canChangeFamily;
+  }
+
+  public boolean getCanChangeFamily() {
+    return transactionalContext.run(() -> getOrCreate("can-change-family", true, Boolean.class));
+  }
 }

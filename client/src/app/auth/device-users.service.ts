@@ -78,7 +78,7 @@ export class DeviceUsersService {
   updateFamilyName(familyId: string, newName: string) {
     console.log("update family", familyId, newName);
     return this.http
-      .put("/api/auth/updateFamilyName", { familyId, newName })
+      .put("/api/auth/update-family-name", { familyId, newName })
       .subscribe();
   }
   searchFamilies(partialFamilyName: string) {
@@ -104,12 +104,12 @@ export class DeviceUsersService {
     return this.currentUser;
   }
 
-  toggleFamilyChangeEnabled(): Observable<boolean> {
-    return this.http.put<boolean>("/api/auth/familyChangeEnable", null);
+  toggleCanChangeFamily(): Observable<boolean> {
+    return this.http.put<boolean>("/api/config/can-change-family", null);
   }
 
-  getFamilyChangeEnabled(): Observable<boolean> {
-    return this.http.get<boolean>("/api/auth/familyChangeEnable");
+  canChangeFamily(): Observable<boolean> {
+    return this.http.get<boolean>("/api/config/can-change-family");
   }
 
   getFamilies(): Observable<Array<Family>> {

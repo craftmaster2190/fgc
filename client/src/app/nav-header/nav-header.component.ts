@@ -20,7 +20,7 @@ import { DeviceUsersService } from "../auth/device-users.service";
 export class NavHeaderComponent implements OnInit, OnDestroy {
   name: string;
   family: string;
-  isFamilyChangeEnabled: boolean;
+  canChangeFamily: boolean;
   readonly updateUserSubject = new Subject();
   private subscription: Subscription;
 
@@ -36,8 +36,9 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
       .subscribe(() =>
         this.authService.updateUser({ name: this.name, family: this.family })
       );
-    this.authService.getFamilyChangeEnabled().subscribe(data => {
-      this.isFamilyChangeEnabled = data;
+
+    this.authService.canChangeFamily().subscribe(data => {
+      this.canChangeFamily = data;
     });
   }
 
@@ -55,18 +56,6 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
   openAbout(content) {
     this.modalService.open(content);
-  }
-
-  disableFamily() {
-    // allow an admin to override during game play
-    if (this.isFamilyChangeEnabled) {
-      // remember to NOT disable
-      return false;
-    }
-    // Date(year, month, day, hours, minutes, seconds, milliseconds)
-    // month is 0 based, jan = 0
-    // so just before midnight april 4th, we disable.
-    return new Date() > new Date(2020, 3, 4, 23, 59, 59, 0);
   }
 
   getUsername() {
@@ -116,7 +105,7 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     this.rotation = 0;
     const fileInputNode: HTMLInputElement = event.target;
     new Promise<string>((resolve, reject) => {
-      var fileReader = new FileReader();
+      const fileReader = new FileReader();
       fileReader.onload = () => resolve(fileReader.result as string);
       fileReader.onerror = err => reject(err);
       fileReader.readAsDataURL(fileInputNode.files[0]);
@@ -124,7 +113,7 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
       .then(
         imageToUpload =>
           new Promise((resolve, reject) => {
-            var imageObj = new Image();
+            const imageObj = new Image();
             imageObj.onload = () => {
               this.canvasImage = imageObj;
               this.drawImage(false);
@@ -163,9 +152,9 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
       context.translate(canvas.width / 2, canvas.height / 2);
       context.rotate((this.rotation * Math.PI) / 180);
-      var wrh = this.canvasImage.width / this.canvasImage.height;
-      var newWidth = canvas.width;
-      var newHeight = newWidth / wrh;
+      const wrh = this.canvasImage.width / this.canvasImage.height;
+      let newWidth = canvas.width;
+      let newHeight = newWidth / wrh;
       if (newHeight > canvas.height) {
         newHeight = canvas.height;
         newWidth = newHeight * wrh;

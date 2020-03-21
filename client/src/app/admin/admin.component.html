@@ -1,43 +1,57 @@
-<div>
-  <p>Admin <a href (click)="returnToGame()">Return to Game</a></p>
+<div
+  *ngIf="loading; else finishedLoading"
+  class="text-center"
+  style="margin-top: 50px;"
+>
+  <div
+    class="spinner-border"
+    style="width: 12rem; height: 12rem;"
+    role="status"
+  ></div>
+</div>
 
-  <h1>Settings</h1>
-  <div class="form-check">
-    <input
-      class="form-check-input"
-      type="checkbox"
-      value=""
-      [checked]="isFamilyChangeEnabled"
-      (change)="toggleFamilyChangeEnabled()"
-    />
-    <label class="form-check-label">
-      Users Can Change Families?
-    </label>
-  </div>
-
-  <h1>Edit Families</h1>
+<ng-template #finishedLoading>
   <div>
-    <div *ngFor="let family of families" style="margin-bottom: 15px;">
-      <div class="input-group">
-        <input type="text" class="form-control" [(ngModel)]="family.name" />
-        <div class="input-group-append">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="updateFamilyName(family.name, family)"
-          >
-            Update
-          </button>
+    <p>Admin <a href (click)="returnToGame()">Return to Game</a></p>
+
+    <h1>Settings</h1>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        value=""
+        [checked]="canChangeFamily"
+        (change)="toggleCanChangeFamily()"
+      />
+      <label class="form-check-label">
+        Users Can Change Families?
+      </label>
+    </div>
+
+    <h1>Edit Families</h1>
+    <div>
+      <div *ngFor="let family of families" style="margin-bottom: 15px;">
+        <div class="input-group">
+          <input type="text" class="form-control" [(ngModel)]="family.name" />
+          <div class="input-group-append">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="updateFamilyName(family.name, family)"
+            >
+              Update
+            </button>
+          </div>
         </div>
+        <small class="form-text text-muted">
+          <div *ngIf="!family.users?.length; else hasUsers">No user names</div>
+          <ng-template #hasUsers>
+            <ul>
+              <li *ngFor="let user of family.users">{{ user.name }}</li>
+            </ul>
+          </ng-template>
+        </small>
       </div>
-      <small class="form-text text-muted">
-        <div *ngIf="!family.users?.length; else hasUsers">No user names</div>
-        <ng-template #hasUsers>
-          <ul>
-            <li *ngFor="let user of family.users">{{ user.name }}</li>
-          </ul>
-        </ng-template>
-      </small>
     </div>
   </div>
-</div>
+</ng-template>

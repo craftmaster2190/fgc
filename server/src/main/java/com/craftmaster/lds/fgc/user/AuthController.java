@@ -37,7 +37,6 @@ public class AuthController {
   private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
   private final PostgresSubscriptions postgresSubscriptions;
   private final ConfigService configService;
-  private boolean familyChangeEnable = false;
 
   @GetMapping("me")
   public ResponseEntity<User> getMe(@AuthenticationPrincipal User user) {
@@ -91,12 +90,15 @@ public class AuthController {
         // return true;
         // })
         .ifPresent(user::setName);
-    if (patchUserRequest.getFamily() != null) {
-      user.setFamily(
-          familyRepository
-              .findByNameIgnoreCase(patchUserRequest.getFamily())
-              .orElseGet(
-                  () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+    if (configService.getCanChangeFamily()) {
+      if (patchUserRequest.getFamily() != null) {
+        user.setFamily(
+            familyRepository
+                .findByNameIgnoreCase(patchUserRequest.getFamily())
+                .orElseGet(
+                    () ->
+                        familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+      }
     }
     User savedUser = userRepository.save(user);
     authenticationManager.updateSession(savedUser, session);
@@ -105,11 +107,14 @@ public class AuthController {
     return savedUser;
   }
 
-  @PutMapping("updateFamilyName")
+  @PreAuthorize("isAuthenticated()")
+  @RolesAllowed("ROLE_ADMIN")
+  @Transactional
+  @PutMapping("update-family-name")
   public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
     Optional<Family> familyOp = familyRepository.findById(request.getFamilyId());
     if (familyOp.isPresent()) {
-      log.info(
+      log.debug(
           "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
       Family family = familyOp.get().setName(request.getNewName());
       familyRepository.save(family);
@@ -137,17 +142,6 @@ public class AuthController {
     return familyRepository.findAll().stream()
         .map(FamilyWithUsers::new)
         .collect(Collectors.toList());
-  }
-
-  @PutMapping("familyChangeEnable")
-  public boolean familyChangeEnable() {
-    this.familyChangeEnable = !this.familyChangeEnable;
-    return this.familyChangeEnable;
-  }
-
-  @GetMapping("familyChangeEnable")
-  public boolean getFamilyChangeEnable() {
-    return this.familyChangeEnable;
   }
 
   // There is no way to become an admin programmatically.

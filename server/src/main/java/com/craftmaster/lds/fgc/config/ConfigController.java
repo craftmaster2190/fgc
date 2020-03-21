@@ -42,4 +42,16 @@ public class ConfigController {
   public List<String> getServerMessages() {
     return configService.getServerMessages();
   }
+
+  @PreAuthorize("isAuthenticated()")
+  @RolesAllowed("ROLE_ADMIN")
+  @PutMapping("can-change-family")
+  public boolean toggleFamilyChangeEnable() {
+    return configService.toggleCanChangeFamily();
+  }
+
+  @GetMapping("can-change-family")
+  public boolean getCanChangeFamily() {
+    return configService.getCanChangeFamily();
+  }
 }
