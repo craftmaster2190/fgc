@@ -29,6 +29,11 @@ export class WelcomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
     Promise.all([
       Optional.of(this.authService.getCurrentUser())
         .map(currentUser => Promise.resolve(currentUser))

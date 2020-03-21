@@ -87,7 +87,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             .getIfPresent(chat.userId)
             .map(user => user.name + ": ")
             .orElse("") + chat.value,
-        classname: "bg-secondary"
+        classname: "bg-light"
       });
     }
   }
