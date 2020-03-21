@@ -45,6 +45,7 @@ export class WelcomeComponent implements OnInit {
         .map(currentUser => Promise.resolve(currentUser))
         .orElseGet(() => this.authService.fetchMe().catch(() => void 0)),
       this.authService.fetchUsers().then((users: Array<User>) => {
+        users = users || [];
         const familyGroups = {};
         users.forEach(user => {
           const familyName = user?.family?.name || "";
