@@ -1,6 +1,7 @@
 package com.craftmaster.lds.fgc.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.UUID;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,5 +12,5 @@ public class UpdateFamilyRequest {
   private String newName;
 
   @JsonDeserialize(using = StringTrimDeserializer.class)
-  private String familyId;
+  private UUID familyId;
 }
