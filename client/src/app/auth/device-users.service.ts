@@ -6,6 +6,7 @@ import { User } from "./user";
 import { Family } from "../family/family";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
+import { UserGroup } from "./user-group";
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +27,11 @@ export class DeviceUsersService {
         params: { deviceId: this.deviceId.get() }
       })
       .pipe(
-        map(users => (users || []).sort((a, b) => a.name.localeCompare(b.name)))
+        map(users => {
+          users = users || [];
+
+          return users.sort((a, b) => a.name.localeCompare(b.name));
+        })
       )
       .toPromise()
       .then(users => (this.deviceUsers = users));
@@ -81,6 +86,7 @@ export class DeviceUsersService {
       .put("/api/auth/update-family-name", { familyId, newName })
       .subscribe();
   }
+
   searchFamilies(partialFamilyName: string) {
     return this.http.get<Array<Family>>("/api/auth/family", {
       params: { search: partialFamilyName }

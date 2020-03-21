@@ -64,3 +64,6 @@ deploy
 server/fgc.iml
 server/fgc.ipr
 server/fgc.iws
+
+package-lock.json
+client/package-lock.json
