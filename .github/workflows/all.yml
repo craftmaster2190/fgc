@@ -7,8 +7,6 @@ jobs:
     runs-on: macos-10.15
     timeout-minutes: 20
     steps:
-      - run: echo ${{ github.ref }}
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -88,11 +86,9 @@ jobs:
           name: Build Files
           path: server/build/libs/
 
-      - run: echo ${{ github.ref }}
-
       - name: Setup AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
-        if: github.ref == 'master'
+        if: github.ref == 'refs/heads/master'
 
       - name: Setup AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -100,8 +96,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-2
-        if: github.ref == 'master'
+        if: github.ref == 'refs/heads/master'
 
       - name: Upload Versioned Artifacts to S3
         run: ./push-to-s3.bash
-        if: github.ref == 'master'
+        if: github.ref == 'refs/heads/master'
