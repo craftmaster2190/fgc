@@ -11,6 +11,5 @@ public class UpdateFamilyRequest {
   @JsonDeserialize(using = StringTrimDeserializer.class)
   private String newName;
 
-  @JsonDeserialize(using = StringTrimDeserializer.class)
   private UUID familyId;
 }
