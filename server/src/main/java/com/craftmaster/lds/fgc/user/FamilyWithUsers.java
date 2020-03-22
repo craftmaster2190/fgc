@@ -15,6 +15,7 @@ public class FamilyWithUsers {
 
   public FamilyWithUsers(Family family) {
     this.family = family;
-    users = family.getUsers();
+    // prevent sending back hibernate entity.
+    users = Set.copyOf(family.getUsers());
   }
 }

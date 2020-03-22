@@ -18,6 +18,6 @@ export class SentryErrorHandler implements ErrorHandler {
       const eventId = Sentry.captureException(error.originalError || error);
     }
 
-    console.error(error);
+    console.error("sentry-error-handler.service", error);
   }
 }

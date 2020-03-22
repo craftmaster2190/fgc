@@ -16,6 +16,7 @@ export class GameComponent implements OnInit, OnDestroy {
   openPanel: string = "firstPresidency";
   subscription: Subscription;
   serverMessages: Array<string>;
+  familyMembers: string[];
 
   constructor(
     public readonly authService: DeviceUsersService,
@@ -33,6 +34,9 @@ export class GameComponent implements OnInit, OnDestroy {
         serverMessages => (this.serverMessages = serverMessages)
       )
     );
+    this.authService
+      .getFamilyMembers()
+      .subscribe((members: string[]) => (this.familyMembers = members));
   }
 
   ngOnDestroy(): void {

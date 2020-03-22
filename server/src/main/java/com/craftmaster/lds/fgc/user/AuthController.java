@@ -40,15 +40,14 @@ public class AuthController {
 
   @GetMapping("me")
   public ResponseEntity<User> getMe(@AuthenticationPrincipal User user) {
-    return Optional.ofNullable(user)
-        .map(ResponseEntity::ok)
+    return Optional.ofNullable(user).map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
   }
 
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
-  public User createUser(
-      @RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
+  public User createUser(@RequestBody @Valid CreateUserRequest createUserRequest,
+      HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     configService.validateAcceptingNewUsers();
     var user = userRepository.save(new User());
@@ -57,13 +56,11 @@ public class AuthController {
   }
 
   @PostMapping("login")
-  public User loginUser(
-      @RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
+  public User loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest,
+      HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
-    var user =
-        userRepository
-            .findById(loginUserRequest.getUserId())
-            .orElseThrow(accessDeniedExceptionFactory::get);
+    var user = userRepository.findById(loginUserRequest.getUserId())
+        .orElseThrow(accessDeniedExceptionFactory::get);
     authenticationManager.authenticate(user, session, loginUserRequest.getDeviceId());
     return user;
   }
@@ -76,10 +73,8 @@ public class AuthController {
   @PreAuthorize("isAuthenticated()")
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
-  public User patchUser(
-      @AuthenticationPrincipal User user,
-      @RequestBody @Valid PatchUserRequest patchUserRequest,
-      HttpSession session) {
+  public User patchUser(@AuthenticationPrincipal User user,
+      @RequestBody @Valid PatchUserRequest patchUserRequest, HttpSession session) {
     log.info("Patching user: {} name: {}", user.getId(), user.getName());
     Optional.ofNullable(patchUserRequest.getName())
         // .filter((name) -> {
@@ -93,11 +88,8 @@ public class AuthController {
     if (configService.getCanChangeFamily()) {
       if (patchUserRequest.getFamily() != null) {
         user.setFamily(
-            familyRepository
-                .findByNameIgnoreCase(patchUserRequest.getFamily())
-                .orElseGet(
-                    () ->
-                        familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
+            familyRepository.findByNameIgnoreCase(patchUserRequest.getFamily()).orElseGet(
+                () -> familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
       }
     }
     User savedUser = userRepository.save(user);
@@ -114,8 +106,8 @@ public class AuthController {
   public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
     Optional<Family> familyOp = familyRepository.findById(request.getFamilyId());
     if (familyOp.isPresent()) {
-      log.debug(
-          "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
+      log.debug("Updating family name from: {} to: {}", familyOp.get().getName(),
+          request.getNewName());
       Family family = familyOp.get().setName(request.getNewName());
       familyRepository.save(family);
       return family;
@@ -135,12 +127,20 @@ public class AuthController {
   }
 
   @PreAuthorize("isAuthenticated()")
+  @GetMapping("family-members")
+  @Transactional
+  public List<String> getFamilyMembers(@AuthenticationPrincipal User user) {
+    
+    return familyRepository.getOne(user.getFamilyId())
+        .getUsers().stream().map(User::getName).collect(Collectors.toList());
+  }
+
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("families")
   @RolesAllowed("ROLE_ADMIN")
   @Transactional
   public List<FamilyWithUsers> getFamilies() {
-    return familyRepository.findAll().stream()
-        .map(FamilyWithUsers::new)
+    return familyRepository.findAll().stream().map(FamilyWithUsers::new)
         .collect(Collectors.toList());
   }
 
@@ -149,15 +149,11 @@ public class AuthController {
   @PostConstruct
   public void generateAdmin() {
     String adminName = "Admin";
-    userRepository
-        .findByNameIgnoreCase(adminName)
-        .ifPresentOrElse(
-            existingAdmin -> {
-              log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
-            },
-            () -> {
-              var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
-              log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
-            });
+    userRepository.findByNameIgnoreCase(adminName).ifPresentOrElse(existingAdmin -> {
+      log.warn("{} already exists! ID: {}", adminName, existingAdmin.getId());
+    }, () -> {
+      var admin = userRepository.save(new User().setName(adminName).setIsAdmin(true));
+      log.warn("Created `{}` user with ID: {}", adminName, admin.getId());
+    });
   }
 }

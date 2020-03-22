@@ -121,4 +121,7 @@ export class DeviceUsersService {
   getFamilies(): Observable<Array<Family>> {
     return this.http.get<Array<Family>>("/api/auth/families");
   }
+  getFamilyMembers(): Observable<string[]> {
+    return this.http.get<string[]>("/api/auth/family-members");
+  }
 }
