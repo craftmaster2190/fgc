@@ -7,14 +7,13 @@ import { Observable } from "rxjs";
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent implements OnChanges {
+export class ImageComponent {
   @Input() target: string;
   @Input() imgStyle: string;
-  src: Observable<string>;
 
   constructor(private readonly imagesCache: ImagesCacheService) {}
 
-  ngOnChanges(): void {
-    this.src = this.imagesCache.get(this.target);
+  getSrc() {
+    return this.imagesCache.get(this.target);
   }
 }

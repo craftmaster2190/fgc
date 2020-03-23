@@ -4,10 +4,7 @@ import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.ConfigService;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
 import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -138,8 +135,8 @@ public class AuthController {
   @GetMapping("family-members")
   @Transactional
   public List<String> getFamilyMembers(@AuthenticationPrincipal User user) {
-
-    return familyRepository.getOne(user.getFamilyId()).getUsers().stream()
+    return Optional.ofNullable(user.getFamilyId()).flatMap(familyRepository::findById)
+        .map(Family::getUsers).orElse(Collections.emptySet()).stream()
         .map(User::getName)
         .collect(Collectors.toList());
   }

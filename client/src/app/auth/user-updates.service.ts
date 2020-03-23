@@ -6,11 +6,14 @@ import { MessageBusService } from "../messaging/message-bus.service";
 import { mapMessageTo } from "../util/map-message-to";
 import { Optional } from "../util/optional";
 import { User } from "./user";
+import * as moment from "moment";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserUpdatesService {
+  private readonly fetchSemaphores: { [userId: string]: moment.Moment } = {};
+
   private readonly users: { [userOrFamilyId: string]: User | Family } = {};
 
   constructor(
@@ -47,7 +50,13 @@ export class UserUpdatesService {
 
   requestUserIfNeeded(userId) {
     if (!this.users[userId]) {
-      this.requestUser(userId);
+      if (
+        !this.fetchSemaphores[userId] ||
+        this.fetchSemaphores[userId].isBefore(moment())
+      ) {
+        this.fetchSemaphores[userId] = moment().add(3, "seconds");
+        this.requestUser(userId);
+      }
     }
   }
 

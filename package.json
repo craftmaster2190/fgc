@@ -5,7 +5,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn --cwd client format && cd server; ./gradlew clean spotlessJavaApply"
+      "pre-commit": "yarn --cwd client format && cd server; ./gradlew spotlessJavaApply"
     }
   },
   "devDependencies": {

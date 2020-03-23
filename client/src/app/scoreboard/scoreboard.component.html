@@ -1,6 +1,8 @@
 <h3>Top Players</h3>
-<ng-template [ngIf]="!scores?.length">
+<ng-template [ngIf]="!scores?.length" [ngIfElse]="scoresPresent">
   <h4>No scores yet.</h4>
+</ng-template>
+<ng-template #scoresPresent>
   <table class="table table-striped">
     <tbody>
       <tr *ngFor="let score of scores" [class.me]="isMe(score)">
