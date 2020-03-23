@@ -74,7 +74,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
       .subscribe(members => (this.familyMembers = members));
   }
 
-  isMe(score: Score) {
+  isMyScore(score: Score) {
     return this.authService.getCurrentUser().id === score.userOrFamilyId;
   }
 

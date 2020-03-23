@@ -5,7 +5,7 @@
 <ng-template #scoresPresent>
   <table class="table table-striped">
     <tbody>
-      <tr *ngFor="let score of scores" [class.me]="isMe(score)">
+      <tr *ngFor="let score of scores" [class.me]="isMyScore(score)">
         <th scope="row">{{ score.score }}</th>
         <td>
           <app-image
@@ -36,14 +36,9 @@
   </table>
 </ng-template>
 <div *ngIf="currentFamily">
-  <h3>Family Members</h3>
+  <h3>Family Members for: {{ currentFamily.name }}</h3>
   <table class="table table-striped">
     <tbody>
-      <tr class="family">
-        <th scope="row">0</th>
-        <td>{{ currentFamily.name }}</td>
-        <td>Family</td>
-      </tr>
       <tr *ngFor="let name of familyMembers">
         <th scope="row">0</th>
         <td>
