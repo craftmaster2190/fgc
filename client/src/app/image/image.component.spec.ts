@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ImageComponent } from "./image.component";
 import { ImagesCacheService } from "./images-cache.service";
+import { of } from "rxjs";
 
 describe("ImageComponent", () => {
   let component: ImageComponent;
@@ -10,7 +11,9 @@ describe("ImageComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ImageComponent],
-      providers: [{ provide: ImagesCacheService, useValue: {} }]
+      providers: [
+        { provide: ImagesCacheService, useValue: { get: () => of() } }
+      ]
     }).compileComponents();
   }));
 

@@ -23,12 +23,15 @@ describe("ScoreboardComponent", () => {
         },
         {
           provide: UserUpdatesService,
-          useValue: { getIfPresent: () => Optional.of() }
+          useValue: {
+            getIfPresent: () => Optional.of()
+          }
         },
         {
           provide: DeviceUsersService,
           useValue: {
-            getCurrentUser: () => ({})
+            getCurrentUser: () => ({}),
+            getFamilyMembers: () => of([])
           }
         }
       ]

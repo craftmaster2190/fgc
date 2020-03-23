@@ -16,6 +16,8 @@ import { filter } from "rxjs/operators";
 export class ScoreboardComponent implements OnInit, OnDestroy {
   userCount: number;
   scores: Array<Score>;
+  familyMembers: Array<string>;
+  currentFamily?: Family;
 
   subscription: Subscription;
   familyScoringOpen: boolean;
@@ -27,6 +29,8 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.currentFamily = this.authService.getCurrentUser()?.family;
+
     this.scoresService
       .getUserCount()
       .then(userCount => (this.userCount = userCount));
@@ -64,6 +68,10 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
         this.userUpdates.requestUserIfNeeded(score.userOrFamilyId)
       );
     });
+
+    this.authService
+      .getFamilyMembers()
+      .subscribe(members => (this.familyMembers = members));
   }
 
   isMe(score: Score) {

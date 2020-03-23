@@ -1,6 +1,9 @@
 package com.craftmaster.lds.fgc.user;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
@@ -19,7 +22,9 @@ import lombok.experimental.Accessors;
 public class Device implements Serializable {
   private static final long serialVersionUID = 20200305L;
 
-  @Id private UUID id = UUID.randomUUID();
+  @JsonProperty(access = WRITE_ONLY)
+  @Id
+  private UUID id = UUID.randomUUID();
 
   @ManyToMany(mappedBy = "devices", fetch = FetchType.EAGER)
   @ToString.Exclude

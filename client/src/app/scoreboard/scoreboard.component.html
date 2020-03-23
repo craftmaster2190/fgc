@@ -35,6 +35,33 @@
     </tbody>
   </table>
 </ng-template>
+<div *ngIf="currentFamily">
+  <h3>Family Members</h3>
+  <table class="table table-striped">
+    <tbody>
+      <tr class="family">
+        <th scope="row">0</th>
+        <td>{{ currentFamily.name }}</td>
+        <td>Family</td>
+      </tr>
+      <tr *ngFor="let name of familyMembers">
+        <th scope="row">0</th>
+        <td>
+          <!-- <app-image
+            *ngIf="getUserOrFamily(score.userOrFamilyId)?.hasProfileImage"
+            [target]="'/api/user/profile/' + score.userOrFamilyId"
+            imgStyle="width: 30px; border-radius: 4px;"
+          ></app-image> -->
+          <span>
+            {{ name }}
+          </span>
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <div class="family-scoring" [class.family-scoring-open]="familyScoringOpen">
   <a (click)="familyScoringOpen = !familyScoringOpen"
     >Understand Family Scoring <i class="fas fa-chevron-right"></i

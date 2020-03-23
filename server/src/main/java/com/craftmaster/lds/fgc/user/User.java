@@ -46,6 +46,7 @@ public class User implements UserDetails {
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinTable
+  @JsonIgnore
   @EqualsAndHashCode.Exclude
   private Set<Device> devices;
 
