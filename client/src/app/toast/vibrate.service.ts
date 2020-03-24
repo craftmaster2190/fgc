@@ -18,4 +18,30 @@ export class VibrateService {
       this.vibrate([300]);
     }
   }
+
+  starWars() {
+    // Star Wars shamelessly taken from the awesome Peter Beverloo
+    // https://tests.peter.sh/notification-generator/
+    if (this.vibrate) {
+      this.vibrate([
+        500,
+        110,
+        500,
+        110,
+        450,
+        110,
+        200,
+        110,
+        170,
+        40,
+        450,
+        110,
+        200,
+        110,
+        170,
+        40,
+        500
+      ]);
+    }
+  }
 }

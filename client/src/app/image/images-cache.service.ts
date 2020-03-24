@@ -47,6 +47,10 @@ export class ImagesCacheService {
       });
   }
 
+  has(target: string) {
+    return !!sessionStorage.getItem(KEY + target);
+  }
+
   invalidate(target: string) {
     sessionStorage.removeItem(KEY + target);
     if (!this.invalidateDebounce[target]) {

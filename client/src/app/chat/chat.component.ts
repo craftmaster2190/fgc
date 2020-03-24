@@ -14,6 +14,7 @@ import { ChatBusService } from "./chat-bus.service";
 import { ToastService } from "../toast/toast.service";
 import { Time } from "./time";
 import { UserUpdatesService } from "../auth/user-updates.service";
+import { PhoneNotificationsService } from "../phone-notifications.service";
 
 @Component({
   selector: "app-chat",
@@ -34,7 +35,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     private readonly userUpdates: UserUpdatesService,
     private readonly chatBusService: ChatBusService,
     private readonly toastService: ToastService,
-    private readonly authService: DeviceUsersService
+    private readonly authService: DeviceUsersService,
+    private readonly notifications: PhoneNotificationsService
   ) {}
 
   ngOnInit() {
@@ -60,7 +62,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   scrollToBottomOfChats() {
     setTimeout(() => {
       const chatValuesDiv = this.chatValues.nativeElement as HTMLElement;
-      chatValuesDiv.focus();
+      // chatValuesDiv.focus();
       chatValuesDiv.scrollTo(0, chatValuesDiv.scrollHeight);
     }, 500);
   }
@@ -89,6 +91,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             .orElse("") + chat.value,
         classname: "bg-light"
       });
+      this.notifications.sendNotification(chat);
     }
   }
 

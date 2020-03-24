@@ -26,7 +26,7 @@ export class ToastService {
   create(toast: Toast) {
     this.toasts.next(toast);
     this.titleService.setFlashing(toast.header || "Update", toast.message);
-    this.vibrateService.short();
+    this.vibrateService.starWars();
   }
 
   createError(header: string, message: string) {
