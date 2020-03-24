@@ -60,7 +60,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   scrollToBottomOfChats() {
     setTimeout(() => {
       const chatValuesDiv = this.chatValues.nativeElement as HTMLElement;
-      chatValuesDiv.focus();
       chatValuesDiv.scrollTo(0, chatValuesDiv.scrollHeight);
     }, 500);
   }
