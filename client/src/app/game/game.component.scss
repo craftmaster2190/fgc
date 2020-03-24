@@ -3,6 +3,7 @@
   margin: 10px 0;
   margin-bottom: 200px;
   display: block;
+  position: relative;
 }
 
 .admin-only {
@@ -42,4 +43,45 @@
 
 footer {
   height: 140px;
+}
+
+.scripture {
+  padding: 24px;
+  border: 1px solid #8b8b8b;
+  background-color: white;
+  margin-left: -5px;
+  margin-right: -5px;
+  margin-bottom: 24px;
+  box-shadow: 0px 0px 16px 4px #8b8b8b;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  margin-top: 50px;
+
+  .scripture-close-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+  }
+
+  .scripture-text {
+    font-size: 18px;
+    font-weight: bolder;
+  }
+
+  .scripture-reference {
+    text-align: right;
+    font-style: italic;
+
+    &::before {
+      content: "--";
+    }
+  }
+
+  &.fade-out {
+    transition: all 1.6s;
+    opacity: 0;
+    visibility: hidden;
+  }
 }

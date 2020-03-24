@@ -11,6 +11,11 @@
 </div>
 
 <ng-template #finishedLoading>
+  <div class="scripture" (click)="closeScripture()">
+    <div class="scripture-close-button"><i class="fa fa-times"></i></div>
+    <div class="scripture-text">{{ scripture.text }}</div>
+    <div class="scripture-reference">{{ scripture.reference }}</div>
+  </div>
   <p>Here's how you play:</p>
   <p>
     It is pretty easy. Open one of the sections below and guess who will be
