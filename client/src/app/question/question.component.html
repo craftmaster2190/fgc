@@ -35,13 +35,7 @@
   (click)="click$.next($event.target.value)"
   #instance="ngbTypeahead"
   [disabled]="!isEnabled()"
-  [placeholder]="
-    isQuestionClosed()
-      ? ''
-      : isEnabled()
-      ? randomPlaceholder
-      : 'Settle down, ... or remove an answer'
-  "
+  [placeholder]="getPlaceholder()"
   [resultTemplate]="isColors ? colorResultTemplate : null"
 />
 

@@ -49,6 +49,25 @@ export class QuestionComponent implements OnInit, OnDestroy {
       "Take a guess",
       "Take a wild guess",
       "What do you think?",
+      "What do you hypothesize?",
+      "What is your hypothesis?",
+      "What is your theory?",
+      "Go ahead",
+      "Get out on the edge",
+      "Speculate a litte",
+      "Guess again",
+      "Hit me",
+      "Predict away",
+      "Predictions please",
+      "What's your conjecture?",
+      "Quick, reach a conclusion",
+      "Jump to a conclusion",
+      "Snap decision",
+      "Anytime now",
+      "I have all day",
+      "I can do this all day",
+      "Fire away",
+      "Anything is possible",
       "Insert guess here",
       "Type something",
       "You can do it",
@@ -58,7 +77,44 @@ export class QuestionComponent implements OnInit, OnDestroy {
       "A guess goes here",
       "Guess correctly for points",
       "Type here",
+      "Any opinions",
+      "No fear",
+      "Have confidence",
+      "Have faith",
+      "Divine an answer",
+      "Are you a psychic",
+      "Look in the crystal ball",
+      "Share your belief",
+      "Make an assumption",
+      "Make an prediction",
       "Don't leave me blank!"
+    ];
+    return placeholders[Math.floor(Math.random() * placeholders.length)];
+  })();
+
+  randomClosedPlaceholder = (() => {
+    const placeholders = [
+      "Settle down",
+      "Settle down, ... or remove an answer",
+      "You've used up all guesses",
+      "No more guesses",
+      "You're done",
+      "All full of guesses here",
+      "No more answers",
+      "That's enough",
+      "Enough answers",
+      "All filled up",
+      "No further guesses",
+      "Nothing to do but wait",
+      "Now we wait",
+      "There will be a reckoning",
+      "Stand by for a score",
+      "Stand by",
+      "Do not fret",
+      "No fear",
+      "A score will come",
+      "Wait until Conference",
+      "You have guessed enough"
     ];
     return placeholders[Math.floor(Math.random() * placeholders.length)];
   })();
@@ -189,6 +245,16 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   getPointValue() {
     return this.getQuestion()?.pointValue;
+  }
+
+  getPlaceholder() {
+    if (this.isQuestionClosed()) {
+      return "Closed";
+    }
+    if (this.isEnabled()) {
+      return this.randomPlaceholder;
+    }
+    return this.randomClosedPlaceholder;
   }
 
   updateQuestion() {
