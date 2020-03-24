@@ -154,9 +154,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   closeScripture() {
     this.ngZone.runOutsideAngular(() => {
-      const el: HTMLDivElement = document.querySelector(".scripture");
-      el.classList.add("fade-out");
-      timeout(2000).then(() => el.parentElement.removeChild(el));
+      const scriptureElement: HTMLDivElement = document.querySelector(
+        ".scripture"
+      );
+      if (scriptureElement) {
+        scriptureElement.classList.add("fade-out");
+        timeout(2000).then(() =>
+          scriptureElement.parentElement.removeChild(scriptureElement)
+        );
+      }
     });
   }
 
@@ -180,9 +186,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   share() {
-    (navigator as any).share({
-      title: "Let's Play FantasyGC.org",
-      url: "https://fantasygc.org"
-    });
+    (navigator as any)
+      .share({
+        title: "Let's Play FantasyGC.org",
+        url: "https://fantasygc.org"
+      })
+      .catch(() => void 0);
   }
 }
