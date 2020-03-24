@@ -2,7 +2,12 @@ p {
   margin-left: 9px;
 }
 
-.family {
+h3 {
+  margin-top: 48px;
+}
+
+.family,
+.grey-text {
   color: #707070;
 }
 
@@ -12,6 +17,10 @@ p {
 
 th {
   width: 30px;
+}
+
+td.user-type {
+  width: 60px;
 }
 
 .family-scoring {

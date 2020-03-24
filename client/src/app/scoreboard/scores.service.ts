@@ -26,10 +26,17 @@ export class ScoresService {
     };
     return merge(
       this.messageBus.topicWatcher("score"),
-      this.messageBus.userTopicWatcher("score")
+      this.messageBus.userTopicWatcher("score"),
+      this.messageBus.userTopicWatcher("family-score")
     )
       .pipe(mapMessageTo<Score>())
       .subscribe(listener);
+  }
+
+  observeFamilyScores() {
+    return this.messageBus
+      .userTopicWatcher("family-score")
+      .pipe(mapMessageTo<Score>());
   }
 
   getUserCount() {

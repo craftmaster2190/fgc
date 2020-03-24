@@ -5,6 +5,8 @@ import com.craftmaster.lds.fgc.user.*;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -41,6 +43,34 @@ public class ScoreController {
             });
   }
 
+  @Scheduled(fixedDelay = 15000L)
+  public void sendUsersFamilyScore() {
+    simpUserRegistry
+        .getUsers()
+        .forEach(
+            stompUser ->
+                transactionalContext.run(
+                    () ->
+                        getFamilyScores(UUID.fromString(stompUser.getName()))
+                            .ifPresent(
+                                scores ->
+                                    simpMessageSendingOperations.convertAndSendToUser(
+                                        stompUser.getName(), "/topic/family-score", scores))));
+  }
+
+  @Transactional
+  private Optional<List<Score>> getFamilyScores(UUID userId) {
+    return userRepository
+        .findById(userId)
+        .map(User::getFamily)
+        .map(
+            family ->
+                Stream.concat(
+                        Stream.of(get(family.getId())),
+                        family.getUsers().stream().map(User::getId).map(this::get))
+                    .collect(Collectors.toList()));
+  }
+
   @Scheduled(fixedDelay = 60000L)
   public void sendTop25Scores() {
     userRepository.findAll().forEach(user -> transactionalContext.run(() -> get(user.getId())));
@@ -49,6 +79,13 @@ public class ScoreController {
         .forEach(family -> transactionalContext.run(() -> get(family.getId())));
     simpMessageSendingOperations.convertAndSend(
         "/topic/score", scoreRepository.findTop25ByOrderByScoreDesc());
+  }
+
+  @SubscribeMapping("user/family-score")
+  public List<Score> listenToFamilyScores(Principal principal) {
+    User user = (User) ((Authentication) principal).getPrincipal();
+
+    return getFamilyScores(user.getId()).orElse(null);
   }
 
   @SubscribeMapping("score")

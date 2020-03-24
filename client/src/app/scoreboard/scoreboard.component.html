@@ -1,6 +1,6 @@
 <h3>Top Players</h3>
 <ng-template [ngIf]="!scores?.length" [ngIfElse]="scoresPresent">
-  <h4>No scores yet.</h4>
+  <h4 class="grey-text">No scores yet...</h4>
 </ng-template>
 <ng-template #scoresPresent>
   <table class="table table-striped">
@@ -24,41 +24,56 @@
             >({{ getUserOrFamily(score.userOrFamilyId)?.family?.name }})</span
           >
         </td>
-        <td>
-          {{
-            getUserOrFamily(score.userOrFamilyId)?.isFamily
-              ? "Family"
-              : "Player"
-          }}
+        <td class="user-type">
+          {{ getScorerType(score) }}
         </td>
       </tr>
     </tbody>
   </table>
 </ng-template>
 <div *ngIf="currentFamily">
-  <h3>Family Members for: {{ currentFamily.name }}</h3>
-  <table class="table table-striped">
-    <tbody>
-      <tr *ngFor="let name of familyMembers">
-        <th scope="row">0</th>
-        <td>
-          <!-- <app-image
-            *ngIf="getUserOrFamily(score.userOrFamilyId)?.hasProfileImage"
-            [target]="'/api/user/profile/' + score.userOrFamilyId"
-            imgStyle="width: 30px; border-radius: 4px;"
-          ></app-image> -->
-          <span>
-            {{ name }}
-          </span>
-        </td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
+  <h3>{{ currentFamily.name }} Family</h3>
+  <ng-template [ngIf]="!familyScores?.length" [ngIfElse]="familyScoresPresent">
+    <h4 class="grey-text">Family loading...</h4>
+  </ng-template>
+  <ng-template #familyScoresPresent>
+    <table class="table table-striped">
+      <tbody>
+        <tr
+          *ngFor="let familyScore of familyScores"
+          [class.me]="
+            isMyScore(familyScore) ||
+            getUserOrFamily(familyScore.userOrFamilyId)?.isFamily
+          "
+        >
+          <th scope="row">{{ familyScore.score }}</th>
+          <td>
+            <app-image
+              *ngIf="
+                getUserOrFamily(familyScore.userOrFamilyId)?.hasProfileImage
+              "
+              [target]="'/api/user/profile/' + familyScore.userOrFamilyId"
+              imgStyle="width: 30px; border-radius: 4px;"
+            ></app-image>
+            <span
+              [class.family]="
+                getUserOrFamily(familyScore.userOrFamilyId)?.isFamily
+              "
+            >
+              {{ getUserOrFamily(familyScore.userOrFamilyId)?.name }}
+            </span>
+          </td>
+          <td class="user-type">
+            {{ getScorerType(familyScore) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
 </div>
 
 <div class="family-scoring" [class.family-scoring-open]="familyScoringOpen">
-  <a (click)="familyScoringOpen = !familyScoringOpen"
+  <a class="grey-text" (click)="familyScoringOpen = !familyScoringOpen"
     >Understand Family Scoring <i class="fas fa-chevron-right"></i
   ></a>
   <div class="family-scoring-details">

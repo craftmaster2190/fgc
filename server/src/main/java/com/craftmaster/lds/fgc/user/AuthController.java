@@ -132,16 +132,6 @@ public class AuthController {
   }
 
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("family-members")
-  @Transactional
-  public List<String> getFamilyMembers(@AuthenticationPrincipal User user) {
-    return Optional.ofNullable(user.getFamilyId()).flatMap(familyRepository::findById)
-        .map(Family::getUsers).orElse(Collections.emptySet()).stream()
-        .map(User::getName)
-        .collect(Collectors.toList());
-  }
-
-  @PreAuthorize("isAuthenticated()")
   @GetMapping("families")
   @RolesAllowed("ROLE_ADMIN")
   @Transactional
