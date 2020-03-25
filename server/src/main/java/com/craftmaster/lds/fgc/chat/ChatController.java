@@ -5,9 +5,12 @@ import com.craftmaster.lds.fgc.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.security.Principal;
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -34,6 +37,13 @@ public class ChatController {
                 .findById(id.toInstant())
                 .ifPresent(
                     chat -> simpMessageSendingOperations.convertAndSend("/topic/chat", chat)));
+
+    postgresSubscriptions.subscribe(
+        "DeleteChatId",
+        InstantDeserializer.class,
+        (id) ->
+            simpMessageSendingOperations.convertAndSend(
+                "/topic/chat", new Chat().setId(id.toInstant()).setDelete(true)));
   }
 
   @MessageMapping("/chat")
@@ -43,6 +53,21 @@ public class ChatController {
     log.debug("Adding chat: {} for: {}", chatString, user);
     Chat chat = chatRepository.save(new Chat().setValue(chatString).setUserId(user.getId()));
     postgresSubscriptions.send("NewChatId", chat.getId());
+  }
+
+  @MessageMapping("/delete-chat")
+  @Transactional
+  public void deleteChat(@NotNull @Payload InstantDeserializer chatId, Principal principal) {
+    User user = (User) ((Authentication) principal).getPrincipal();
+    chatRepository
+        .findById(chatId.toInstant())
+        .filter(
+            chat -> BooleanUtils.isTrue(user.getIsAdmin()) || chat.getUserId().equals(user.getId()))
+        .ifPresent(
+            chat -> {
+              chatRepository.delete(chat);
+              postgresSubscriptions.send("DeleteChatId", chatId);
+            });
   }
 
   @SubscribeMapping("/chat")

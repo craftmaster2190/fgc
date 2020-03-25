@@ -5,4 +5,5 @@ export interface Chat {
   value: string;
   userId: string;
   id: Time;
+  delete?: boolean;
 }

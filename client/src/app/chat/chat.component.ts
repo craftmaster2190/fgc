@@ -39,10 +39,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.chatBusService.listen(chat => {
-      this.chats[`${chat.id.epochSecond}.${chat.id.nano}`] = chat;
+      const chatId = `${chat.id.epochSecond}.${chat.id.nano}`;
+      if (chat.delete) {
+        delete this.chats[chatId];
+      } else {
+        this.chats[chatId] = chat;
+        this.notifyIfNeeded(chat);
+        this.scrollToBottomOfChats();
+      }
       this.chatIds = Object.keys(this.chats).sort();
-      this.scrollToBottomOfChats();
-      this.notifyIfNeeded(chat);
     });
   }
 
@@ -55,6 +60,17 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatBusService.send(this.chatValue);
     }
     this.chatValue = "";
+  }
+
+  canDeleteChat(chat: Chat) {
+    return (
+      this.authService.getCurrentUser()?.isAdmin ||
+      chat.userId === this.authService.getCurrentUser()?.id
+    );
+  }
+
+  deleteChat(chat: Chat) {
+    this.chatBusService.deleteChat(chat);
   }
 
   scrollToBottomOfChats() {

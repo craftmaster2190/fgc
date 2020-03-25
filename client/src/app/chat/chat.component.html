@@ -17,6 +17,14 @@
             >({{ getUserFromChatId(chatId).family.name }})</small
           ></b
         >:&nbsp;{{ chats[chatId].value }}
+        <span
+          class="delete-chat"
+          title="Delete this chat"
+          alt="Delete this chat"
+          *ngIf="canDeleteChat(chats[chatId])"
+          (click)="deleteChat(chats[chatId])"
+          ><i class="far fa-times-circle"></i
+        ></span>
         <span class="time-stamp">{{ renderTimeAgo(chats[chatId]) }}</span>
       </div>
     </ng-template>

@@ -10,17 +10,22 @@ import { UserUpdatesService } from "../auth/user-updates.service";
 @Injectable()
 export class ChatBusService {
   private readonly chatSender: JSONMessageSender;
+  private readonly deleteChatSender: JSONMessageSender;
 
   constructor(
     private readonly messageBusService: MessageBusService,
-    private readonly userUpdates: UserUpdatesService,
-    private readonly toastService: ToastService
+    private readonly userUpdates: UserUpdatesService
   ) {
     this.chatSender = messageBusService.messageSender("chat");
+    this.deleteChatSender = messageBusService.messageSender("delete-chat");
   }
 
   send(message: string) {
     this.chatSender.send(message);
+  }
+
+  deleteChat(chat: Chat) {
+    this.deleteChatSender.convertAndSend(chat.id);
   }
 
   listen(next: (chat: Chat) => void) {
@@ -29,7 +34,9 @@ export class ChatBusService {
       .pipe(mapMessageTo<Chat>())
       .subscribe(chats =>
         chats.forEach(chat => {
-          this.userUpdates.requestUserIfNeeded(chat.userId);
+          if (!chat.delete) {
+            this.userUpdates.requestUserIfNeeded(chat.userId);
+          }
           next(chat);
         })
       );

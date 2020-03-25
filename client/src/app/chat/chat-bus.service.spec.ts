@@ -12,10 +12,6 @@ describe("ChatBusService", () => {
         {
           provide: MessageBusService,
           useValue: { messageSender: () => void 0 }
-        },
-        {
-          provide: ToastService,
-          useValue: {}
         }
       ],
       imports: [HttpClientTestingModule]
