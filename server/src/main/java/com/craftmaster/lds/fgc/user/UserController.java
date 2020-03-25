@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.user;
 
+import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
 import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/user")
 @RequiredArgsConstructor
 public class UserController {
+  private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
   private final CustomAuthenticationProvider authenticationManager;
   private final PostgresSubscriptions postgresSubscriptions;
   private final SimpMessageSendingOperations simpMessageSendingOperations;
@@ -72,9 +74,18 @@ public class UserController {
 
   @GetMapping("profile/{userId}")
   @Transactional
-  public ResponseEntity<Resource> serveFile(@PathVariable UUID userId) {
+  public ResponseEntity<Resource> serveFile(
+      @PathVariable UUID userId,
+      HttpSession session,
+      @AuthenticationPrincipal User authenticatedUser) {
+    UUID deviceId = (UUID) session.getAttribute("DEVICE_ID");
+    if (authenticatedUser == null || deviceId == null) {
+      throw accessDeniedExceptionFactory.get();
+    }
+
     return userRepository
         .findById(userId)
+        .filter(user -> user.getDevices().stream().map(Device::getId).anyMatch(deviceId::equals))
         .map(User::getUserProfile)
         .map(UserProfile::getProfileImage)
         .map(ByteArrayResource::new)

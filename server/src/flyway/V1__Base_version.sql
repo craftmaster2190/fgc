@@ -16,13 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: fgc; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA fgc;
-
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;

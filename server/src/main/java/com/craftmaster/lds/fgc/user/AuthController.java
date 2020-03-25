@@ -45,23 +45,27 @@ public class AuthController {
   @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
   public User createUser(
-      @RequestBody @Valid CreateUserRequest createUserRequest, HttpSession session) {
+      @RequestBody @Valid CreateUserRequest createUserRequest,
+      HttpServletRequest request,
+      HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     configService.validateAcceptingNewUsers();
     var user = userRepository.save(new User());
-    authenticationManager.authenticate(user, session, createUserRequest.getDeviceId());
+    authenticationManager.authenticate(user, session, request, createUserRequest.getDeviceId());
     return patchUser(user, createUserRequest, session);
   }
 
   @PostMapping("login")
   public User loginUser(
-      @RequestBody @Valid LoginUserRequest loginUserRequest, HttpSession session) {
+      @RequestBody @Valid LoginUserRequest loginUserRequest,
+      HttpServletRequest request,
+      HttpSession session) {
     log.debug("loginUser: {}", loginUserRequest);
     var user =
         userRepository
             .findById(loginUserRequest.getUserId())
             .orElseThrow(accessDeniedExceptionFactory::get);
-    authenticationManager.authenticate(user, session, loginUserRequest.getDeviceId());
+    authenticationManager.authenticate(user, session, request, loginUserRequest.getDeviceId());
     return user;
   }
 
@@ -122,7 +126,8 @@ public class AuthController {
   }
 
   @GetMapping("users")
-  public Set<User> getUsersForDevice(@RequestParam UUID deviceId) {
+  public Set<User> getUsersForDevice(@RequestParam UUID deviceId, HttpSession session) {
+    session.setAttribute("DEVICE_ID", deviceId);
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
   }
 

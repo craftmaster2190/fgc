@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -27,7 +28,6 @@ public class User implements UserDetails {
   private static final long serialVersionUID = 20200226L;
 
   @Transient @JsonIgnore private final boolean accountNonExpired = true;
-  @Transient @JsonIgnore private final boolean accountNonLocked = true;
   @Transient @JsonIgnore private final boolean credentialsNonExpired = true;
   @Transient @JsonIgnore private final boolean enabled = true;
   @Transient @JsonIgnore private final String password = null;
@@ -81,5 +81,14 @@ public class User implements UserDetails {
       return Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
     return Set.of();
+  }
+
+  @ToString.Exclude @JsonIgnore @EqualsAndHashCode.Exclude
+  private Instant createdAt = Instant.now();
+
+  @Transient
+  @JsonIgnore
+  public boolean isAccountNonLocked() {
+    return getDevices().stream().map(Device::getBannedAt).noneMatch(Objects::nonNull);
   }
 }

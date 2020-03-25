@@ -5,12 +5,10 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,4 +29,15 @@ public class Device implements Serializable {
   @JsonIgnore
   @EqualsAndHashCode.Exclude
   private Set<User> users;
+
+  @ToString.Exclude @JsonIgnore @EqualsAndHashCode.Exclude
+  private Instant createdAt = Instant.now();
+
+  @ToString.Exclude @JsonIgnore @EqualsAndHashCode.Exclude private Instant bannedAt;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "deviceId")
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  @JsonIgnore
+  private Set<DeviceInfo> deviceInfos;
 }

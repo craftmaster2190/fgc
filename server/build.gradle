@@ -72,8 +72,8 @@ flyway {
     url = 'jdbc:postgresql://localhost:5432/fgc'
     user = 'postgres'
     password = 'postgres'
-    schemas = ['fgc']
-    locations = ['filesystem:/src/flyway']
+    schemas = ['public']
+    locations = ['filesystem:src/flyway']
     configurations = ['flyway']
 }
 
