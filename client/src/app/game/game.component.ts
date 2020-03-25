@@ -25,6 +25,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   serverMessages: Array<string>;
   scripture = (() => {
     const scriptures = [
+      // cSpell:disable
       {
         reference: "Deuteronomy 31:12",
         text:
@@ -125,6 +126,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         text:
           "But these are written, that ye might believe that Jesus is the Christ, the Son of God; and that believing ye might have life through his name."
       }
+      // cSpell:enable
     ];
     return scriptures[Math.floor(Math.random() * scriptures.length)];
   })();

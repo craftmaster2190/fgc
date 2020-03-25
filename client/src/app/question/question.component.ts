@@ -54,7 +54,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
       "What is your theory?",
       "Go ahead",
       "Get out on the edge",
-      "Speculate a litte",
+      "Speculate a little",
       "Guess again",
       "Hit me",
       "Predict away",

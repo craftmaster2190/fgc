@@ -1,0 +1,6 @@
+{
+  "minWordLength": 1,
+  "allowCompoundWords": true,
+  "dictionaries": ["fgc"],
+  "dictionaryDefinitions": [{ "name": "fgc", "path": "./fgc-dictionary.txt" }]
+}

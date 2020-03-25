@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 
 const peopleImages = [
+  // cspell:disable
   {
     name: "Russell M. Nelson",
     title: "First Presidency",
@@ -626,6 +627,7 @@ const peopleImages = [
     title: "Young Men General Presidency",
     source: "M_Joseph_Brough_small.jpg"
   }
+  // cspell:enable
 ];
 
 @Injectable()

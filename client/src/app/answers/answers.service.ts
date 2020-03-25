@@ -5,12 +5,15 @@ export class AnswersService {
   constructor() {}
 
   firstPresidency = () => [
+    // cspell:disable
     "Russell M. Nelson",
     "Dallin H. Oaks",
     "Henry B. Eyring"
+    // cspell:enable
   ];
 
   apostles = () => [
+    // cspell:disable
     "M. Russell Ballard",
     "Jeffrey R. Holland",
     "Dieter F. Uchtdorf",
@@ -23,9 +26,11 @@ export class AnswersService {
     "Dale G. Renlund",
     "Gerrit W. Gong",
     "Ulisses Soares"
+    // cspell:enable
   ];
 
   seventies = () => [
+    // cspell:disable
     "Marcos A. Aidukaitis",
     "Rubén V. Alliaud",
     "Jose L. Alonso",
@@ -111,9 +116,11 @@ export class AnswersService {
     "Chi Hong (Sam) Wong",
     "Kazuhiko Yamashita",
     "Jorge F. Zeballos"
+    // cspell:enable
   ];
 
   presidencyOfTheSeventy = () => [
+    // cspell:disable
     "L. Whitney Clayton",
     "Patrick Kearon",
     "Carl B. Cook",
@@ -121,45 +128,59 @@ export class AnswersService {
     "Terence M. Vinson",
     "José A. Teixeira",
     "Carlos A. Godoy"
+    // cspell:enable
   ];
 
   presidingBishopric = () => [
+    // cspell:disable
     "Gérald Caussé",
     "Dean M. Davies",
     "W. Christopher Waddell"
+    // cspell:enable
   ];
 
   reliefSocietyPresidency = () => [
+    // cspell:disable
     "Jean B. Bingham",
     "Sharon Eubank",
     "Reyna I. Aburto"
+    // cspell:enable
   ];
 
-  youngMensPresidency = () => [
+  youngMenPresidency = () => [
+    // cspell:disable
     "Stephen W. Owen",
     "Douglas D. Holmes",
     "M. Joseph Brough"
+    // cspell:enable
   ];
 
-  youndWomensPresidency = () => [
+  youngWomenPresidency = () => [
+    // cspell:disable
     "Bonnie H. Cordon",
     "Michelle Craig",
     "Becky Craven"
+    // cspell:enable
   ];
 
   sundaySchoolPresidency = () => [
+    // cspell:disable
     "Mark L. Pace",
     "Milton Camargo",
     "Jan E. Newman"
+    // cspell:enable
   ];
 
   primaryPresidency = () => [
+    // cspell:disable
     "Joy D. Jones",
     "Lisa L. Harkness",
     "Cristina B. Franco"
+    // cspell:enable
   ];
 
   hymnsAndSongs = () => [
+    // cspell:disable
     "The Morning Breaks",
     "The Spirit of God",
     "Now Let Us Rejoice",
@@ -769,6 +790,7 @@ export class AnswersService {
     "Supplication",
     "Prelude in F",
     "Distant Bells"
+    // cspell:enable
   ];
 
   colors = () => [
@@ -862,6 +884,7 @@ export class AnswersService {
 
   // Source: https://restcountries.eu/rest/v2/all
   countriesNotAmerica = () => [
+    // cspell:disable
     "Afghanistan",
     "Åland Islands",
     "Albania",
@@ -1111,6 +1134,7 @@ export class AnswersService {
     "Yemen",
     "Zambia",
     "Zimbabwe"
+    // cspell:enable
   ];
 
   conferenceSessions = () => [

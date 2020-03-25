@@ -51,7 +51,7 @@ export class DeviceUsersService {
 
   loginUser(user: User) {
     // Can be used to switch users
-    // Should put a server cookie and create a sesssion
+    // Should put a server cookie and create a session
     return this.http
       .post<User>("/api/auth/login", {
         userId: user.id,
@@ -64,7 +64,7 @@ export class DeviceUsersService {
   logoutUser() {
     this.currentUser = null;
     // Can be used to switch users
-    // Should put a server cookie and create a sesssion
+    // Should remove server cookie and destroy session
 
     return this.router
       .navigate(["logout"])

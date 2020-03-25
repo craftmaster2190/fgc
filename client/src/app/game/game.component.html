@@ -95,10 +95,10 @@
 
   <app-section
     title="Who's Conducting?"
-    [isOpen]="openPanel === 'whosConducting'"
-    (click)="toggelOpenPanel($event, 'whosConducting')"
+    [isOpen]="openPanel === 'whoIsConducting'"
+    (click)="toggelOpenPanel($event, 'whoIsConducting')"
   ></app-section>
-  <ng-template [ngIf]="openPanel === 'whosConducting'">
+  <ng-template [ngIf]="openPanel === 'whoIsConducting'">
     <app-question
       text="In which sessions(s) is President Russell M. Nelson conducting?"
       id="11"
@@ -116,7 +116,7 @@
       [countOfAnswers]="2"
     ></app-question>
     <app-question
-      text="In which session(s) is President Heny B. Eyring conducting?"
+      text="In which session(s) is President Henry B. Eyring conducting?"
       id="13"
       image="Henry B. Eyring"
       answerType="typeahead"
@@ -199,14 +199,14 @@
       text="Who of the Young Men Presidency will be speaking in any session?"
       id="34"
       answerType="typeahead"
-      [answers]="answersService.youngMensPresidency()"
+      [answers]="answersService.youngMenPresidency()"
       [countOfAnswers]="1"
     ></app-question>
     <app-question
       text="Who of the Young Women Presidency will be speaking in any session?"
       id="35"
       answerType="typeahead"
-      [answers]="answersService.youndWomensPresidency()"
+      [answers]="answersService.youngWomenPresidency()"
       [countOfAnswers]="1"
     ></app-question>
     <app-question

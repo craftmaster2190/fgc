@@ -146,18 +146,17 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      // save the unrotated context of the canvas so we can restore it later
-      // the alternative is to untranslate & unrotate after drawing
       context.save();
 
       context.translate(canvas.width / 2, canvas.height / 2);
       context.rotate((this.rotation * Math.PI) / 180);
-      const wrh = this.canvasImage.width / this.canvasImage.height;
+      const widthByHeightRatio =
+        this.canvasImage.width / this.canvasImage.height;
       let newWidth = canvas.width;
-      let newHeight = newWidth / wrh;
+      let newHeight = newWidth / widthByHeightRatio;
       if (newHeight > canvas.height) {
         newHeight = canvas.height;
-        newWidth = newHeight * wrh;
+        newWidth = newHeight * widthByHeightRatio;
       }
       context.drawImage(
         this.canvasImage,
@@ -167,7 +166,6 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
         newHeight
       );
 
-      // we’re done with the rotating so restore the unrotated context
       context.restore();
     });
   }
