@@ -79,7 +79,7 @@ public class UserController {
       HttpSession session,
       @AuthenticationPrincipal User authenticatedUser) {
     UUID deviceId = (UUID) session.getAttribute("DEVICE_ID");
-    if (authenticatedUser == null || deviceId == null) {
+    if (authenticatedUser == null && deviceId == null) {
       throw accessDeniedExceptionFactory.get();
     }
 
