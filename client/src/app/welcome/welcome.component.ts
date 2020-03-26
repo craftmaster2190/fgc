@@ -29,6 +29,8 @@ export class WelcomeComponent implements OnInit {
   family: string;
   searchingFamilies: boolean;
   userGroups: Array<UserGroup>;
+  isAppBrowser: boolean;
+  isPrivateMode: boolean;
 
   constructor(
     public readonly authService: DeviceUsersService,
@@ -41,6 +43,15 @@ export class WelcomeComponent implements OnInit {
       top: 0,
       behavior: "smooth"
     });
+
+    this.isAppBrowser =
+      this.browsersService.isFacebookApp() ||
+      this.browsersService.isInstagramApp() ||
+      this.browsersService.isWebView();
+
+    this.browsersService
+      .isPrivateMode()
+      .then(isPrivateMode => (this.isPrivateMode = isPrivateMode));
 
     Promise.all([
       Optional.of(this.authService.getCurrentUser())

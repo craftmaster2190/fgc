@@ -1,24 +1,4 @@
-<div *ngIf="loading; else state" class="text-center" style="margin-top: 50px;">
-  <div
-    class="spinner-border"
-    style="width: 12rem; height: 12rem;"
-    role="status"
-  ></div>
-</div>
-
-<div *ngIf="serverError" class="alert alert-danger">
-  Something seems to have gone wrong. We're working on it.
-</div>
-
-<ngb-alert
-  *ngIf="
-    browsersService.isFacebookApp() ||
-    browsersService.isInstagramApp() ||
-    browsersService.isWebView()
-  "
-  type="warning"
-  [dismissible]="false"
->
+<ngb-alert *ngIf="" type="warning" [dismissible]="false">
   <p>
     It appears you are using an app browser (like Facebook or Instagram instead
     of Chrome or Safari).
@@ -39,17 +19,25 @@
   </div>
 </ngb-alert>
 
-<ngb-alert
-  *ngIf="browsersService.isPrivateMode() | async"
-  type="warning"
-  [dismissible]="false"
->
+<ngb-alert *ngIf="isPrivateMode" type="warning" [dismissible]="false">
   <p>It appears you are in incognito mode or private mode.</p>
   <div>
     This is not recommended. Your user will be forgotten when you close your
     browser and you will not be able to recover it.
   </div>
 </ngb-alert>
+
+<div *ngIf="loading; else state" class="text-center" style="margin-top: 50px;">
+  <div
+    class="spinner-border"
+    style="width: 12rem; height: 12rem;"
+    role="status"
+  ></div>
+</div>
+
+<div *ngIf="serverError" class="alert alert-danger">
+  Something seems to have gone wrong. We're working on it.
+</div>
 
 <ng-template #state>
   <div *ngIf="isStateUnknown()">
