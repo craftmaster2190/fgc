@@ -85,7 +85,10 @@ public class UserController {
 
     return userRepository
         .findById(userId)
-        .filter(user -> user.getDevices().stream().map(Device::getId).anyMatch(deviceId::equals))
+        .filter(
+            user ->
+                authenticatedUser != null
+                    || user.getDevices().stream().map(Device::getId).anyMatch(deviceId::equals))
         .map(User::getUserProfile)
         .map(UserProfile::getProfileImage)
         .map(ByteArrayResource::new)

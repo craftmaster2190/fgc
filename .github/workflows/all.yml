@@ -10,13 +10,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache NVM
-        uses: actions/cache@v1
-        env:
-          cache-name: nvm
-        with:
-          path: ~/.nvm
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('.nvmrc') }}
+      # - name: Cache NVM
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: nvm
+      #   with:
+      #     path: ~/.nvm
+      #     key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('.nvmrc') }}
 
       - name: Setup NVM and Node
         run: |
@@ -30,15 +30,15 @@ jobs:
       - name: Setup Yarn
         run: curl -o- -L https://yarnpkg.com/install.sh | bash
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+      # - name: Get yarn cache directory path
+      #   id: yarn-cache-dir-path
+      #   run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Cache Node Modules
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      # - name: Cache Node Modules
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn Install
         run: yarn --cwd client install
@@ -60,13 +60,13 @@ jobs:
         with:
           java-version: "13"
 
-      - name: Cache Gradle
-        uses: actions/cache@v1
-        env:
-          cache-name: gradle-cache
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/*.gradle*') }}
+      # - name: Cache Gradle
+      #   uses: actions/cache@v1
+      #   env:
+      #     cache-name: gradle-cache
+      #   with:
+      #     path: ~/.gradle/caches
+      #     key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/*.gradle*') }}
 
       - name: Gradle Compile
         working-directory: ./server
