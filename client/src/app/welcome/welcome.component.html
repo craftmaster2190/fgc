@@ -36,7 +36,8 @@
 </div>
 
 <div *ngIf="serverError" class="alert alert-danger">
-  Something seems to have gone wrong. We're working on it.
+  Something seems to have gone wrong. We're working on it. Try refreshing your
+  browser.
 </div>
 
 <ng-template #state>
@@ -129,7 +130,7 @@
             id="family"
             name="family"
             [(ngModel)]="family"
-            placeholder="What does group want to be called?"
+            placeholder="What does your group want to be called?"
             autocomplete="off"
             [ngbTypeahead]="searchFamilies"
           />

@@ -42,6 +42,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     SecurityContext sc = SecurityContextHolder.getContext();
     sc.setAuthentication(auth);
+    session.setAttribute("DEVICE_ID", deviceId);
     session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     return auth;
   }

@@ -7,5 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, UUID> {
-  List<Score> findTop25ByOrderByScoreDesc();
+  List<Score> findTop25ByScoreGreaterThanOrderByScoreDesc(long score);
+
+  default List<Score> top25Scores() {
+    return findTop25ByScoreGreaterThanOrderByScoreDesc(0);
+  }
 }

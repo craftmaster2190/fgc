@@ -77,11 +77,11 @@ public class ScoreController {
     familyRepository
         .findAll()
         .forEach(family -> transactionalContext.run(() -> get(family.getId())));
-    simpMessageSendingOperations.convertAndSend(
-        "/topic/score", scoreRepository.findTop25ByOrderByScoreDesc());
+    simpMessageSendingOperations.convertAndSend("/topic/score", scoreRepository.top25Scores());
   }
 
-  @SubscribeMapping("user/family-score")
+  // TODO Doesn't work
+  @SubscribeMapping("family-score")
   public List<Score> listenToFamilyScores(Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
 
@@ -92,7 +92,7 @@ public class ScoreController {
   public List<Score> listenToScores(Principal principal) {
     User user = (User) ((Authentication) principal).getPrincipal();
 
-    List<Score> topScores = scoreRepository.findTop25ByOrderByScoreDesc();
+    List<Score> topScores = scoreRepository.top25Scores();
     if (topScores.stream().noneMatch(score -> score.getUserOrFamilyId().equals(user.getId()))) {
       topScores.add(transactionalContext.run(() -> get(user.getId())));
     }

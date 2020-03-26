@@ -81,7 +81,7 @@ public class AuthController {
       @AuthenticationPrincipal User user,
       @RequestBody @Valid PatchUserRequest patchUserRequest,
       HttpSession session) {
-    log.info("Patching user: {} name: {}", user.getId(), user.getName());
+    log.debug("Patching user: {} name: {}", user.getId(), user.getName());
     Optional.ofNullable(patchUserRequest.getName())
         // .filter((name) -> {
         // if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())

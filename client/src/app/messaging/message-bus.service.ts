@@ -7,6 +7,7 @@ import { JSONMessageSender } from "./json-message-sender";
 import { ToastService } from "../toast/toast.service";
 import { debounce, throttle } from "rxjs/operators";
 import { SentryErrorHandler } from "../config/sentry-error-handler.service";
+import { DeviceUsersService } from "../auth/device-users.service";
 
 @Injectable()
 export class MessageBusService {
@@ -14,6 +15,7 @@ export class MessageBusService {
 
   constructor(
     private readonly rxStompService: RxStompService,
+    private readonly authService: DeviceUsersService,
     toastService: ToastService
   ) {
     const reconnectingWebsocket = new Subject<void>();
@@ -27,6 +29,11 @@ export class MessageBusService {
           toastService.create({
             message: "Reconnecting to server...",
             classname: "bg-warning"
+          });
+          // Logout if something went very wrong
+          this.authService.fetchMe().catch(err => {
+            setTimeout(() => location.reload(), 100);
+            throw err;
           });
         }
       });
