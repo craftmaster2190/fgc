@@ -15,6 +15,7 @@ import { User } from "../auth/user";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
 import { UserGroup } from "../auth/user-group";
+import { BrowserDetectService } from "./browser-detect.service";
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -31,6 +32,7 @@ export class WelcomeComponent implements OnInit {
 
   constructor(
     public readonly authService: DeviceUsersService,
+    public readonly browsersService: BrowserDetectService,
     private readonly router: Router
   ) {}
 

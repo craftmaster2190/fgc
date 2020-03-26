@@ -59,3 +59,15 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
+
+ngb-alert:first-of-type {
+  margin-top: 18px;
+}
+
+.open-in-images {
+  img {
+    border-radius: 5px;
+    margin-right: 12px;
+    max-height: 150px;
+  }
+}

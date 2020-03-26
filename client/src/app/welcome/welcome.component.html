@@ -10,6 +10,47 @@
   Something seems to have gone wrong. We're working on it.
 </div>
 
+<ngb-alert
+  *ngIf="
+    browsersService.isFacebookApp() ||
+    browsersService.isInstagramApp() ||
+    browsersService.isWebView()
+  "
+  type="warning"
+  [dismissible]="false"
+>
+  <p>
+    It appears you are using an app browser (like Facebook or Instagram instead
+    of Chrome or Safari).
+  </p>
+  <p>
+    This is not recommended. Your user will be limited to this browser and you
+    will need to navigate to fantasygc.org from the Facebook app in order to
+    login again.
+  </p>
+  <p>
+    Long press this link:
+    <a href="//fantasygc.org">fantasygc.org</a>
+    and click "Open in Chrome" or "Open in Safari"
+  </p>
+  <div class="open-in-images">
+    <img src="/assets/open-in-chrome.png" />
+    <img src="/assets/open-in-safari.png" />
+  </div>
+</ngb-alert>
+
+<ngb-alert
+  *ngIf="browsersService.isPrivateMode() | async"
+  type="warning"
+  [dismissible]="false"
+>
+  <p>It appears you are in incognito mode or private mode.</p>
+  <div>
+    This is not recommended. Your user will be forgotten when you close your
+    browser and you will not be able to recover it.
+  </div>
+</ngb-alert>
+
 <ng-template #state>
   <div *ngIf="isStateUnknown()">
     <p class="fade-in-0"><b>Welcome to Fantasy General Conference.</b></p>

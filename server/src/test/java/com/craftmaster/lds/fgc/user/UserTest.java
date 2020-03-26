@@ -13,7 +13,7 @@ public class UserTest {
 
   @Test
   public void test() {
-    TestUtil.testPropertiesExclude(UserBuilder.get().build(), "familyId", "id");
+    TestUtil.testPropertiesExclude(UserBuilder.get().build(), "familyId", "id", "createdAt");
   }
 
   @Test
