@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, isDevMode } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, throwError } from "rxjs";
 import {
@@ -39,6 +39,17 @@ export class WelcomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (!isDevMode()) {
+      console.log("Host is:", location.host);
+      if (
+        location.host.toLowerCase().indexOf("fantasygc.org") > -1 &&
+        location.host !== "fantasygc.org"
+      ) {
+        console.log("Redirecting to fantasygc.org...");
+        location.href = "https://fantasygc.org/";
+      }
+    }
+
     window.scrollTo({
       top: 0,
       behavior: "smooth"
