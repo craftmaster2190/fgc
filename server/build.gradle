@@ -65,7 +65,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.session:spring-session-jdbc'
     runtimeOnly 'com.h2database:h2'
-		// this seems to add more checks to spotbugs
+    // this seems to add more checks to spotbugs
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -115,6 +115,21 @@ hibernate {
         enableDirtyTracking = true
         enableAssociationManagement = true
         enableExtendedEnhancement = false
+    }
+}
+
+spotbugs {
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+    reportLevel = 'high'
+    reportsDir = file("$buildDir/spotbugs")
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
     }
 }
 
