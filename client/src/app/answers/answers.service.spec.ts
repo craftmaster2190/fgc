@@ -7,7 +7,7 @@ describe("AnswersService", () => {
   );
 
   it("should be created", () => {
-    const service: AnswersService = TestBed.get(AnswersService);
+    const service: AnswersService = TestBed.inject(AnswersService);
     expect(service).toBeTruthy();
   });
 });

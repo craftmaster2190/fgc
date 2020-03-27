@@ -18,17 +18,22 @@ import { DeviceUsersService } from "../auth/device-users.service";
   styleUrls: ["./nav-header.component.scss"]
 })
 export class NavHeaderComponent implements OnInit, OnDestroy {
+  constructor(
+    public readonly authService: DeviceUsersService,
+    private readonly modalService: NgbModal,
+    private readonly ngZone: NgZone
+  ) {}
   name: string;
   family: string;
   canChangeFamily: boolean;
   readonly updateUserSubject = new Subject();
   private subscription: Subscription;
 
-  constructor(
-    public readonly authService: DeviceUsersService,
-    private readonly modalService: NgbModal,
-    private readonly ngZone: NgZone
-  ) {}
+  searchingFamilies: boolean;
+
+  loadingImage: boolean;
+  canvasImage: HTMLImageElement;
+  rotation = 0;
 
   ngOnInit() {
     this.subscription = this.updateUserSubject
@@ -71,8 +76,6 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     this.authService.logoutUser();
   }
 
-  searchingFamilies: boolean;
-
   searchFamilies = (text$: Observable<string>) => {
     return text$.pipe(
       debounceTime(200),
@@ -95,10 +98,6 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   familyValid() {
     return (this.family?.trim()?.length || 0) >= 4;
   }
-
-  loadingImage: boolean;
-  canvasImage: HTMLImageElement;
-  rotation = 0;
 
   onFileSelected(event) {
     this.loadingImage = true;

@@ -1,5 +1,5 @@
 export default function timeout(delay) {
-  return new Promise(function(resolve) {
+  return new Promise(resolve => {
     setTimeout(resolve, delay);
   });
 }

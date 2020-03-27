@@ -5,31 +5,11 @@ import * as isWebview from "is-ua-webview";
   providedIn: "root"
 })
 export class BrowserDetectService {
+  constructor() {}
   private readonly userAgent =
     navigator.userAgent || navigator.vendor || (window as any).opera;
 
-  constructor() {}
-
-  isWebView() {
-    return isWebview(this.userAgent);
-  }
-
-  isFacebookApp() {
-    return (
-      // cSpell:disable-next-line
-      this.userAgent.indexOf("FBAN") > -1 || this.userAgent.indexOf("FBAV") > -1
-    );
-  }
-
-  isInstagramApp() {
-    return this.userAgent.indexOf("Instagram") > -1;
-  }
-
-  isPrivateMode(): Promise<boolean> {
-    return this._isPrivateMode;
-  }
-
-  private _isPrivateMode = (() => {
+  private isPrivateModeInternal = (() => {
     return new Promise<boolean>(resolve => {
       const yes = () => resolve(true); // is in private mode
       const not = () => resolve(false); // not in private mode
@@ -51,8 +31,9 @@ export class BrowserDetectService {
         const isMozillaFirefox =
           "MozAppearance" in document.documentElement.style;
         if (isMozillaFirefox) {
-          if (indexedDB == null) yes();
-          else {
+          if (indexedDB == null) {
+            yes();
+          } else {
             const db = indexedDB.open("inPrivate");
             db.onsuccess = not;
             db.onerror = yes;
@@ -68,8 +49,9 @@ export class BrowserDetectService {
         if (isSafari) {
           const testLocalStorage = () => {
             try {
-              if (localStorage.length) not();
-              else {
+              if (localStorage.length) {
+                not();
+              } else {
                 localStorage.setItem("inPrivate", "0");
                 localStorage.removeItem("inPrivate");
                 not();
@@ -85,7 +67,9 @@ export class BrowserDetectService {
           };
 
           const version = parseInt(isSafari[1], 10);
-          if (version < 11) return testLocalStorage();
+          if (version < 11) {
+            return testLocalStorage();
+          }
           try {
             (window as any).openDatabase(null, null, null, null);
             not();
@@ -99,19 +83,48 @@ export class BrowserDetectService {
       function detectEdgeIE10(): boolean {
         const isEdgeIE10 =
           !window.indexedDB && (window.PointerEvent || window.MSPointerEvent);
-        if (isEdgeIE10) yes();
+        if (isEdgeIE10) {
+          yes();
+        }
         return !!isEdgeIE10;
       }
 
       // when a browser is detected, it runs tests for that browser
       // and skips pointless testing for other browsers.
-      if (detectChromeOpera()) return;
-      if (detectFirefox()) return;
-      if (detectSafari()) return;
-      if (detectEdgeIE10()) return;
+      if (detectChromeOpera()) {
+        return;
+      }
+      if (detectFirefox()) {
+        return;
+      }
+      if (detectSafari()) {
+        return;
+      }
+      if (detectEdgeIE10()) {
+        return;
+      }
 
       // default navigation mode
       return not();
     });
   })();
+
+  isWebView() {
+    return isWebview(this.userAgent);
+  }
+
+  isFacebookApp() {
+    return (
+      // cSpell:disable-next-line
+      this.userAgent.indexOf("FBAN") > -1 || this.userAgent.indexOf("FBAV") > -1
+    );
+  }
+
+  isInstagramApp() {
+    return this.userAgent.indexOf("Instagram") > -1;
+  }
+
+  isPrivateMode(): Promise<boolean> {
+    return this.isPrivateModeInternal;
+  }
 }

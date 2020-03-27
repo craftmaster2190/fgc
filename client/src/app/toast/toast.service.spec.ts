@@ -9,7 +9,7 @@ describe("ToastService", () => {
   );
 
   it("should be created", () => {
-    const service: ToastService = TestBed.get(ToastService);
+    const service: ToastService = TestBed.inject(ToastService);
     expect(service).toBeTruthy();
   });
 });

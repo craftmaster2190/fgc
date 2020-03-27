@@ -22,7 +22,7 @@ import { BrowserDetectService } from "./browser-detect.service";
   styleUrls: ["./welcome.component.scss"]
 })
 export class WelcomeComponent implements OnInit {
-  loading: boolean = true;
+  loading = true;
   showRegisterUser: boolean;
   serverError: boolean;
   name: string;

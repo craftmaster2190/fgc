@@ -58,7 +58,7 @@ export class DeviceUsersService {
         deviceId: this.deviceId.get()
       })
       .toPromise()
-      .then(user => (this.currentUser = user));
+      .then(currentUser => (this.currentUser = currentUser));
   }
 
   logoutUser() {

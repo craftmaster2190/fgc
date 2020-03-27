@@ -10,7 +10,7 @@ import { Family } from "../family/family";
   styleUrls: ["./admin.component.scss"]
 })
 export class AdminComponent implements OnInit {
-  loading: boolean = true;
+  loading = true;
   canChangeFamily: boolean;
   families: Array<Family>;
 

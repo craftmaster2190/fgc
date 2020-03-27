@@ -10,14 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Cache NVM
-      #   uses: actions/cache@v1
-      #   env:
-      #     cache-name: nvm
-      #   with:
-      #     path: ~/.nvm
-      #     key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('.nvmrc') }}
-
       - name: Setup NVM and Node
         run: |
           curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.2/install.sh | bash
@@ -30,43 +22,33 @@ jobs:
       - name: Setup Yarn
         run: curl -o- -L https://yarnpkg.com/install.sh | bash
 
-      # - name: Get yarn cache directory path
-      #   id: yarn-cache-dir-path
-      #   run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      # - name: Cache Node Modules
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
       - name: Yarn Install
-        run: yarn --cwd client install
+        working-directory: ./client
+        run: yarn install
 
       - name: Yarn Test
-        run: yarn --cwd client test-ci
+        working-directory: ./client
+        run: yarn test-ci
+
+      - name: Yarn Lint
+        working-directory: ./client
+        run: yarn lint
 
       - name: Setup Sentry
         run: sed -i '' "s|XXX_SENTRY_DSN_XXX|${{ secrets.SENTRY_DSN }}|" client/src/index.html
 
       - name: Yarn Build
-        run: yarn --cwd client build
+        working-directory: ./client
+        run: yarn build
 
       - name: Yarn Deploy
-        run: yarn --cwd client deploy
+        working-directory: ./client
+        run: yarn deploy
 
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: "13"
-
-      # - name: Cache Gradle
-      #   uses: actions/cache@v1
-      #   env:
-      #     cache-name: gradle-cache
-      #   with:
-      #     path: ~/.gradle/caches
-      #     key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/*.gradle*') }}
 
       - name: Gradle Compile
         working-directory: ./server

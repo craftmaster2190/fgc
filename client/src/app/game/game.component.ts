@@ -20,7 +20,7 @@ import timeout from "../util/timeout";
   styleUrls: ["./game.component.scss"]
 })
 export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
-  openPanel: string = "firstPresidency";
+  openPanel = "firstPresidency";
   subscription: Subscription;
   serverMessages: Array<string>;
   scripture = (() => {

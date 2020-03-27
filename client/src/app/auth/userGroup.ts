@@ -1,6 +1,6 @@
 import { User } from "./user";
 
 export interface UserGroup {
-  familyName: String;
+  familyName: string;
   users: User[];
 }

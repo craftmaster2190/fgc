@@ -47,21 +47,14 @@ function blobToDataURL(blob) {
   styleUrls: ["./profile-image-editor.component.scss"]
 })
 export class ProfileImageEditorComponent implements OnInit, OnDestroy {
-  config = {
-    aspectRatio: 1
-  };
-
   constructor(
     public readonly authService: DeviceUsersService,
     private readonly imagesCache: ImagesCacheService,
     private readonly http: HttpClient
   ) {}
-
-  ngOnInit(): void {}
-
-  ngOnDestroy() {
-    this.destroyCropper();
-  }
+  config = {
+    aspectRatio: 1
+  };
 
   loading: boolean;
   imageUrl: string;
@@ -69,6 +62,12 @@ export class ProfileImageEditorComponent implements OnInit, OnDestroy {
   cropper: Cropper;
 
   finalImage;
+
+  ngOnInit(): void {}
+
+  ngOnDestroy() {
+    this.destroyCropper();
+  }
 
   onFileSelected(event) {
     this.loading = true;

@@ -29,9 +29,9 @@ export class QuestionComponent implements OnInit, OnDestroy {
   @Input() text: string;
   @Input() answerType: "typeahead" | "text";
   @Input() answers: Array<string> = [];
-  @Input() countOfAnswers: number = 1;
+  @Input() countOfAnswers = 1;
   @Input() id: number;
-  @Input() isColors: boolean = false;
+  @Input() isColors = false;
   @Input() image: string;
   imageLink: string;
 
@@ -178,7 +178,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
           this.addToPossibleAnswers(newAnswer);
         }
       }
-      event && event.preventDefault();
+      event.preventDefault();
       this.value = "";
       this.persistAnswer();
     }

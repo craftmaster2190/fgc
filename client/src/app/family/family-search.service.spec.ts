@@ -11,7 +11,7 @@ describe("FamilySearchService", () => {
   );
 
   it("should be created", () => {
-    const service: FamilySearchService = TestBed.get(FamilySearchService);
+    const service: FamilySearchService = TestBed.inject(FamilySearchService);
     expect(service).toBeTruthy();
   });
 });

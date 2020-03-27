@@ -19,7 +19,7 @@ describe("ChatBusService", () => {
   );
 
   it("should be created", () => {
-    const service: ChatBusService = TestBed.get(ChatBusService);
+    const service: ChatBusService = TestBed.inject(ChatBusService);
     expect(service).toBeTruthy();
   });
 });
