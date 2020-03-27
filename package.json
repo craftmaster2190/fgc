@@ -1,18 +1,18 @@
 {
   "private": true,
   "scripts": {
-    "format": "prettier --write \"client/src/**/*.{ts,js,json,html,css,scss}\"",
+    "test": "(cd client; yarn test-ci) && (cd server; ./gradlew test)",
+    "format": "(cd client; yarn format) && (cd server; ./gradlew spotlessApply)",
     "spellcheck": "cspell \"client/src/**/*.{ts,js,json,html,scss}\" \"server/src/**/*.{ts,js,json,html,scss}\" || exit 0"
   },
   "husky": {
     "hooks": {
       "commit-msg": "cspell $HUSKY_GIT_PARAMS || exit 0",
-      "pre-commit": "yarn --cwd client format && cd server; ./gradlew spotlessJavaApply && yarn spellcheck"
+      "pre-commit": "yarn format && yarn spellcheck"
     }
   },
   "devDependencies": {
     "cspell": "^4.0.55",
-    "husky": "4.2.3",
-    "prettier": "1.19.1"
+    "husky": "4.2.3"
   }
 }

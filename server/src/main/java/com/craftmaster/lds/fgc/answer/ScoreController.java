@@ -59,7 +59,7 @@ public class ScoreController {
   }
 
   @Transactional
-  private Optional<List<Score>> getFamilyScores(UUID userId) {
+  public Optional<List<Score>> getFamilyScores(UUID userId) {
     return userRepository
         .findById(userId)
         .map(User::getFamily)
@@ -78,14 +78,6 @@ public class ScoreController {
         .findAll()
         .forEach(family -> transactionalContext.run(() -> get(family.getId())));
     simpMessageSendingOperations.convertAndSend("/topic/score", scoreRepository.top25Scores());
-  }
-
-  // TODO Doesn't work
-  @SubscribeMapping("family-score")
-  public List<Score> listenToFamilyScores(Principal principal) {
-    User user = (User) ((Authentication) principal).getPrincipal();
-
-    return getFamilyScores(user.getId()).orElse(null);
   }
 
   @SubscribeMapping("score")

@@ -9,6 +9,7 @@ import { User } from "../auth/user";
 import { filter } from "rxjs/operators";
 import { MessageBusService } from "../messaging/message-bus.service";
 import { Optional } from "../util/optional";
+import timeout from "../util/timeout";
 
 @Component({
   selector: "app-scoreboard",
@@ -55,18 +56,18 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
         })
         .sort(this.sortScores);
 
-      this.subscription.add(
-        this.scoresService
-          .observeFamilyScores()
-          .subscribe(
-            scores => (this.familyScores = scores.sort(this.sortScores))
-          )
-      );
-
       scores.forEach(score =>
         this.userUpdates.requestUserIfNeeded(score.userOrFamilyId)
       );
+      timeout(1000).then(() => this.scores.sort(this.sortScores));
     });
+
+    this.subscription.add(
+      this.scoresService.observeFamilyScores().subscribe(scores => {
+        this.familyScores = scores.sort(this.sortScores);
+        timeout(1000).then(() => this.familyScores.sort(this.sortScores));
+      })
+    );
   }
 
   private sortScores = (aScore: Score, bScore: Score) => {

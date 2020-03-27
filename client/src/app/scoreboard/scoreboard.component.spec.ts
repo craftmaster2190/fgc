@@ -18,7 +18,8 @@ describe("ScoreboardComponent", () => {
           provide: ScoresService,
           useValue: {
             getUserCount: () => Promise.resolve(),
-            listenToScores: () => of().subscribe()
+            listenToScores: () => of().subscribe(),
+            observeFamilyScores: () => of()
           }
         },
         {
