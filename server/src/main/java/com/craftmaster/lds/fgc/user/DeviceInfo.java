@@ -1,5 +1,6 @@
 package com.craftmaster.lds.fgc.user;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -11,7 +12,8 @@ import lombok.experimental.Accessors;
 @Data
 @Entity
 @Accessors(chain = true)
-public class DeviceInfo {
+public class DeviceInfo implements Serializable {
+  private static final long serialVersionUID = 20200325L;
 
   private UUID deviceId;
 
