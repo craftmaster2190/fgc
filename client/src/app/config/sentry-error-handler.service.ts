@@ -17,8 +17,12 @@ export class SentryErrorHandler implements ErrorHandler {
   constructor(
     private readonly authService: DeviceUsersService,
     private readonly deviceService: DeviceIdService
-  ) {}
-  handleError(error) {
+  ) {
+    this.updateSentryInfo();
+    this.authService.onUserChange.subscribe(() => this.updateSentryInfo());
+  }
+
+  updateSentryInfo() {
     if (sentryIsRunning) {
       try {
         const sentryUser: any = {};
@@ -36,6 +40,11 @@ export class SentryErrorHandler implements ErrorHandler {
       } catch (unexpectedError) {
         Sentry.captureException(unexpectedError);
       }
+    }
+  }
+
+  handleError(error) {
+    if (sentryIsRunning) {
       const eventId = Sentry.captureException(error.originalError || error);
     }
 

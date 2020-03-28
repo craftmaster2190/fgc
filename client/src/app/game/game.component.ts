@@ -162,7 +162,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       if (scriptureElement) {
         scriptureElement.classList.add("fade-out");
         timeout(2000).then(() =>
-          scriptureElement.parentElement.removeChild(scriptureElement)
+          scriptureElement?.parentElement?.removeChild(scriptureElement)
         );
       }
     });

@@ -4,11 +4,13 @@ import static java.util.Objects.requireNonNull;
 
 import com.craftmaster.lds.fgc.config.AwsHeaders;
 import com.craftmaster.lds.fgc.config.SessionDeviceId;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,12 +40,28 @@ public class RecoveryController {
   @PreAuthorize("!isAuthenticated()")
   @PutMapping
   @Transactional
-  public void recoverViaCode(@RequestBody String recoveryCode, HttpSession httpSession)
+  public void recoverViaCode(
+      @NotBlank @RequestBody RecoveryCodeRequest recoveryCodeRequest, HttpSession httpSession)
       throws NotFoundException {
-    RecoveryCode recoveryObject =
-        recoveryCodeRepository.findById(recoveryCode).orElseThrow(NotFoundException::new);
-    approveRecoverRequest(recoveryObject.getUserId(), SessionDeviceId.get(httpSession));
-    recoveryCodeRepository.delete(recoveryObject);
+    String recoveryString = recoveryCodeRequest.getRecoveryCode().toUpperCase();
+    RecoveryCode recoveryCodeObject =
+        recoveryCodeRepository
+            .findById(recoveryString)
+            .filter(RecoveryCode::isValid)
+            .filter(
+                recoveryCode ->
+                    userRepository
+                        .findById(recoveryCode.getUserId())
+                        .filter(
+                            user ->
+                                user.getName().equals(recoveryCodeRequest.getName())
+                                    && user.getFamily()
+                                        .getName()
+                                        .equals(recoveryCodeRequest.getFamily()))
+                        .isPresent())
+            .orElseThrow(NotFoundException::new);
+    approveRecoverRequest(recoveryCodeObject.getUserId(), SessionDeviceId.get(httpSession));
+    recoveryCodeRepository.delete(recoveryCodeObject);
   }
 
   @PreAuthorize("!isAuthenticated()")
@@ -60,7 +78,9 @@ public class RecoveryController {
       throw new RuntimeException("No IP Address!");
     }
 
+    requireNonNull(httpSession, () -> "No session!");
     UUID deviceId = SessionDeviceId.get(httpSession);
+    requireNonNull(deviceId, () -> "deviceId was null!");
 
     // Can recover with IP address?
     User foundUser =

@@ -26,6 +26,7 @@ import {
   retry
 } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { RecoverService } from "../welcome/recover.service";
 
 @Component({
   selector: "app-nav-header",
@@ -37,7 +38,8 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
     public readonly authService: DeviceUsersService,
     private readonly modalService: NgbModal,
     private readonly ngZone: NgZone,
-    private readonly sentry: ErrorHandler
+    private readonly sentry: ErrorHandler,
+    private readonly recoverService: RecoverService
   ) {}
   name: string;
   family: string;
@@ -52,6 +54,7 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   rotation = 0;
 
   warning: any;
+  recoveryCode: string;
 
   ngOnInit() {
     this.subscription = this.updateUserSubject
@@ -210,5 +213,11 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
       context.restore();
     });
+  }
+
+  getRecoveryCode() {
+    this.recoverService
+      .generateRecoveryCode()
+      .subscribe(recoveryCode => (this.recoveryCode = recoveryCode));
   }
 }

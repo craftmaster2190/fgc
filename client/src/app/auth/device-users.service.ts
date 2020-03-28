@@ -5,7 +5,7 @@ import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
 import { map, tap } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { UserGroup } from "./user-group";
 import timeout from "../util/timeout";
 
@@ -15,6 +15,7 @@ import timeout from "../util/timeout";
 export class DeviceUsersService {
   private deviceUsers?: Array<User>;
   private currentUser?: User;
+  public readonly onUserChange = new Subject<void>();
 
   constructor(
     private readonly deviceId: DeviceIdService,
@@ -46,7 +47,11 @@ export class DeviceUsersService {
         ...updates
       })
       .toPromise()
-      .then(user => (this.currentUser = user));
+      .then(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   loginUser(user: User) {
@@ -58,7 +63,11 @@ export class DeviceUsersService {
         deviceId: this.deviceId.get()
       })
       .toPromise()
-      .then(currentUser => (this.currentUser = currentUser));
+      .then(currentUser => {
+        this.currentUser = currentUser;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   logoutUser() {
@@ -76,9 +85,13 @@ export class DeviceUsersService {
   updateUser(updates: { name?: string; family?: string }) {
     // Requires Logged in
     // Undecided? Do we allow players to change families
-    return this.http
-      .patch<User>("/api/auth/", updates)
-      .pipe(tap(user => (this.currentUser = user)));
+    return this.http.patch<User>("/api/auth/", updates).pipe(
+      tap(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      })
+    );
   }
 
   updateFamilyName(familyId: string, newName: string) {
@@ -100,7 +113,11 @@ export class DeviceUsersService {
     return this.http
       .get<User>("/api/auth/me")
       .toPromise()
-      .then(user => (this.currentUser = user));
+      .then(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   getUsers() {

@@ -122,6 +122,17 @@ export class WelcomeComponent implements OnInit {
   registerUser() {
     this.loading = true;
     this.clearWarning();
+
+    const userAlreadyRegisteredOnThisDevice = this.authService
+      .getUsers()
+      .find(
+        user => user.name === this.name && user.family?.name === this.family
+      );
+    if (userAlreadyRegisteredOnThisDevice) {
+      this.login(userAlreadyRegisteredOnThisDevice);
+      return;
+    }
+
     this.authService
       .createUser({ name: this.name, family: this.family })
       .then(() => this.router.navigate(["game"]))
@@ -157,6 +168,7 @@ export class WelcomeComponent implements OnInit {
 
   clearWarning() {
     this.warning = null;
+    this.recoveryCodeFailed = null;
     this.expandThisIsMe = null;
     this.showNoRecoveryCode = null;
   }
@@ -198,6 +210,7 @@ export class WelcomeComponent implements OnInit {
       .tryRecoverMe(this.name, this.family)
       .subscribe(status => {
         if (status.recoverySuccess) {
+          this.loading = true;
           location.reload();
         } else {
           this.expandThisIsMe = "ready";
@@ -205,13 +218,26 @@ export class WelcomeComponent implements OnInit {
       });
   }
 
+  recoveryCodeFailed: boolean;
+  recoveryCodeLoading: boolean;
   recoveryCodeValid() {
     return this.recoveryCode?.trim()?.length === 6;
   }
 
   recoverWithCode() {
+    this.recoveryCodeLoading = true;
+    this.recoveryCodeFailed = false;
     if (this.recoveryCodeValid()) {
-      this.recoverService.recoverViaCode(this.recoveryCode);
+      this.recoverService
+        .recoverViaCode(this.recoveryCode, this.name, this.family)
+
+        .subscribe(
+          () => location.reload(),
+          () => {
+            this.recoveryCodeFailed = true;
+            this.recoveryCodeLoading = false;
+          }
+        );
     }
   }
 }

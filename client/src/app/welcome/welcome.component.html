@@ -210,7 +210,7 @@
               class="btn btn-outline-secondary"
               (click)="recoverWithCode()"
             >
-              Login
+              Recover
             </button>
           </div>
         </div>
@@ -220,16 +220,25 @@
             text="Must be 6 characters long."
           ></app-valid-text>
         </small>
+
+        <span
+          *ngIf="recoveryCodeLoading"
+          class="spinner-border spinner-border-sm"
+          role="status"
+        ></span>
+
+        <span *ngIf="recoveryCodeFailed">That code didn't do it.</span>
       </div>
 
       <button
+        *ngIf="!showNoRecoveryCode"
         type="button"
         class="btn btn-outline-secondary"
         (click)="showNoRecoveryCode = true"
       >
         I do not have a recovery code.
       </button>
-      <div>
+      <div *ngIf="showNoRecoveryCode">
         <p>
           If you cannot get a recovery code, explain when you logged in last,
           what device you were using (was it this one?) and how you heard about

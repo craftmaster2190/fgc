@@ -107,11 +107,24 @@
       </div>
 
       <ngb-alert *ngIf="getWarning()" type="warning" [dismissible]="false">
-        {{ warning || "no warning" }}
+        {{ warning }}
+      </ngb-alert>
+
+      <ngb-alert *ngIf="recoveryCode" type="warning" [dismissible]="false">
+        <p class="recovery-code">{{ recoveryCode }}</p>
+        Use this code to login on another device or browser. It is valid for a
+        half hour.
       </ngb-alert>
     </form>
   </div>
   <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="getRecoveryCode()"
+    >
+      Get Recovery Code
+    </button>
     <button
       type="button"
       class="btn btn-outline-dark"
