@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import com.craftmaster.lds.fgc.config.AwsHeaders;
 import com.craftmaster.lds.fgc.config.SessionDeviceId;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +34,14 @@ public class RecoveryController {
   @PostMapping("generate")
   @Transactional
   public String generateRecoveryCode(@AuthenticationPrincipal User user) {
-    recoveryCodeRepository.deleteByUserId(user.getId());
-    return recoveryCodeRepository.save(new RecoveryCode().setUserId(user.getId())).getCode();
+    return recoveryCodeRepository
+        .findByUserId(user.getId())
+        .orElseGet(
+            () -> {
+              recoveryCodeRepository.deleteByUserId(user.getId());
+              return recoveryCodeRepository.save(new RecoveryCode().setUserId(user.getId()));
+            })
+        .getCode();
   }
 
   @PreAuthorize("!isAuthenticated()")
@@ -128,6 +135,32 @@ public class RecoveryController {
   public void adminApproveRecoveryRequest(@RequestBody LoginUserRequest loginUserRequest)
       throws NotFoundException {
     approveRecoverRequest(loginUserRequest.getUserId(), loginUserRequest.getDeviceId());
+  }
+
+  @PreAuthorize("!isAuthenticated()")
+  @PatchMapping("request")
+  @Transactional
+  public void applyUserCommentToRecoveryRequest(
+      @RequestBody UserCommentRequest userCommentRequest, HttpSession httpSession) {
+    User user =
+        userRepository
+            .findByNameIgnoreCaseAndFamilyNameIgnoreCase(
+                userCommentRequest.getName(), userCommentRequest.getFamily())
+            .orElseThrow(NotFoundException::new);
+
+    UUID deviceId = SessionDeviceId.get(httpSession);
+    requireNonNull(deviceId, () -> "deviceId was null!");
+
+    RecoveryRequest recoveryRequest =
+        recoveryRequestRepository
+            .findByUserIdAndDeviceId(user.getId(), deviceId)
+            .orElseThrow(NotFoundException::new);
+
+    recoveryRequest.setUserComment(
+        (Optional.ofNullable(recoveryRequest.getUserComment()).orElse("")
+                + "\n"
+                + userCommentRequest.getUserComment())
+            .trim());
   }
 
   private void approveRecoverRequest(UUID userId, UUID deviceId) throws NotFoundException {

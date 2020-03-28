@@ -171,6 +171,9 @@ export class WelcomeComponent implements OnInit {
     this.recoveryCodeFailed = null;
     this.expandThisIsMe = null;
     this.showNoRecoveryCode = null;
+    this.recoveryComment = null;
+    this.recoveryCommentSent = null;
+    this.recoveryCommentLoading = null;
   }
 
   searchFamilies = (text$: Observable<string>) => {
@@ -239,5 +242,23 @@ export class WelcomeComponent implements OnInit {
           }
         );
     }
+  }
+
+  recoveryComment: string;
+  recoveryCommentLoading: boolean;
+  recoveryCommentSent: boolean;
+
+  addRecoveryComment() {
+    this.recoveryCommentLoading = true;
+    this.recoverService
+      .applyUserCommentToRecoveryRequest(
+        this.name,
+        this.family,
+        this.recoveryComment
+      )
+      .subscribe(() => {
+        this.recoveryCommentSent = true;
+        this.recoveryCommentLoading = false;
+      });
   }
 }

@@ -7,5 +7,6 @@ CREATE TABLE recovery_code (
 CREATE TABLE recovery_request (
     created_at timestamp without time zone PRIMARY KEY,
     device_id uuid,
-    user_id uuid
+    user_id uuid,
+    user_comment text;
 );

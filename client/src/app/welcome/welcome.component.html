@@ -202,12 +202,14 @@
             [(ngModel)]="recoveryCode"
             placeholder="______"
             autocomplete="off"
-            (click)="recoverWithCode()"
+            [disabled]="recoveryCodeLoading"
+            (keyup.enter)="recoverWithCode()"
           />
           <div class="input-group-append">
             <button
               type="button"
               class="btn btn-outline-secondary"
+              [disabled]="recoveryCodeLoading"
               (click)="recoverWithCode()"
             >
               Recover
@@ -227,7 +229,7 @@
           role="status"
         ></span>
 
-        <span *ngIf="recoveryCodeFailed">That code didn't do it.</span>
+        <b *ngIf="recoveryCodeFailed">That code didn't do it.</b>
       </div>
 
       <button
@@ -244,12 +246,30 @@
           what device you were using (was it this one?) and how you heard about
           us, then click Request Help Logging In.
         </p>
-        <div class="form-group">
-          <textarea class="form-control"></textarea>
-        </div>
-        <button type="button" class="btn btn-outline-secondary">
-          Request Help Logging In
-        </button>
+        <ng-template [ngIf]="!recoveryCommentSent">
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              [(ngModel)]="recoveryComment"
+            ></textarea>
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="addRecoveryComment()"
+            *ngIf="recoveryComment"
+          >
+            Request Help Logging In
+          </button>
+        </ng-template>
+        <span
+          *ngIf="recoveryCommentLoading"
+          class="spinner-border spinner-border-sm"
+          role="status"
+        ></span>
+        <ng-template [ngIf]="recoveryCommentSent"
+          ><b>Request Sent. Try this page again in 30 minutes.</b></ng-template
+        >
       </div>
     </div>
   </ng-template>
