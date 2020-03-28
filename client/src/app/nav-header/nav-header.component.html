@@ -105,6 +105,10 @@
           ></app-valid-text>
         </small>
       </div>
+
+      <ngb-alert *ngIf="getWarning()" type="warning" [dismissible]="false">
+        {{ warning || "no warning" }}
+      </ngb-alert>
     </form>
   </div>
   <div class="modal-footer">

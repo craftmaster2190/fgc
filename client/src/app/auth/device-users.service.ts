@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { UserGroup } from "./user-group";
 import timeout from "../util/timeout";
@@ -78,8 +78,7 @@ export class DeviceUsersService {
     // Undecided? Do we allow players to change families
     return this.http
       .patch<User>("/api/auth/", updates)
-      .toPromise()
-      .then(user => (this.currentUser = user));
+      .pipe(tap(user => (this.currentUser = user)));
   }
 
   updateFamilyName(familyId: string, newName: string) {

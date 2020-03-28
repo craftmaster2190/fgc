@@ -25,8 +25,6 @@ public class Score {
   @JsonIgnore
   @Transient
   public boolean isValid() {
-    // I tried unit testing this and it seems to be backwards, but this code
-    // looks correct. so...
     return getUpdatedAt().plus(1, ChronoUnit.MINUTES).isAfter(Instant.now());
   }
 }

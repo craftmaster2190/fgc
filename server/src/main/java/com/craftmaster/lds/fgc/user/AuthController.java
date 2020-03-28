@@ -3,15 +3,7 @@ package com.craftmaster.lds.fgc.user;
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.ConfigService;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
-import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import com.craftmaster.lds.fgc.config.SessionDeviceId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +12,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -32,8 +36,8 @@ public class AuthController {
   private final DeviceRepository deviceRepository;
   private final FamilyRepository familyRepository;
   private final AccessDeniedExceptionFactory accessDeniedExceptionFactory;
-  private final PostgresSubscriptions postgresSubscriptions;
   private final ConfigService configService;
+  private final UserService userService;
 
   @GetMapping("me")
   public ResponseEntity<User> getMe(@AuthenticationPrincipal User user) {
@@ -42,7 +46,6 @@ public class AuthController {
         .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
   }
 
-  @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PostMapping
   public User createUser(
       @RequestBody @Valid CreateUserRequest createUserRequest,
@@ -50,9 +53,9 @@ public class AuthController {
       HttpSession session) {
     log.debug("createUser: {}", createUserRequest);
     configService.validateAcceptingNewUsers();
-    var user = userRepository.save(new User());
+    var user = userService.patchUserInternal(new User(), createUserRequest);
     authenticationManager.authenticate(user, session, request, createUserRequest.getDeviceId());
-    return patchUser(user, createUserRequest, session);
+    return user;
   }
 
   @PostMapping("login")
@@ -75,37 +78,21 @@ public class AuthController {
   }
 
   @PreAuthorize("isAuthenticated()")
-  @Transactional(rollbackOn = {Exception.class, UsernameAlreadyTakenException.class})
   @PatchMapping
   public User patchUser(
       @AuthenticationPrincipal User user,
       @RequestBody @Valid PatchUserRequest patchUserRequest,
       HttpSession session) {
-    log.debug("Patching user: {} name: {}", user.getId(), user.getName());
-    Optional.ofNullable(patchUserRequest.getName())
-        // .filter((name) -> {
-        // if (userRepository.findByNameIgnoreCaseAndFamilyNameIgnoreCase(name).isPresent())
-        // {
-        // throw new UsernameAlreadyTakenException();
-        // }
-        // return true;
-        // })
-        .ifPresent(user::setName);
-    if (configService.getCanChangeFamily()) {
-      if (patchUserRequest.getFamily() != null) {
-        user.setFamily(
-            familyRepository
-                .findByNameIgnoreCase(patchUserRequest.getFamily())
-                .orElseGet(
-                    () ->
-                        familyRepository.save(new Family().setName(patchUserRequest.getFamily()))));
-      }
-    }
-    User savedUser = userRepository.save(user);
+    var savedUser = userService.patchUserInternal(user, patchUserRequest);
     authenticationManager.updateSession(savedUser, session);
-
-    postgresSubscriptions.send("UpdatedUserId", savedUser.getId());
     return savedUser;
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @RolesAllowed("ROLE_ADMIN")
+  @PatchMapping("{userId}")
+  public User adminPatchUser(UUID userId, @RequestBody @Valid PatchUserRequest patchUserRequest) {
+    return userService.patchUserInternal(userRepository.getOne(userId), patchUserRequest);
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -127,7 +114,7 @@ public class AuthController {
 
   @GetMapping("users")
   public Set<User> getUsersForDevice(@RequestParam UUID deviceId, HttpSession session) {
-    session.setAttribute("DEVICE_ID", deviceId);
+    SessionDeviceId.set(session, deviceId);
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
   }
 

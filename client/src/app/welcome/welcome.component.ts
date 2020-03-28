@@ -1,21 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ErrorHandler, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, throwError } from "rxjs";
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
   switchMap,
-  tap,
-  catchError
+  tap
 } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { User } from "../auth/user";
+import { UserGroup } from "../auth/user-group";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
-import { UserGroup } from "../auth/user-group";
 import { BrowserDetectService } from "./browser-detect.service";
+
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -31,11 +32,13 @@ export class WelcomeComponent implements OnInit {
   userGroups: Array<UserGroup>;
   isAppBrowser: boolean;
   isPrivateMode: boolean;
+  warning: any;
 
   constructor(
     public readonly authService: DeviceUsersService,
     public readonly browsersService: BrowserDetectService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sentry: ErrorHandler
   ) {}
 
   ngOnInit(): void {
@@ -112,24 +115,38 @@ export class WelcomeComponent implements OnInit {
 
   registerUser() {
     this.loading = true;
+    this.warning = null;
     this.authService
       .createUser({ name: this.name, family: this.family })
       .then(() => this.router.navigate(["game"]))
       .then(
         () => (this.loading = false),
-        () => (this.loading = false)
+        err => {
+          this.loading = false;
+          this.assignWarning(err);
+        }
       );
   }
 
   login(user: User) {
     this.loading = true;
+    this.warning = null;
     this.authService
       .loginUser(user)
       .then(() => this.router.navigate(["game"]))
       .then(
         () => (this.loading = false),
-        () => (this.loading = false)
+        err => {
+          this.loading = false;
+          this.assignWarning(err);
+          this.serverError = true;
+        }
       );
+  }
+
+  assignWarning(err) {
+    this.sentry.handleError(err);
+    this.warning = err?.error?.message;
   }
 
   searchFamilies = (text$: Observable<string>) => {

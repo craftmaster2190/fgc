@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   Optional<User> findByNameIgnoreCase(String adminUsername);
 
   Stream<User> findByIsAdminIsNullOrIsAdminIsFalse();
+
+    Optional<User> findByNameIgnoreCaseAndFamilyNameIgnoreCase(String userName, String familyName);
 }

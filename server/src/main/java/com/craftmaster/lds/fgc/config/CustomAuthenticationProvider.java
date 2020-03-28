@@ -5,11 +5,10 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 import com.craftmaster.lds.fgc.db.TransactionalContext;
 import com.craftmaster.lds.fgc.user.*;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,18 +20,20 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-  private final TransactionalContext transactionalContext;
+    private final TransactionalContext transactionalContext;
   private final DeviceRepository deviceRepository;
   private final DeviceInfoRepository deviceInfoRepository;
   private final UserRepository userRepository;
+  private final DeviceService deviceService;
 
   public Authentication updateSession(User savedUser, HttpSession session) {
-    return updateSession(savedUser, session, (UUID) session.getAttribute("DEVICE_ID"));
+    return updateSession(savedUser, session, SessionDeviceId.get (session));
   }
 
   public Authentication updateSession(User user, HttpSession session, UUID deviceId) {
@@ -42,7 +43,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     SecurityContext sc = SecurityContextHolder.getContext();
     sc.setAuthentication(auth);
-    session.setAttribute("DEVICE_ID", deviceId);
+      SessionDeviceId.set(session, deviceId);
     session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     return auth;
   }
@@ -51,36 +52,26 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
       User user, HttpSession session, HttpServletRequest request, UUID deviceId) {
     Authentication auth = updateSession(user, session, deviceId);
 
-    session.setAttribute("DEVICE_ID", deviceId);
+      SessionDeviceId.set(session, deviceId);
     transactionalContext.run(
         () -> {
-          var device =
-              deviceRepository
-                  .findById(deviceId)
-                  .orElseGet(() -> deviceRepository.save(new Device().setId(deviceId)));
+          var device = deviceService. getOrCreate(deviceId);
 
           String userAgent = request.getHeader(HttpHeaders.USER_AGENT);
-          String forwardedFor = request.getHeader("x-forwarded-for");
+          String forwardedFor = request.getHeader(AwsHeaders.X_FORWARDED_FOR);
 
           deviceInfoRepository
-              .findByDeviceIdAndUserAgentAndInetAddress(device.getId(), userAgent, forwardedFor)
+              .findByDeviceIdAndUserAgentAndInetAddress(deviceId, userAgent, forwardedFor)
               .orElseGet(
                   () ->
                       deviceInfoRepository.save(
                           new DeviceInfo()
                               .setUserAgent(userAgent)
-                              .setDeviceId(device.getId())
+                              .setDeviceId(deviceId)
                               .setInetAddress(forwardedFor)))
               .setLastLogIn(Instant.now());
 
-          Optional.ofNullable(user.getDevices())
-              .orElseGet(
-                  () -> {
-                    HashSet<Device> devices = new HashSet<>();
-                    user.setDevices(devices);
-                    return devices;
-                  })
-              .add(device);
+          deviceService.addDevice(user, device);
 
           userRepository.save(user);
         });

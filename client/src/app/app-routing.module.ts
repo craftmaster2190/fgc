@@ -10,7 +10,8 @@ import { LogoutComponent } from "./logout/logout.component";
 const routes: Routes = [
   {
     path: "admin",
-    component: AdminComponent /* not sure why this does not work, canActivate: [AdminGuard] */
+    component: AdminComponent,
+    canActivate: [KnownGuard, AdminGuard]
   },
   { path: "game", component: GameComponent, canActivate: [KnownGuard] },
   { path: "welcome", component: WelcomeComponent },

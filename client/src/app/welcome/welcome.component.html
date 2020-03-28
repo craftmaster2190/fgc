@@ -168,4 +168,8 @@
       </a>
     </div>
   </div>
+
+  <ngb-alert *ngIf="warning" type="warning" [dismissible]="false">
+    {{ warning }}
+  </ngb-alert>
 </ng-template>

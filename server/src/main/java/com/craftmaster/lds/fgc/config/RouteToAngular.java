@@ -1,43 +1,21 @@
 package com.craftmaster.lds.fgc.config;
 
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
+import com.craftmaster.lds.fgc.config.sentry.SentryCondition;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Slf4j
 @Controller
-public class RouteToAngular implements ErrorController {
+public class RouteToAngular {
 
-  @RequestMapping({"/welcome", "/game"})
+  @RequestMapping({"/welcome", "/game", "/admin", "/logout"})
   public String handleGameRoute() {
     return "/";
-  }
-
-  @RequestMapping("/error")
-  public String handleError(HttpServletRequest request) {
-    log.error(
-        "Request {} error: {} (invalidSessionId: {}) {} {} {} [accessed by: {}]",
-        request.getAttribute("javax.servlet.error.request_uri"),
-        request.getAttribute("javax.servlet.error.status_code"),
-        request.getAttribute("org.springframework.session.SessionRepository.invalidSessionId"),
-        request.getAttribute("javax.servlet.error.message"),
-        request.getAttribute(
-            "org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR"),
-        request.getAttribute("javax.servlet.error.exception"),
-        Optional.of(SecurityContextHolder.getContext())
-            .map(SecurityContext::getAuthentication)
-            .map(Authentication::getPrincipal));
-    return "/";
-  }
-
-  @Override
-  public String getErrorPath() {
-    return "/error";
   }
 }
