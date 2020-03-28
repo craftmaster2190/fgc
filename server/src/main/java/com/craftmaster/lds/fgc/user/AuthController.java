@@ -1,9 +1,6 @@
 package com.craftmaster.lds.fgc.user;
 
-import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
-import com.craftmaster.lds.fgc.config.ConfigService;
-import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
-import com.craftmaster.lds.fgc.config.SessionDeviceId;
+import com.craftmaster.lds.fgc.config.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -112,8 +109,10 @@ public class AuthController {
   }
 
   @GetMapping("users")
-  public Set<User> getUsersForDevice(@RequestParam UUID deviceId, HttpSession session) {
+  public Set<User> getUsersForDevice(
+      @RequestParam UUID deviceId, HttpServletRequest request, HttpSession session) {
     SessionDeviceId.set(session, deviceId);
+    SessionFingerprint.set(session, request.getHeader(SessionFingerprint.FINGERPRINT));
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
   }
 

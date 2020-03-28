@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DeviceInfoRepository extends JpaRepository<DeviceInfo, Instant> {
-  List<DeviceInfo> findByDeviceIdAndUserAgentAndInetAddress(
-      UUID id, String userAgent, String inetAddress);
+  List<DeviceInfo> findByDeviceIdAndUserAgentAndInetAddressAndFingerprint(
+      UUID id, String userAgent, String inetAddress, String fingerprint);
 }
