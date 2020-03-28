@@ -16,6 +16,8 @@ import { UserGroup } from "../auth/user-group";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
 import { BrowserDetectService } from "./browser-detect.service";
+import { RecoverService } from "./recover.service";
+import { LocationStrategy } from "@angular/common";
 
 @Component({
   selector: "app-welcome",
@@ -28,17 +30,21 @@ export class WelcomeComponent implements OnInit {
   serverError: boolean;
   name: string;
   family: string;
+  recoveryCode: string;
   searchingFamilies: boolean;
   userGroups: Array<UserGroup>;
   isAppBrowser: boolean;
   isPrivateMode: boolean;
   warning: any;
+  expandThisIsMe: string;
+  showNoRecoveryCode: boolean;
 
   constructor(
     public readonly authService: DeviceUsersService,
     public readonly browsersService: BrowserDetectService,
     private readonly router: Router,
-    private readonly sentry: ErrorHandler
+    private readonly sentry: ErrorHandler,
+    private readonly recoverService: RecoverService
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +121,7 @@ export class WelcomeComponent implements OnInit {
 
   registerUser() {
     this.loading = true;
-    this.warning = null;
+    this.clearWarning();
     this.authService
       .createUser({ name: this.name, family: this.family })
       .then(() => this.router.navigate(["game"]))
@@ -130,7 +136,7 @@ export class WelcomeComponent implements OnInit {
 
   login(user: User) {
     this.loading = true;
-    this.warning = null;
+    this.clearWarning();
     this.authService
       .loginUser(user)
       .then(() => this.router.navigate(["game"]))
@@ -147,6 +153,12 @@ export class WelcomeComponent implements OnInit {
   assignWarning(err) {
     this.sentry.handleError(err);
     this.warning = err?.error?.message;
+  }
+
+  clearWarning() {
+    this.warning = null;
+    this.expandThisIsMe = null;
+    this.showNoRecoveryCode = null;
   }
 
   searchFamilies = (text$: Observable<string>) => {
@@ -178,5 +190,28 @@ export class WelcomeComponent implements OnInit {
 
   formValid() {
     return this.nameValid() && this.familyValid();
+  }
+
+  yesThisIsMe() {
+    this.expandThisIsMe = "loading";
+    this.recoverService
+      .tryRecoverMe(this.name, this.family)
+      .subscribe(status => {
+        if (status.recoverySuccess) {
+          location.reload();
+        } else {
+          this.expandThisIsMe = "ready";
+        }
+      });
+  }
+
+  recoveryCodeValid() {
+    return this.recoveryCode?.trim()?.length === 6;
+  }
+
+  recoverWithCode() {
+    if (this.recoveryCodeValid()) {
+      this.recoverService.recoverViaCode(this.recoveryCode);
+    }
   }
 }

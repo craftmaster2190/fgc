@@ -1,19 +1,18 @@
 package com.craftmaster.lds.fgc.user;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Entity
 @Data
 @Accessors(chain = true)
 public class RecoveryRequest {
-  @Id
-  private Instant createdAt = Instant.now();
+  @JsonIgnore @Id private Instant createdAt = Instant.now();
 
   private UUID userId;
 

@@ -2,12 +2,11 @@ package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.ConfigService;
 import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Service

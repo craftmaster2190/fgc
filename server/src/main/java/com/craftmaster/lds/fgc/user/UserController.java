@@ -78,7 +78,7 @@ public class UserController {
       @PathVariable UUID userId,
       HttpSession session,
       @AuthenticationPrincipal User authenticatedUser) {
-    UUID deviceId = SessionDeviceId.get (session);
+    UUID deviceId = SessionDeviceId.get(session);
     if (authenticatedUser == null && deviceId == null) {
       throw accessDeniedExceptionFactory.get();
     }

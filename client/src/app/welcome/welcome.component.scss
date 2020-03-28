@@ -71,3 +71,16 @@ ngb-alert:first-of-type {
     max-height: 150px;
   }
 }
+
+.recovery-code-wrapper {
+  margin-top: 12px;
+  margin-bottom: 12px;
+
+  label {
+    font-weight: bold;
+  }
+}
+
+.recovery-code {
+  letter-spacing: 6px;
+}

@@ -4,6 +4,8 @@ import com.craftmaster.lds.fgc.user.Family;
 import com.craftmaster.lds.fgc.user.User;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
+import java.security.Principal;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,9 +15,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.socket.messaging.WebSocketAnnotationMethodMessageHandler;
-
-import java.security.Principal;
-import java.util.Optional;
 
 @Slf4j
 public class SentryWebSocketAnnotationMethodMessageHandler
@@ -45,6 +44,7 @@ public class SentryWebSocketAnnotationMethodMessageHandler
 
       Sentry.getContext().addExtra("handlerMethod", handlerMethod.toString());
       Sentry.getContext().addExtra("message", message.toString());
+      Sentry.getContext().addExtra("Caught in", this.getClass().getName());
     } catch (Exception unexpectedException) {
       Sentry.capture(unexpectedException);
     }

@@ -112,6 +112,7 @@
             id="name"
             name="name"
             [(ngModel)]="name"
+            (input)="clearWarning()"
             autocomplete="name"
             placeholder="What should I call you?"
           />
@@ -130,6 +131,7 @@
             id="family"
             name="family"
             [(ngModel)]="family"
+            (input)="clearWarning()"
             placeholder="What does your group want to be called?"
             autocomplete="off"
             [ngbTypeahead]="searchFamilies"
@@ -168,8 +170,78 @@
       </a>
     </div>
   </div>
-
-  <ngb-alert *ngIf="warning" type="warning" [dismissible]="false">
-    {{ warning }}
-  </ngb-alert>
 </ng-template>
+
+<ngb-alert *ngIf="warning" type="warning" [dismissible]="false">
+  <p>{{ warning }}</p>
+
+  <ng-template [ngIf]="warning === 'Username already taken!'">
+    <div *ngIf="!expandThisIsMe">
+      <button class="btn btn-outline-dark" (click)="yesThisIsMe()">
+        Yeah, this is me.
+      </button>
+    </div>
+    <div *ngIf="expandThisIsMe === 'loading'">
+      <span class="spinner-border spinner-border-sm" role="status"></span>
+    </div>
+    <div *ngIf="expandThisIsMe === 'ready'">
+      <p>
+        If you have access to your other browser or device, (maybe you opened
+        this page via Facebook or Twitter instead of Chrome or Safari) then you
+        can generate a recovery code by clicking on the Tabernacle Organ. Then
+        click Get Recovery Code.
+      </p>
+      <div class="form-group recovery-code-wrapper">
+        <label for="recoveryCode">I have a Recovery Code:</label>
+        <div class="input-group">
+          <input
+            type="search"
+            class="form-control recovery-code"
+            id="recoveryCode"
+            name="recoveryCode"
+            [(ngModel)]="recoveryCode"
+            placeholder="______"
+            autocomplete="off"
+            (click)="recoverWithCode()"
+          />
+          <div class="input-group-append">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="recoverWithCode()"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+        <small class="form-text text-muted"
+          ><app-valid-text
+            [valid]="recoveryCodeValid()"
+            text="Must be 6 characters long."
+          ></app-valid-text>
+        </small>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="showNoRecoveryCode = true"
+      >
+        I do not have a recovery code.
+      </button>
+      <div>
+        <p>
+          If you cannot get a recovery code, explain when you logged in last,
+          what device you were using (was it this one?) and how you heard about
+          us, then click Request Help Logging In.
+        </p>
+        <div class="form-group">
+          <textarea class="form-control"></textarea>
+        </div>
+        <button type="button" class="btn btn-outline-secondary">
+          Request Help Logging In
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ngb-alert>

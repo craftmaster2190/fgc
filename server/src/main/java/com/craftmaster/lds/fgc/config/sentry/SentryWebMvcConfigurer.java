@@ -3,6 +3,8 @@ package com.craftmaster.lds.fgc.config.sentry;
 import com.craftmaster.lds.fgc.user.User;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.cglib.proxy.Proxy;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.security.core.context.SecurityContext;
@@ -10,9 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @Conditional(SentryCondition.Enabled.class)
@@ -54,6 +53,8 @@ public class SentryWebMvcConfigurer implements WebMvcConfigurer {
                                           .setId(authenticatedUser.getId().toString())
                                           .setUsername(authenticatedUser.getName())
                                           .build()));
+                  Sentry.getContext()
+                      .addExtra("Resolved in", handlerExceptionResolver.getClass().getName());
                 } catch (Exception unexpectedException) {
                   Sentry.capture(unexpectedException);
                 }

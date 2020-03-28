@@ -30,7 +30,7 @@ public class ScoreController {
   private final TransactionalContext transactionalContext;
 
   @Scheduled(fixedDelay = 15000L)
-  public void sendUsersScores()throws NotFoundException {
+  public void sendUsersScores() throws NotFoundException {
     simpUserRegistry
         .getUsers()
         .forEach(
@@ -44,7 +44,7 @@ public class ScoreController {
   }
 
   @Scheduled(fixedDelay = 15000L)
-  public void sendUsersFamilyScore()throws NotFoundException {
+  public void sendUsersFamilyScore() throws NotFoundException {
     simpUserRegistry
         .getUsers()
         .forEach(
@@ -59,7 +59,7 @@ public class ScoreController {
   }
 
   @Transactional
-  public Optional<List<Score>> getFamilyScores(UUID userId)throws NotFoundException {
+  public Optional<List<Score>> getFamilyScores(UUID userId) throws NotFoundException {
     return userRepository
         .findById(userId)
         .map(User::getFamily)
@@ -72,7 +72,7 @@ public class ScoreController {
   }
 
   @Scheduled(fixedDelay = 60000L)
-  public void sendTop25Scores() throws NotFoundException{
+  public void sendTop25Scores() throws NotFoundException {
     userRepository.findAll().forEach(user -> transactionalContext.run(() -> get(user.getId())));
     familyRepository
         .findAll()
@@ -81,7 +81,7 @@ public class ScoreController {
   }
 
   @SubscribeMapping("score")
-  public List<Score> listenToScores(Principal principal) throws NotFoundException{
+  public List<Score> listenToScores(Principal principal) throws NotFoundException {
     User user = (User) ((Authentication) principal).getPrincipal();
 
     List<Score> topScores = scoreRepository.top25Scores();

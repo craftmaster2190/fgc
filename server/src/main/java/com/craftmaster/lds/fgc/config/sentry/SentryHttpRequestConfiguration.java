@@ -51,6 +51,7 @@ public class SentryHttpRequestConfiguration {
                                   .setId(authenticatedUser.getId().toString())
                                   .setUsername(authenticatedUser.getName())
                                   .build()));
+          Sentry.getContext().addExtra("Caught in", this.getClass().getName());
         } catch (Exception unexpectedException) {
           Sentry.capture(unexpectedException);
         }
