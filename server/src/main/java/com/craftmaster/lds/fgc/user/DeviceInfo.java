@@ -20,6 +20,9 @@ public class DeviceInfo implements Serializable {
   @Id private Instant createdAt = Instant.now();
 
   @Column(columnDefinition = "text")
+  private String fingerprint;
+
+  @Column(columnDefinition = "text")
   private String userAgent;
 
   @Column(columnDefinition = "text")

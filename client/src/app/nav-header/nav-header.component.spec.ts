@@ -5,6 +5,7 @@ import { NavHeaderComponent } from "./nav-header.component";
 import { NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
 import { ImageComponent } from "../image/image.component";
 import { of } from "rxjs";
+import { RecoverService } from "../welcome/recover.service";
 
 describe("NavHeaderComponent", () => {
   let component: NavHeaderComponent;
@@ -20,6 +21,10 @@ describe("NavHeaderComponent", () => {
             getCurrentUser: () => ({}),
             canChangeFamily: () => of(false)
           }
+        },
+        {
+          provide: RecoverService,
+          useValue: {}
         }
       ],
       imports: [RouterTestingModule, NgbModalModule]

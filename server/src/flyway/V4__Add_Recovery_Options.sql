@@ -10,3 +10,6 @@ CREATE TABLE recovery_request (
     user_id uuid,
     user_comment text;
 );
+
+ALTER TABLE "public"."device_info" ADD COLUMN "fingerprint" text;
+

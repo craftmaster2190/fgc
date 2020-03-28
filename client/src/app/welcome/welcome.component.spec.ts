@@ -1,10 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { WelcomeComponent } from "./welcome.component";
-import { DeviceUsersService } from "../auth/device-users.service";
 import { RouterTestingModule } from "@angular/router/testing";
 import { of } from "rxjs";
-import { promise } from "protractor";
+import { DeviceUsersService } from "../auth/device-users.service";
+import { RecoverService } from "./recover.service";
+import { WelcomeComponent } from "./welcome.component";
 
 describe("WelcomeComponent", () => {
   let component: WelcomeComponent;
@@ -21,6 +20,10 @@ describe("WelcomeComponent", () => {
             getUsers: () => of([]),
             fetchUsers: () => Promise.resolve()
           }
+        },
+        {
+          provide: RecoverService,
+          useValue: {}
         }
       ],
       imports: [RouterTestingModule]
