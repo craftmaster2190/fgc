@@ -20,9 +20,6 @@ public class HealthController {
 
   @Getter private final Instant startupTime = now();
 
-  {
-  }
-
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public String ping() {
