@@ -4,8 +4,8 @@ import { Router } from "@angular/router";
 import { DeviceIdService } from "./device-id.service";
 import { User } from "./user";
 import { Family } from "../family/family";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { map, tap } from "rxjs/operators";
+import { Observable, Subject } from "rxjs";
 import { UserGroup } from "./user-group";
 import timeout from "../util/timeout";
 
@@ -15,6 +15,7 @@ import timeout from "../util/timeout";
 export class DeviceUsersService {
   private deviceUsers?: Array<User>;
   private currentUser?: User;
+  public readonly onUserChange = new Subject<void>();
 
   constructor(
     private readonly deviceId: DeviceIdService,
@@ -23,19 +24,26 @@ export class DeviceUsersService {
   ) {}
 
   fetchUsers() {
-    return this.http
-      .get<Array<User>>("/api/auth/users", {
-        params: { deviceId: this.deviceId.get() }
-      })
-      .pipe(
-        map(users => {
-          users = users || [];
-
-          return users.sort((a, b) => a.name.localeCompare(b.name));
-        })
+    return this.deviceId.getFingerprint().then(fingerprint =>
+      this.deviceId.getBrowserFingerprint().then(browserFingerprint =>
+        this.http
+          .get<Array<User>>("/api/auth/users", {
+            params: { deviceId: this.deviceId.get() },
+            headers: {
+              X_DEVICE_ID_FINGERPRINT: fingerprint,
+              X_BROWSER_ID_FINGERPRINT: browserFingerprint
+            }
+          })
+          .pipe(
+            map(users => {
+              users = users || [];
+              return users.sort((a, b) => a.name.localeCompare(b.name));
+            })
+          )
+          .toPromise()
+          .then(users => (this.deviceUsers = users))
       )
-      .toPromise()
-      .then(users => (this.deviceUsers = users));
+    );
   }
 
   createUser(updates: { name: string; family: string }) {
@@ -46,7 +54,11 @@ export class DeviceUsersService {
         ...updates
       })
       .toPromise()
-      .then(user => (this.currentUser = user));
+      .then(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   loginUser(user: User) {
@@ -58,7 +70,11 @@ export class DeviceUsersService {
         deviceId: this.deviceId.get()
       })
       .toPromise()
-      .then(currentUser => (this.currentUser = currentUser));
+      .then(currentUser => {
+        this.currentUser = currentUser;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   logoutUser() {
@@ -76,10 +92,13 @@ export class DeviceUsersService {
   updateUser(updates: { name?: string; family?: string }) {
     // Requires Logged in
     // Undecided? Do we allow players to change families
-    return this.http
-      .patch<User>("/api/auth/", updates)
-      .toPromise()
-      .then(user => (this.currentUser = user));
+    return this.http.patch<User>("/api/auth/", updates).pipe(
+      tap(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      })
+    );
   }
 
   updateFamilyName(familyId: string, newName: string) {
@@ -101,7 +120,11 @@ export class DeviceUsersService {
     return this.http
       .get<User>("/api/auth/me")
       .toPromise()
-      .then(user => (this.currentUser = user));
+      .then(user => {
+        this.currentUser = user;
+        this.onUserChange.next();
+        return this.currentUser;
+      });
   }
 
   getUsers() {

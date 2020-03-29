@@ -2,12 +2,11 @@ import { Injectable } from "@angular/core";
 import { RxStompService } from "@stomp/ng2-stompjs";
 import { RxStompState } from "@stomp/rx-stomp";
 import { IMessage } from "@stomp/stompjs";
-import { Observable, Subject, interval } from "rxjs";
-import { JSONMessageSender } from "./json-message-sender";
-import { ToastService } from "../toast/toast.service";
+import { interval, Observable, Subject } from "rxjs";
 import { debounce, throttle } from "rxjs/operators";
-import { SentryErrorHandler } from "../config/sentry-error-handler.service";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { ToastService } from "../toast/toast.service";
+import { JSONMessageSender } from "./json-message-sender";
 
 @Injectable()
 export class MessageBusService {

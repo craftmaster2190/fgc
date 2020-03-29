@@ -2,6 +2,7 @@ package com.craftmaster.lds.fgc.user;
 
 import com.craftmaster.lds.fgc.config.AccessDeniedExceptionFactory;
 import com.craftmaster.lds.fgc.config.CustomAuthenticationProvider;
+import com.craftmaster.lds.fgc.config.SessionDeviceId;
 import com.craftmaster.lds.fgc.db.PostgresSubscriptions;
 import java.io.IOException;
 import java.security.Principal;
@@ -77,7 +78,7 @@ public class UserController {
       @PathVariable UUID userId,
       HttpSession session,
       @AuthenticationPrincipal User authenticatedUser) {
-    UUID deviceId = (UUID) session.getAttribute("DEVICE_ID");
+    UUID deviceId = SessionDeviceId.get(session);
     if (authenticatedUser == null && deviceId == null) {
       throw accessDeniedExceptionFactory.get();
     }

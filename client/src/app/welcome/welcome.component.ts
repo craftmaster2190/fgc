@@ -1,21 +1,24 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ErrorHandler, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, throwError } from "rxjs";
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
   switchMap,
-  tap,
-  catchError
+  tap
 } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
 import { User } from "../auth/user";
+import { UserGroup } from "../auth/user-group";
 import { Optional } from "../util/optional";
 import timeout from "../util/timeout";
-import { UserGroup } from "../auth/user-group";
 import { BrowserDetectService } from "./browser-detect.service";
+import { RecoverService } from "./recover.service";
+import { LocationStrategy } from "@angular/common";
+
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.component.html",
@@ -27,15 +30,21 @@ export class WelcomeComponent implements OnInit {
   serverError: boolean;
   name: string;
   family: string;
+  recoveryCode: string;
   searchingFamilies: boolean;
   userGroups: Array<UserGroup>;
   isAppBrowser: boolean;
   isPrivateMode: boolean;
+  warning: any;
+  expandThisIsMe: string;
+  showNoRecoveryCode: boolean;
 
   constructor(
     public readonly authService: DeviceUsersService,
     public readonly browsersService: BrowserDetectService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sentry: ErrorHandler,
+    private readonly recoverService: RecoverService
   ) {}
 
   ngOnInit(): void {
@@ -112,24 +121,59 @@ export class WelcomeComponent implements OnInit {
 
   registerUser() {
     this.loading = true;
+    this.clearWarning();
+
+    const userAlreadyRegisteredOnThisDevice = this.authService
+      .getUsers()
+      .find(
+        user => user.name === this.name && user.family?.name === this.family
+      );
+    if (userAlreadyRegisteredOnThisDevice) {
+      this.login(userAlreadyRegisteredOnThisDevice);
+      return;
+    }
+
     this.authService
       .createUser({ name: this.name, family: this.family })
       .then(() => this.router.navigate(["game"]))
       .then(
         () => (this.loading = false),
-        () => (this.loading = false)
+        err => {
+          this.loading = false;
+          this.assignWarning(err);
+        }
       );
   }
 
   login(user: User) {
     this.loading = true;
+    this.clearWarning();
     this.authService
       .loginUser(user)
       .then(() => this.router.navigate(["game"]))
       .then(
         () => (this.loading = false),
-        () => (this.loading = false)
+        err => {
+          this.loading = false;
+          this.assignWarning(err);
+          this.serverError = true;
+        }
       );
+  }
+
+  assignWarning(err) {
+    this.sentry.handleError(err);
+    this.warning = err?.error?.message;
+  }
+
+  clearWarning() {
+    this.warning = null;
+    this.recoveryCodeFailed = null;
+    this.expandThisIsMe = null;
+    this.showNoRecoveryCode = null;
+    this.recoveryComment = null;
+    this.recoveryCommentSent = null;
+    this.recoveryCommentLoading = null;
   }
 
   searchFamilies = (text$: Observable<string>) => {
@@ -161,5 +205,60 @@ export class WelcomeComponent implements OnInit {
 
   formValid() {
     return this.nameValid() && this.familyValid();
+  }
+
+  yesThisIsMe() {
+    this.expandThisIsMe = "loading";
+    this.recoverService
+      .tryRecoverMe(this.name, this.family)
+      .subscribe(status => {
+        if (status.recoverySuccess) {
+          this.loading = true;
+          location.reload();
+        } else {
+          this.expandThisIsMe = "ready";
+        }
+      });
+  }
+
+  recoveryCodeFailed: boolean;
+  recoveryCodeLoading: boolean;
+  recoveryCodeValid() {
+    return this.recoveryCode?.trim()?.length === 6;
+  }
+
+  recoverWithCode() {
+    this.recoveryCodeLoading = true;
+    this.recoveryCodeFailed = false;
+    if (this.recoveryCodeValid()) {
+      this.recoverService
+        .recoverViaCode(this.recoveryCode, this.name, this.family)
+
+        .subscribe(
+          () => location.reload(),
+          () => {
+            this.recoveryCodeFailed = true;
+            this.recoveryCodeLoading = false;
+          }
+        );
+    }
+  }
+
+  recoveryComment: string;
+  recoveryCommentLoading: boolean;
+  recoveryCommentSent: boolean;
+
+  addRecoveryComment() {
+    this.recoveryCommentLoading = true;
+    this.recoverService
+      .applyUserCommentToRecoveryRequest(
+        this.name,
+        this.family,
+        this.recoveryComment
+      )
+      .subscribe(() => {
+        this.recoveryCommentSent = true;
+        this.recoveryCommentLoading = false;
+      });
   }
 }

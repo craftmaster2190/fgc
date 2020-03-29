@@ -1,11 +1,12 @@
 package com.craftmaster.lds.fgc.config;
 
+import static com.craftmaster.lds.fgc.config.Predicates.not;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 import com.craftmaster.lds.fgc.db.TransactionalContext;
 import com.craftmaster.lds.fgc.user.*;
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +31,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
   private final DeviceRepository deviceRepository;
   private final DeviceInfoRepository deviceInfoRepository;
   private final UserRepository userRepository;
+  private final DeviceService deviceService;
 
   public Authentication updateSession(User savedUser, HttpSession session) {
-    return updateSession(savedUser, session, (UUID) session.getAttribute("DEVICE_ID"));
+    return updateSession(savedUser, session, SessionDeviceId.get(session));
   }
 
   public Authentication updateSession(User user, HttpSession session, UUID deviceId) {
@@ -42,7 +44,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     SecurityContext sc = SecurityContextHolder.getContext();
     sc.setAuthentication(auth);
-    session.setAttribute("DEVICE_ID", deviceId);
+    SessionDeviceId.set(session, deviceId);
     session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     return auth;
   }
@@ -51,36 +53,34 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
       User user, HttpSession session, HttpServletRequest request, UUID deviceId) {
     Authentication auth = updateSession(user, session, deviceId);
 
-    session.setAttribute("DEVICE_ID", deviceId);
+    SessionDeviceId.set(session, deviceId);
     transactionalContext.run(
         () -> {
-          var device =
-              deviceRepository
-                  .findById(deviceId)
-                  .orElseGet(() -> deviceRepository.save(new Device().setId(deviceId)));
+          var device = deviceService.getOrCreate(deviceId);
 
           String userAgent = request.getHeader(HttpHeaders.USER_AGENT);
-          String forwardedFor = request.getHeader("x-forwarded-for");
+          String forwardedFor = request.getHeader(AwsHeaders.X_FORWARDED_FOR);
+          String fingerprint = SessionDeviceFingerprint.get(session);
+          String browserFingerprint = SessionBrowserFingerprint.get(session);
 
-          deviceInfoRepository
-              .findByDeviceIdAndUserAgentAndInetAddress(device.getId(), userAgent, forwardedFor)
+          Optional.of(
+                  deviceInfoRepository
+                      .findByDeviceIdAndUserAgentAndInetAddressAndFingerprintAndBrowserFingerprint(
+                          deviceId, userAgent, forwardedFor, fingerprint, browserFingerprint))
+              .filter(not(List::isEmpty))
+              .map(list -> list.get(0))
               .orElseGet(
                   () ->
                       deviceInfoRepository.save(
                           new DeviceInfo()
+                              .setFingerprint(fingerprint)
+                              .setBrowserFingerprint(browserFingerprint)
                               .setUserAgent(userAgent)
-                              .setDeviceId(device.getId())
+                              .setDeviceId(deviceId)
                               .setInetAddress(forwardedFor)))
               .setLastLogIn(Instant.now());
 
-          Optional.ofNullable(user.getDevices())
-              .orElseGet(
-                  () -> {
-                    HashSet<Device> devices = new HashSet<>();
-                    user.setDevices(devices);
-                    return devices;
-                  })
-              .add(device);
+          deviceService.addDevice(user, device);
 
           userRepository.save(user);
         });

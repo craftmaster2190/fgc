@@ -20,6 +20,7 @@ public class SentrySchedulingConfiguration implements SchedulingConfigurer {
     taskScheduler.setErrorHandler(
         throwable -> {
           log.error("Exception in @Scheduled task. ", throwable);
+          Sentry.getContext().addExtra("Caught in", this.getClass().getName());
           Sentry.capture(throwable);
         });
     taskScheduler.setThreadNamePrefix("@scheduled-");

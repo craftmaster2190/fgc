@@ -1,6 +1,19 @@
-import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import {
+  Component,
+  ErrorHandler,
+  NgZone,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { interval, Observable, Subject, Subscription } from "rxjs";
+import {
+  interval,
+  Observable,
+  Subject,
+  Subscription,
+  of,
+  throwError
+} from "rxjs";
 import {
   debounce,
   debounceTime,
@@ -8,9 +21,12 @@ import {
   filter,
   map,
   switchMap,
-  tap
+  tap,
+  catchError,
+  retry
 } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { RecoverService } from "../welcome/recover.service";
 
 @Component({
   selector: "app-nav-header",
@@ -21,7 +37,9 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   constructor(
     public readonly authService: DeviceUsersService,
     private readonly modalService: NgbModal,
-    private readonly ngZone: NgZone
+    private readonly ngZone: NgZone,
+    private readonly sentry: ErrorHandler,
+    private readonly recoverService: RecoverService
   ) {}
   name: string;
   family: string;
@@ -35,12 +53,25 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   canvasImage: HTMLImageElement;
   rotation = 0;
 
+  warning: any;
+  recoveryCode: string;
+
   ngOnInit() {
     this.subscription = this.updateUserSubject
-      .pipe(debounce(() => interval(300)))
-      .subscribe(() =>
-        this.authService.updateUser({ name: this.name, family: this.family })
-      );
+      .pipe(
+        tap(() => (this.warning = null)),
+        debounce(() => interval(300)),
+        switchMap(() =>
+          this.authService.updateUser({ name: this.name, family: this.family })
+        ),
+        catchError(err => {
+          this.assignWarning(err);
+          this.name = this.authService.getCurrentUser().name;
+          this.family = this.authService.getCurrentUser()?.family?.name;
+          return of();
+        })
+      )
+      .subscribe();
 
     this.authService.canChangeFamily().subscribe(data => {
       this.canChangeFamily = data;
@@ -49,6 +80,16 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  getWarning() {
+    return this.warning;
+  }
+
+  assignWarning(err) {
+    // this.sentry.handleError(err);
+    console.log("foo");
+    this.warning = err?.error?.message;
   }
 
   openModal(content) {
@@ -78,14 +119,19 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
   searchFamilies = (text$: Observable<string>) => {
     return text$.pipe(
+      tap(() => (this.warning = null)),
       debounceTime(200),
       distinctUntilChanged(),
       filter(term => term && term.length >= 2),
       tap(() => (this.searchingFamilies = true)),
       switchMap(term =>
-        this.authService
-          .searchFamilies(term)
-          .pipe(map(family => family.map(f => f.name)))
+        this.authService.searchFamilies(term).pipe(
+          map(family => family.map(f => f.name)),
+          catchError(err => {
+            this.assignWarning(err);
+            return throwError(err);
+          })
+        )
       ),
       tap(() => (this.searchingFamilies = false))
     );
@@ -167,5 +213,11 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
 
       context.restore();
     });
+  }
+
+  getRecoveryCode() {
+    this.recoverService
+      .generateRecoveryCode()
+      .subscribe(recoveryCode => (this.recoveryCode = recoveryCode));
   }
 }

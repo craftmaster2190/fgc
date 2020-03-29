@@ -44,6 +44,7 @@ public class SentryWebSocketAnnotationMethodMessageHandler
 
       Sentry.getContext().addExtra("handlerMethod", handlerMethod.toString());
       Sentry.getContext().addExtra("message", message.toString());
+      Sentry.getContext().addExtra("Caught in", this.getClass().getName());
     } catch (Exception unexpectedException) {
       Sentry.capture(unexpectedException);
     }

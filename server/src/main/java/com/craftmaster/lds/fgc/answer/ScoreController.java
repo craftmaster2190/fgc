@@ -30,7 +30,7 @@ public class ScoreController {
   private final TransactionalContext transactionalContext;
 
   @Scheduled(fixedDelay = 15000L)
-  public void sendUsersScores() {
+  public void sendUsersScores() throws NotFoundException {
     simpUserRegistry
         .getUsers()
         .forEach(
@@ -44,7 +44,7 @@ public class ScoreController {
   }
 
   @Scheduled(fixedDelay = 15000L)
-  public void sendUsersFamilyScore() {
+  public void sendUsersFamilyScore() throws NotFoundException {
     simpUserRegistry
         .getUsers()
         .forEach(
@@ -59,7 +59,7 @@ public class ScoreController {
   }
 
   @Transactional
-  public Optional<List<Score>> getFamilyScores(UUID userId) {
+  public Optional<List<Score>> getFamilyScores(UUID userId) throws NotFoundException {
     return userRepository
         .findById(userId)
         .map(User::getFamily)
@@ -72,7 +72,7 @@ public class ScoreController {
   }
 
   @Scheduled(fixedDelay = 60000L)
-  public void sendTop25Scores() {
+  public void sendTop25Scores() throws NotFoundException {
     userRepository.findAll().forEach(user -> transactionalContext.run(() -> get(user.getId())));
     familyRepository
         .findAll()
@@ -81,7 +81,7 @@ public class ScoreController {
   }
 
   @SubscribeMapping("score")
-  public List<Score> listenToScores(Principal principal) {
+  public List<Score> listenToScores(Principal principal) throws NotFoundException {
     User user = (User) ((Authentication) principal).getPrincipal();
 
     List<Score> topScores = scoreRepository.top25Scores();
@@ -93,7 +93,7 @@ public class ScoreController {
   }
 
   @Transactional
-  public Score get(UUID id) {
+  public Score get(UUID id) throws NotFoundException {
     Score score =
         scoreRepository
             .findById(id)
@@ -124,7 +124,7 @@ public class ScoreController {
         .sum();
   }
 
-  Optional<Score> generateFamilyScore(Score familyScore) {
+  Optional<Score> generateFamilyScore(Score familyScore) throws NotFoundException {
     Optional<Family> family = familyRepository.findById(familyScore.getUserOrFamilyId());
     if (family.isEmpty()) {
       return Optional.empty();
