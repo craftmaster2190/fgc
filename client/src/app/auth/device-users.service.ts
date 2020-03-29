@@ -25,19 +25,24 @@ export class DeviceUsersService {
 
   fetchUsers() {
     return this.deviceId.getFingerprint().then(fingerprint =>
-      this.http
-        .get<Array<User>>("/api/auth/users", {
-          params: { deviceId: this.deviceId.get() },
-          headers: { X_DEVICE_ID_FINGERPRINT: fingerprint }
-        })
-        .pipe(
-          map(users => {
-            users = users || [];
-            return users.sort((a, b) => a.name.localeCompare(b.name));
+      this.deviceId.getBrowserFingerprint().then(browserFingerprint =>
+        this.http
+          .get<Array<User>>("/api/auth/users", {
+            params: { deviceId: this.deviceId.get() },
+            headers: {
+              X_DEVICE_ID_FINGERPRINT: fingerprint,
+              X_BROWSER_ID_FINGERPRINT: browserFingerprint
+            }
           })
-        )
-        .toPromise()
-        .then(users => (this.deviceUsers = users))
+          .pipe(
+            map(users => {
+              users = users || [];
+              return users.sort((a, b) => a.name.localeCompare(b.name));
+            })
+          )
+          .toPromise()
+          .then(users => (this.deviceUsers = users))
+      )
     );
   }
 

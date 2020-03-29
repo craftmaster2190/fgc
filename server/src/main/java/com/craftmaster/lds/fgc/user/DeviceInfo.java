@@ -23,6 +23,9 @@ public class DeviceInfo implements Serializable {
   private String fingerprint;
 
   @Column(columnDefinition = "text")
+  private String browserFingerprint;
+
+  @Column(columnDefinition = "text")
   private String userAgent;
 
   @Column(columnDefinition = "text")

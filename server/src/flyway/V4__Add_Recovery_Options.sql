@@ -12,4 +12,5 @@ CREATE TABLE recovery_request (
 );
 
 ALTER TABLE "public"."device_info" ADD COLUMN "fingerprint" text;
+ALTER TABLE "public"."device_info" ADD COLUMN "browser_fingerprint" text;
 

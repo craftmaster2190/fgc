@@ -79,4 +79,11 @@ export class DeviceIdService {
       return Fingerprint2.x64hash128(values.join(""), 31);
     });
   }
+
+  getBrowserFingerprint(): Promise<string> {
+    return Fingerprint2.getPromise({}).then(components => {
+      const values = components.map(({ value }) => value);
+      return Fingerprint2.x64hash128(values.join(""), 31);
+    });
+  }
 }

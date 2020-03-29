@@ -60,11 +60,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
           String userAgent = request.getHeader(HttpHeaders.USER_AGENT);
           String forwardedFor = request.getHeader(AwsHeaders.X_FORWARDED_FOR);
-          String fingerprint = SessionFingerprint.get(session);
+          String fingerprint = SessionDeviceFingerprint.get(session);
+          String browserFingerprint = SessionBrowserFingerprint.get(session);
 
           Optional.of(
-                  deviceInfoRepository.findByDeviceIdAndUserAgentAndInetAddressAndFingerprint(
-                      deviceId, userAgent, forwardedFor, fingerprint))
+                  deviceInfoRepository
+                      .findByDeviceIdAndUserAgentAndInetAddressAndFingerprintAndBrowserFingerprint(
+                          deviceId, userAgent, forwardedFor, fingerprint, browserFingerprint))
               .filter(not(List::isEmpty))
               .map(list -> list.get(0))
               .orElseGet(
@@ -72,6 +74,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                       deviceInfoRepository.save(
                           new DeviceInfo()
                               .setFingerprint(fingerprint)
+                              .setBrowserFingerprint(browserFingerprint)
                               .setUserAgent(userAgent)
                               .setDeviceId(deviceId)
                               .setInetAddress(forwardedFor)))

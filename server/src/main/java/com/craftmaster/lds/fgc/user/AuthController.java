@@ -112,7 +112,11 @@ public class AuthController {
   public Set<User> getUsersForDevice(
       @RequestParam UUID deviceId, HttpServletRequest request, HttpSession session) {
     SessionDeviceId.set(session, deviceId);
-    SessionFingerprint.set(session, request.getHeader(SessionFingerprint.FINGERPRINT));
+    SessionDeviceFingerprint.set(
+        session, request.getHeader(SessionDeviceFingerprint.DEVICE_FINGERPRINT));
+    SessionBrowserFingerprint.set(
+        session, request.getHeader(SessionBrowserFingerprint.BROWSER_FINGERPRINT));
+
     return deviceRepository.findById(deviceId).map(Device::getUsers).orElse(Set.of());
   }
 
