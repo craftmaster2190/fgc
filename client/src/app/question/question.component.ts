@@ -170,7 +170,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     }
 
     if (this.isEnabled()) {
-      const newAnswer = ((event && event.item) || this.value || "").trim();
+      const newAnswer = (event?.item || this.value || "").trim();
       if (newAnswer) {
         this.selectedAnswers.add(newAnswer);
 
@@ -178,7 +178,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
           this.addToPossibleAnswers(newAnswer);
         }
       }
-      event.preventDefault();
+      event?.preventDefault();
       this.value = "";
       this.persistAnswer();
     }

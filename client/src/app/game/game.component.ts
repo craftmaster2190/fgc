@@ -104,7 +104,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       {
         reference: "Mosiah 16:15",
         text:
-          "Teach them that redemption cometh through Christ the Lord, who is the very aEternal Father. Amen."
+          "Teach them that redemption cometh through Christ the Lord, who is the very Eternal Father. Amen."
       },
       {
         reference: "Helaman 14:17",
