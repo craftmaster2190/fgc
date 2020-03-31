@@ -24,7 +24,6 @@ export class SectionComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if ("isOpen" in changes || "questionIds" in changes) {
-      console.log("C", changes, this.questionIds);
       this.questionIds = this.questionIds || [];
       this.notes = [];
 

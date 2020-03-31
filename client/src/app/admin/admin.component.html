@@ -31,24 +31,50 @@
     <h1>Edit Families</h1>
     <div>
       <div *ngFor="let family of families" style="margin-bottom: 15px;">
-        <div class="input-group">
-          <input type="text" class="form-control" [(ngModel)]="family.name" />
+        <div class="input-group family-edit">
+          <div class="input-group-prepend">
+            <span class="input-group-text">{{ family.name }}</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="models[family.id]"
+          />
           <div class="input-group-append">
             <button
               type="button"
               class="btn btn-outline-secondary"
-              (click)="updateFamilyName(family.name, family)"
+              (click)="updateFamilyName(models[family.id], family)"
             >
-              Update
+              Update Family
             </button>
           </div>
         </div>
         <small class="form-text text-muted">
           <div *ngIf="!family.users?.length; else hasUsers">No user names</div>
           <ng-template #hasUsers>
-            <ul>
-              <li *ngFor="let user of family.users">{{ user.name }}</li>
-            </ul>
+            <div
+              class="input-group user-edit"
+              *ngFor="let user of family.users"
+            >
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ user.name }}</span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="models[user.id]"
+              />
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="updateUserName(models[user.id], user)"
+                >
+                  Update User
+                </button>
+              </div>
+            </div>
           </ng-template>
         </small>
       </div>

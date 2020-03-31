@@ -86,26 +86,42 @@ public class AuthController {
 
   @PreAuthorize("isAuthenticated()")
   @RolesAllowed("ROLE_ADMIN")
-  @PatchMapping("{userId}")
-  public User adminPatchUser(UUID userId, @RequestBody @Valid PatchUserRequest patchUserRequest) {
-    return userService.patchUserInternal(userRepository.getOne(userId), patchUserRequest);
+  @Transactional
+  @PutMapping("update-family-name")
+  public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
+    return familyRepository
+        .findById(request.getFamilyId())
+        .map(
+            family -> {
+              log.debug(
+                  "Updating family name from: {} to: {}", family.getName(), request.getNewName());
+              return familyRepository.save(family.setName(request.getNewName()));
+            })
+        .orElseGet(
+            () -> {
+              log.warn("No family by id: {}, returning null", request.getFamilyId());
+              return null;
+            });
   }
 
   @PreAuthorize("isAuthenticated()")
   @RolesAllowed("ROLE_ADMIN")
   @Transactional
-  @PutMapping("update-family-name")
-  public Family updateFamilyName(@RequestBody UpdateFamilyRequest request) {
-    Optional<Family> familyOp = familyRepository.findById(request.getFamilyId());
-    if (familyOp.isPresent()) {
-      log.debug(
-          "Updating family name from: {} to: {}", familyOp.get().getName(), request.getNewName());
-      Family family = familyOp.get().setName(request.getNewName());
-      familyRepository.save(family);
-      return family;
-    }
-    log.warn("No family by id: {}, returning null", request.getFamilyId());
-    return null;
+  @PutMapping("update-user-name")
+  public User updateUserName(@RequestBody UpdateUserRequest request) {
+    return userRepository
+        .findById(request.getUserId())
+        .map(
+            user -> {
+              log.debug("Updating user name from: {} to: {}", user.getName(), request.getNewName());
+              return userService.patchUserInternal(
+                  user, new PatchUserRequest().setName(request.getNewName()));
+            })
+        .orElseGet(
+            () -> {
+              log.warn("No user by id: {}, returning null", request.getUserId());
+              return null;
+            });
   }
 
   @GetMapping("users")

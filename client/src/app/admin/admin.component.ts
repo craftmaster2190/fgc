@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { merge } from "rxjs";
-import { tap } from "rxjs/operators";
+import { switchMap, tap } from "rxjs/operators";
 import { DeviceUsersService } from "../auth/device-users.service";
+import { User } from "../auth/user";
 import { Family } from "../family/family";
 
 @Component({
@@ -13,16 +14,30 @@ export class AdminComponent implements OnInit {
   loading = true;
   canChangeFamily: boolean;
   families: Array<Family>;
+  models = {};
 
   constructor(public readonly authService: DeviceUsersService) {}
 
   ngOnInit(): void {
-    merge(
+    this.refresh().subscribe(() => (this.loading = false));
+  }
+
+  refresh() {
+    return merge(
       this.authService
         .canChangeFamily()
         .pipe(tap(data => (this.canChangeFamily = data))),
-      this.authService.getFamilies().pipe(tap(data => (this.families = data)))
-    ).subscribe(() => (this.loading = false));
+      this.authService.getFamilies().pipe(
+        tap(data => {
+          (this.families = data)?.forEach(family => {
+            this.models[family.id] = family.name;
+            family?.users?.forEach(user => {
+              this.models[user.id] = user.name;
+            });
+          });
+        })
+      )
+    );
   }
 
   toggleCanChangeFamily(): void {
@@ -32,7 +47,17 @@ export class AdminComponent implements OnInit {
   }
 
   updateFamilyName(newName, family: Family): void {
-    this.authService.updateFamilyName(family.id, newName);
+    this.authService
+      .updateFamilyName(family.id, newName)
+      .pipe(switchMap(() => this.refresh()))
+      .subscribe();
+  }
+
+  updateUserName(newName, user: User): void {
+    this.authService
+      .updateUserName(user.id, newName)
+      .pipe(switchMap(() => this.refresh()))
+      .subscribe();
   }
 
   returnToGame() {

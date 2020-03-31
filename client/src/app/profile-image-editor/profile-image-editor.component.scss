@@ -3,3 +3,17 @@
   max-height: 500px;
   text-align: center;
 }
+
+.editor-container {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.edit-buttons {
+  display: inline-block;
+
+  button {
+    margin-top: 6px;
+  }
+}

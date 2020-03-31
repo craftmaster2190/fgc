@@ -102,10 +102,11 @@ export class DeviceUsersService {
   }
 
   updateFamilyName(familyId: string, newName: string) {
-    console.log("update family", familyId, newName);
-    return this.http
-      .put("/api/auth/update-family-name", { familyId, newName })
-      .subscribe();
+    return this.http.put("/api/auth/update-family-name", { familyId, newName });
+  }
+
+  updateUserName(userId: string, newName: string) {
+    return this.http.put("/api/auth/update-user-name", { userId, newName });
   }
 
   searchFamilies(partialFamilyName: string) {

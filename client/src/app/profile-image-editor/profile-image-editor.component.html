@@ -1,22 +1,24 @@
-<div style="margin-bottom: 24px;">
-  <img
-    *ngIf="finalImage; else existingProfileImage"
-    [src]="finalImage || '/assets/profile.png'"
-    style="width: 100px; border-radius: 5px;"
-  />
+<div class="editor-container">
+  <div>
+    <img
+      *ngIf="finalImage; else existingProfileImage"
+      [src]="finalImage || '/assets/profile.png'"
+      style="width: 100px; border-radius: 5px;"
+    />
 
-  <ng-template #existingProfileImage>
-    <app-image
-      [target]="
-        authService.getCurrentUser().hasProfileImage
-          ? '/api/user/profile/' + authService.getCurrentUser().id
-          : '/assets/profile.png'
-      "
-      imgStyle="width: 100px; border-radius: 5px;"
-    ></app-image>
-  </ng-template>
+    <ng-template #existingProfileImage>
+      <app-image
+        [target]="
+          authService.getCurrentUser().hasProfileImage
+            ? '/api/user/profile/' + authService.getCurrentUser().id
+            : '/assets/profile.png'
+        "
+        imgStyle="width: 100px; border-radius: 5px;"
+      ></app-image>
+    </ng-template>
+  </div>
 
-  <span style="margin-left: 24px;">
+  <div class="edit-buttons" style="margin-left: 24px;">
     <button
       type="button"
       class="btn btn-outline-dark"
@@ -62,7 +64,7 @@
         Cancel
       </button>
     </ng-template>
-  </span>
+  </div>
 </div>
 
 <div *ngIf="loading" class="text-center" style="margin-top: 50px;">
