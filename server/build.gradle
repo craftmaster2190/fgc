@@ -54,6 +54,7 @@ dependencies {
     flyway 'org.postgresql:postgresql:42.2.11.jre7'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.1'
     implementation 'com.google.googlejavaformat:google-java-format:1.7'
+    runtimeOnly 'org.postgresql:postgresql'
     implementation 'com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.3'
     implementation 'io.sentry:sentry-spring:1.7.30'
     implementation 'org.owasp:dependency-check-gradle:5.3.1'

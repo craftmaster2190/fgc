@@ -1,10 +1,9 @@
 package com.craftmaster.lds.fgc.db;
 
-import javax.sql.DataSource;
+import com.impossibl.postgres.jdbc.PGDataSource;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -22,12 +21,11 @@ public class DataSourceConfig {
 
   @Bean
   @ConditionalOnProperty("fgc.db.url")
-  public DataSource getDataSource() {
-    DataSourceBuilder<? extends DataSource> dataSourceBuilder = DataSourceBuilder.create();
-    dataSourceBuilder.driverClassName(driver);
-    dataSourceBuilder.url(url);
-    dataSourceBuilder.username(username);
-    dataSourceBuilder.password(password);
-    return dataSourceBuilder.build();
+  public PGDataSource getDataSource() {
+    PGDataSource pgDataSource = new PGDataSource();
+    pgDataSource.setDatabaseUrl(url);
+    pgDataSource.setUser(username);
+    pgDataSource.setPassword(password);
+    return pgDataSource;
   }
 }

@@ -1,9 +1,9 @@
 package com.craftmaster.lds.fgc.db;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
+import com.impossibl.postgres.jdbc.PGDataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,12 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import javax.sql.DataSource;
+import javax.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -27,10 +27,92 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 @Profile("!test")
 public class PostgresSubscriptions {
-  private final DataSource dataSource;
-  private final JdbcTemplate jdbcTemplate;
+  private final PGDataSource dataSource;
   private final ObjectMapper objectMapper;
   private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+  private final Map<String, TypeConsumers<?>> topic2Type = new ConcurrentHashMap<>();
+  private volatile PGConnection connection;
+  private volatile boolean isShutdown;
+
+  @PreDestroy
+  public void onDestroy() throws SQLException {
+    isShutdown = true;
+    if (connection != null) {
+      log.warn("Closing postgres connection.");
+      connection.close();
+    }
+  }
+
+  @Synchronized
+  private PGConnection getConnection() {
+    if (isShutdown) {
+      return null;
+    }
+    try {
+      if (connection == null || connection.isClosed()) {
+        connection = dataSource.getConnection().unwrap(PGConnection.class);
+        topic2Type.keySet().forEach(this::refreshListener);
+      }
+      return connection;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> void subscribe(String topicName, Class<T> clazz, Consumer<T> subscription) {
+    String normalizedTopicName = topicName.toLowerCase();
+
+    Set<? extends Consumer<?>> consumers =
+        topic2Type
+            .computeIfAbsent(
+                normalizedTopicName,
+                ignored -> {
+                  refreshListener(normalizedTopicName);
+                  return new TypeConsumers<T>(clazz);
+                })
+            .getConsumers();
+    if (subscription != null) {
+      ((Set<Consumer<T>>) consumers).add(subscription);
+    }
+  }
+
+  private void refreshListener(String normalizedTopicName) {
+    PGConnection pgConnection = getConnection();
+    pgConnection.addNotificationListener(
+        new PGNotificationListener() {
+          @Override
+          public void notification(int processId, String channelName, String payload) {
+            log.debug("Postgres Message: {} {} {}", processId, channelName, payload);
+            executorService.submit(() -> topic2Type.get(channelName).sendPayload(payload));
+          }
+
+          @Override
+          public void closed() {
+            log.warn("{} listener closed!", normalizedTopicName);
+            getConnection();
+          }
+        });
+    try (Statement statement = pgConnection.createStatement()) {
+      statement.execute("LISTEN " + normalizedTopicName + ";");
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public <T> void send(String topicName, T payload) {
+    try {
+      String payloadString = objectMapper.writeValueAsString(payload);
+      Assert.isTrue(
+          !payloadString.contains("'"),
+          () -> "Payload must not contain ' (single quotes): " + payloadString);
+      try (Statement statement = getConnection().createStatement()) {
+        statement.execute("NOTIFY " + topicName.toLowerCase() + ", '" + payloadString + "';");
+      }
+    } catch (IOException | SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Value
   private static class TypeConsumers<T> {
@@ -48,64 +130,6 @@ public class PostgresSubscriptions {
       }
       T finalPayloadObj = payloadObj;
       consumers.forEach(subscription -> subscription.accept(finalPayloadObj));
-    }
-  }
-
-  private final Map<String, TypeConsumers<?>> topic2Type = new ConcurrentHashMap<>();
-
-  private PGConnection getConnection() {
-    try {
-      return dataSource.getConnection().unwrap(PGConnection.class);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> void subscribe(String topicName, Class<T> clazz, Consumer<T> subscription) {
-    String normalizedTopicName = topicName.toLowerCase();
-
-    Set<? extends Consumer<?>> consumers =
-        topic2Type
-            .computeIfAbsent(
-                normalizedTopicName,
-                ignored -> {
-                  PGConnection pgConnection = getConnection();
-                  pgConnection.addNotificationListener(
-                      new PGNotificationListener() {
-                        @Override
-                        public void notification(
-                            int processId, String channelName, String payload) {
-                          log.debug("Postgres Message: {} {} {}", processId, channelName, payload);
-                          executorService.submit(
-                              () -> topic2Type.get(channelName).sendPayload(payload));
-                        }
-
-                        @Override
-                        public void closed() {
-                          log.warn("{} listener closed!", normalizedTopicName);
-                        }
-                      });
-                  try (Statement statement = pgConnection.createStatement()) {
-                    statement.execute("LISTEN " + normalizedTopicName + ";");
-                  } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                  }
-                  return new TypeConsumers<T>(clazz);
-                })
-            .getConsumers();
-    ((Set<Consumer<T>>) consumers).add(subscription);
-  }
-
-  public <T> void send(String topicName, T payload) {
-    try {
-      String payloadString = objectMapper.writeValueAsString(payload);
-      Assert.isTrue(
-          !payloadString.contains("'"),
-          () -> "Payload must not contain ' (single quotes): " + payloadString);
-      jdbcTemplate.execute("NOTIFY " + topicName.toLowerCase() + ", '" + payloadString + "';");
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
     }
   }
 }
