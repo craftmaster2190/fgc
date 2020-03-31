@@ -11,7 +11,7 @@ public class TestPostgresSubscriptions {
 
   @Bean
   public PostgresSubscriptions postgresSubscriptions() {
-    return new PostgresSubscriptions(null, null) {
+    return new PostgresSubscriptions(null) {
       @Override
       public <T> void subscribe(String topicName, Class<T> clazz, Consumer<T> subscription) {}
 

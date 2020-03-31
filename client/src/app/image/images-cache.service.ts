@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, ErrorHandler } from "@angular/core";
 import { Observable, of, Subject, from, interval } from "rxjs";
-import { switchMap, tap, debounce } from "rxjs/operators";
+import { switchMap, tap, debounce, catchError } from "rxjs/operators";
 import { Optional } from "../util/optional";
 
 const KEY = "IMAGES_";
@@ -15,7 +15,10 @@ export class ImagesCacheService {
     [target: string]: Promise<string>;
   } = {};
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly errorHandler: ErrorHandler
+  ) {}
 
   get(target: string): Observable<string> {
     return Optional.of(sessionStorage.getItem(KEY + target))
@@ -38,7 +41,11 @@ export class ImagesCacheService {
                 fileReader.readAsDataURL(blob);
                 return resultSubject;
               }),
-              tap(dataUrl => sessionStorage.setItem(KEY + target, dataUrl))
+              tap(dataUrl => sessionStorage.setItem(KEY + target, dataUrl)),
+              catchError(err => {
+                this.errorHandler.handleError(err);
+                return of("");
+              })
             )
             .toPromise();
         });

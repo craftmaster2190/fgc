@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Data
@@ -26,7 +27,9 @@ public class UserProfile implements Serializable {
   @EqualsAndHashCode.Exclude
   @JsonIgnore
   @Lob
+  @Basic(fetch = FetchType.LAZY)
   @Column(columnDefinition = "BYTEA")
+  @Type(type = "org.hibernate.type.BinaryType")
   private byte[] profileImage;
 
   private void readObject(ObjectInputStream objectInputStream)

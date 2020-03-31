@@ -1,6 +1,7 @@
 package com.craftmaster.lds.fgc.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Suppliers;
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import com.impossibl.postgres.jdbc.PGDataSource;
@@ -13,11 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.Synchronized;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -26,13 +30,27 @@ import org.springframework.util.Assert;
 @Service
 @RequiredArgsConstructor
 @Profile("!test")
+@ConfigurationProperties("fgc.db")
 public class PostgresSubscriptions {
-  private final PGDataSource dataSource;
   private final ObjectMapper objectMapper;
   private final ExecutorService executorService = Executors.newFixedThreadPool(4);
   private final Map<String, TypeConsumers<?>> topic2Type = new ConcurrentHashMap<>();
   private volatile PGConnection connection;
   private volatile boolean isShutdown;
+
+  @Setter private String url;
+  @Setter private String username;
+  @Setter private String password;
+
+  private final Supplier<PGDataSource> pgDataSource =
+      Suppliers.memoize(
+          () -> {
+            PGDataSource pgDataSource = new PGDataSource();
+            pgDataSource.setDatabaseUrl(url);
+            pgDataSource.setUser(username);
+            pgDataSource.setPassword(password);
+            return pgDataSource;
+          });
 
   @PreDestroy
   public void onDestroy() throws SQLException {
@@ -50,7 +68,7 @@ public class PostgresSubscriptions {
     }
     try {
       if (connection == null || connection.isClosed()) {
-        connection = dataSource.getConnection().unwrap(PGConnection.class);
+        connection = pgDataSource.get().getConnection().unwrap(PGConnection.class);
         topic2Type.keySet().forEach(this::refreshListener);
       }
       return connection;

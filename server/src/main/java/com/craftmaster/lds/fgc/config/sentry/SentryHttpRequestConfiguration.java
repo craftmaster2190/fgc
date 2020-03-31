@@ -1,5 +1,8 @@
 package com.craftmaster.lds.fgc.config.sentry;
 
+import com.craftmaster.lds.fgc.config.AwsHeaders;
+import com.craftmaster.lds.fgc.config.SessionBrowserFingerprint;
+import com.craftmaster.lds.fgc.config.SessionDeviceFingerprint;
 import com.craftmaster.lds.fgc.user.User;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
@@ -33,6 +36,7 @@ public class SentryHttpRequestConfiguration {
       public ModelAndView resolveException(
           HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         try {
+          Sentry.getContext().addExtra("Caught in", this.getClass().getName());
           Optional.ofNullable(SecurityContextHolder.getContext())
               .map(SecurityContext::getAuthentication)
               .map(
@@ -50,8 +54,22 @@ public class SentryHttpRequestConfiguration {
                               new UserBuilder()
                                   .setId(authenticatedUser.getId().toString())
                                   .setUsername(authenticatedUser.getName())
+                                  .setIpAddress(request.getHeader(AwsHeaders.X_FORWARDED_FOR))
                                   .build()));
-          Sentry.getContext().addExtra("Caught in", this.getClass().getName());
+          Optional.ofNullable(request.getSession(false))
+              .ifPresent(
+                  httpSession -> {
+                    Optional.ofNullable(SessionDeviceFingerprint.get(httpSession))
+                        .ifPresent(
+                            deviceFingerprint ->
+                                Sentry.getContext()
+                                    .addExtra("deviceFingerprint", deviceFingerprint));
+                    Optional.ofNullable(SessionBrowserFingerprint.get(httpSession))
+                        .ifPresent(
+                            browserFingerprint ->
+                                Sentry.getContext()
+                                    .addExtra("browserFingerprint", browserFingerprint));
+                  });
         } catch (Exception unexpectedException) {
           Sentry.capture(unexpectedException);
         }

@@ -32,6 +32,7 @@ public class SentryWebSocketAnnotationMethodMessageHandler
   protected void processHandlerMethodException(
       HandlerMethod handlerMethod, Exception exception, Message<?> message) {
     try {
+      Sentry.getContext().addExtra("Caught in", this.getClass().getName());
       Principal principal = SimpMessageHeaderAccessor.getUser(message.getHeaders());
 
       User user = (User) ((Authentication) principal).getPrincipal();
@@ -44,7 +45,6 @@ public class SentryWebSocketAnnotationMethodMessageHandler
 
       Sentry.getContext().addExtra("handlerMethod", handlerMethod.toString());
       Sentry.getContext().addExtra("message", message.toString());
-      Sentry.getContext().addExtra("Caught in", this.getClass().getName());
     } catch (Exception unexpectedException) {
       Sentry.capture(unexpectedException);
     }
