@@ -8,5 +8,8 @@
         [class.fa-chevron-left]="!isOpen"
       ></i>
     </h2>
+    <ng-template [ngIf]="!isOpen">
+      <div *ngFor="let note of notes" class="note">{{ note }}</div>
+    </ng-template>
   </div>
 </div>

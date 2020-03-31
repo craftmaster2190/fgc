@@ -64,6 +64,7 @@
     title="When is the First Presidency speaking?"
     [isOpen]="openPanel === 'firstPresidency'"
     (click)="toggelOpenPanel($event, 'firstPresidency')"
+    [questionIds]="[1, 2, 3]"
   ></app-section>
 
   <ng-template [ngIf]="openPanel === 'firstPresidency'">
@@ -97,6 +98,7 @@
     title="Who's Conducting?"
     [isOpen]="openPanel === 'whoIsConducting'"
     (click)="toggelOpenPanel($event, 'whoIsConducting')"
+    [questionIds]="[11, 12, 13]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'whoIsConducting'">
     <app-question
@@ -129,6 +131,7 @@
     title="When are the Apostles Speaking?"
     [isOpen]="openPanel === 'apostlesSpeaking'"
     (click)="toggelOpenPanel($event, 'apostlesSpeaking')"
+    [questionIds]="[21, 22, 23, 24, 25]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'apostlesSpeaking'">
     <app-question
@@ -172,6 +175,7 @@
     title="Seventies and Organizations"
     [isOpen]="openPanel === 'auxAndSeventies'"
     (click)="toggelOpenPanel($event, 'auxAndSeventies')"
+    [questionIds]="[31, 32, 33, 34, 35, 36, 37, 38]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'auxAndSeventies'">
     <app-question
@@ -236,6 +240,7 @@
     title="Hymns and the Choir"
     [isOpen]="openPanel === 'hymnsAndChoir'"
     (click)="toggelOpenPanel($event, 'hymnsAndChoir')"
+    [questionIds]="[41, 42, 43, 44, 45, 46, 47]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'hymnsAndChoir'">
     <app-question
@@ -298,6 +303,7 @@
     title="Tie Colors"
     [isOpen]="openPanel === 'tieColors'"
     (click)="toggelOpenPanel($event, 'tieColors')"
+    [questionIds]="[51, 52, 53, 54, 55, 61, 62, 63, 64, 65]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'tieColors'">
     <app-question
@@ -386,6 +392,7 @@
     title="New Temple Locations"
     [isOpen]="openPanel === 'newTempleLocations'"
     (click)="toggelOpenPanel($event, 'newTempleLocations')"
+    [questionIds]="[71, 72]"
   ></app-section>
   <ng-template [ngIf]="openPanel === 'newTempleLocations'">
     <app-question

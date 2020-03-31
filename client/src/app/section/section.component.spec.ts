@@ -1,5 +1,7 @@
-import { SectionComponent } from "./section.component";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { of } from "rxjs";
+import { AnswerBusService } from "../messaging/answer-bus.service";
+import { SectionComponent } from "./section.component";
 
 describe("SectionComponent", () => {
   let component: SectionComponent;
@@ -7,7 +9,17 @@ describe("SectionComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SectionComponent]
+      declarations: [SectionComponent],
+      providers: [
+        {
+          provide: AnswerBusService,
+          useValue: {
+            getAnswer: () => void 0,
+            listenForQuestionsAndAnswers: () => of().subscribe(),
+            getLoadedFirstAnswer: () => true
+          }
+        }
+      ]
     }).compileComponents();
   }));
 
