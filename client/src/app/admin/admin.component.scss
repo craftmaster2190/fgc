@@ -10,3 +10,22 @@ h1 {
     display: inline-block;
   }
 }
+
+.recovery-request {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 8px;
+  position: relative;
+
+  button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: white;
+    z-index: 2;
+
+    &:hover {
+      background-color: #6c757d;
+    }
+  }
+}

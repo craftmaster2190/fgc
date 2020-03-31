@@ -81,3 +81,14 @@
     </div>
   </div>
 </ng-template>
+
+<h1>Recovery Requests</h1>
+<div *ngFor="let recoveryRequest of recoveryRequests" class="recovery-request">
+  <button
+    class="btn btn-outline-secondary"
+    (click)="approveRecoveryRequest(recoveryRequest)"
+  >
+    Approve
+  </button>
+  <pre>{{ stringifyRecoveryRequest(recoveryRequest) }}</pre>
+</div>

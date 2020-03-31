@@ -72,7 +72,9 @@ export class RecoverService {
     return this.http.get<Array<RecoveryRequest>>("/api/recovery/request");
   }
 
-  adminApproveRecoveryRequest(recoveryRequest: RecoveryRequest): void {
-    this.http.put("/api/recovery/request", recoveryRequest);
+  adminApproveRecoveryRequest(
+    recoveryRequest: RecoveryRequest
+  ): Observable<void> {
+    return this.http.put<void>("/api/recovery/request", recoveryRequest);
   }
 }

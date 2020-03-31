@@ -1,10 +1,11 @@
 package com.craftmaster.lds.fgc.config;
 
+import org.hibernate.exception.GenericJDBCException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,8 +19,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler
 
   private volatile ConfigurableApplicationContext applicationContext;
 
-  @ExceptionHandler(JpaSystemException.class)
-  public ResponseEntity<?> handleAllExceptions(Exception ex, WebRequest request) {
+  @ExceptionHandler({
+    JpaSystemException.class,
+    GenericJDBCException.class,
+    DataIntegrityViolationException.class
+  })
+  public ResponseEntity<?> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
     Throwable cause = null;
     while (!ex.getCause().equals(cause) && (cause = ex.getCause()) != null) {
       if (cause instanceof OutOfMemoryError) {
@@ -27,7 +32,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler
         throw (OutOfMemoryError) cause;
       }
     }
-    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    throw ex;
   }
 
   public void shutdownContext() {

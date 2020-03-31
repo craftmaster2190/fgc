@@ -12,6 +12,8 @@ fingerprintjs
 dallin
 eyring
 
+inet
+
 ngb
 img
 btn

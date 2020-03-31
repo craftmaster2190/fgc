@@ -163,7 +163,7 @@
       class="fade-in-2"
       style="margin-top: 12px;"
     >
-      <a (click)="this.showRegisterUser = false">
+      <a (click)="this.showRegisterUser = false; this.clearWarning()">
         <button type="button" class="btn btn-outline-dark" [disabled]="loading">
           Login as existing user
         </button>

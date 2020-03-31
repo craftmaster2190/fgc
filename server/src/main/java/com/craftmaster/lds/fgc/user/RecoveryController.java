@@ -4,9 +4,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.craftmaster.lds.fgc.config.AwsHeaders;
 import com.craftmaster.lds.fgc.config.SessionDeviceId;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,6 +30,7 @@ public class RecoveryController {
   private final RecoveryCodeRepository recoveryCodeRepository;
   private final RecoveryRequestRepository recoveryRequestRepository;
   private final DeviceService deviceService;
+  private final DeviceInfoRepository deviceInfoRepository;
 
   @PreAuthorize("isAuthenticated()")
   @PostMapping("generate")
@@ -124,8 +126,25 @@ public class RecoveryController {
   @RolesAllowed("ROLE_ADMIN")
   @GetMapping("request")
   @Transactional
-  public List<RecoveryRequest> adminGetRecoveryRequests() {
-    return recoveryRequestRepository.findAll();
+  public Set<RecoveryRequestDetails> adminGetRecoveryRequests() {
+    return recoveryRequestRepository.findAll().stream()
+        .flatMap(
+            recoveryRequest ->
+                userRepository.findById(recoveryRequest.getUserId())
+                    .map(
+                        user ->
+                            new RecoveryRequestDetails(recoveryRequest)
+                                .setUser(user)
+                                .setDeviceInfos(
+                                    deviceService
+                                        .getOrCreate(recoveryRequest.getDeviceId())
+                                        .getDeviceInfos())
+                                .setUsersOtherDeviceInfos(
+                                    user.getDevices().stream()
+                                        .flatMap(device -> device.getDeviceInfos().stream())
+                                        .collect(Collectors.toSet())))
+                    .stream())
+        .collect(Collectors.toSet());
   }
 
   @PreAuthorize("isAuthenticated()")
