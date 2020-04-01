@@ -87,8 +87,7 @@ export class NavHeaderComponent implements OnInit, OnDestroy {
   }
 
   assignWarning(err) {
-    // this.sentry.handleError(err);
-    console.log("foo");
+    this.sentry.handleError(err);
     this.warning = err?.error?.message;
   }
 

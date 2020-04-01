@@ -257,18 +257,21 @@ export class QuestionComponent implements OnInit, OnDestroy {
     return this.randomClosedPlaceholder;
   }
 
-  updateQuestion() {
-    this.answersBus.updateQuestion(this.getQuestion());
+  updateQuestion(question?: Question) {
+    this.answersBus.updateQuestion(question || this.getQuestion());
   }
 
   toggleCorrectAnswer(answerValue: string) {
+    const question = this.getQuestion();
+
     if (this.correctAnswers.has(answerValue)) {
       this.correctAnswers.delete(answerValue);
     } else {
       this.correctAnswers.add(answerValue);
     }
-    this.getQuestion().correctAnswers = Array.from(this.correctAnswers);
-    this.updateQuestion();
+
+    question.correctAnswers = Array.from(this.correctAnswers);
+    this.updateQuestion(question);
   }
 
   getAverageValue() {

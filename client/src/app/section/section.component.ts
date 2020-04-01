@@ -49,6 +49,8 @@ export class SectionComponent implements OnChanges {
         );
       }
 
+      let myCorrectAnswers = 0;
+      let myCorrectScore = 0;
       this.questionIds.map(questionId => {
         const question = this.answersBus.getQuestion(questionId);
         Optional.of(question?.correctAnswers)
@@ -62,18 +64,23 @@ export class SectionComponent implements OnChanges {
           .map(scoredSet => scoredSet.size)
           .filter(scoredAnswersCount => !!scoredAnswersCount)
           .map(scoredAnswersCount => {
-            const plural = scoredAnswersCount > 1 ? "s" : "";
-            this.notes.push(
-              `You got ${scoredAnswersCount} answer${plural} correct`
-            );
+            myCorrectAnswers += scoredAnswersCount;
             return scoredAnswersCount * (question?.pointValue || 0);
           })
           .filter(score => !!score)
           .map(score => {
-            const plural = score > 1 ? "s" : "";
-            this.notes.push(`You have earned ${score} point${plural}`);
+            myCorrectScore += score;
           });
       });
+      if (myCorrectAnswers > 0) {
+        const plural = myCorrectAnswers > 1 ? "s" : "";
+        this.notes.push(`You got ${myCorrectAnswers} answer${plural} correct`);
+      }
+
+      if (myCorrectScore > 0) {
+        const plural = myCorrectScore > 1 ? "s" : "";
+        this.notes.push(`You have earned ${myCorrectScore} point${plural}`);
+      }
     }
   }
 }

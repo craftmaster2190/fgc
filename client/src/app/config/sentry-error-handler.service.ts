@@ -44,10 +44,9 @@ export class SentryErrorHandler implements ErrorHandler {
   }
 
   handleError(error) {
+    console.trace("sentry-error-handler.service", error);
     if (sentryIsRunning) {
       const eventId = Sentry.captureException(error.originalError || error);
     }
-
-    console.trace("sentry-error-handler.service", error);
   }
 }

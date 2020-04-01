@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, ErrorHandler } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 import RecoveryRequest from "./recovery-request";
@@ -17,7 +17,10 @@ export interface RecoverySuccess {
   providedIn: "root"
 })
 export class RecoverService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly errorHandler: ErrorHandler
+  ) {}
 
   generateRecoveryCode(): Observable<string> {
     return this.http.post("/api/recovery/generate", null, {
@@ -50,7 +53,7 @@ export class RecoverService {
           throw new Error("Invalid response: " + JSON.stringify(response));
         }),
         catchError(err => {
-          console.log(err);
+          this.errorHandler.handleError(err);
           return of({ recoverySuccess: false });
         })
       );
