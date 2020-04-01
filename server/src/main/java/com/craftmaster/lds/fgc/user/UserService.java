@@ -30,6 +30,7 @@ public class UserService {
                       Optional.ofNullable(patchUserRequest.getFamily())
                           .or(() -> Optional.ofNullable(user.getFamily()).map(Family::getName))
                           .orElse(null))
+                  .filter(foundUser -> !foundUser.getId().equals(user.getId()))
                   .isPresent()) {
                 throw new UsernameAlreadyTakenException();
               }

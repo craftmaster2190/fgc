@@ -37,6 +37,10 @@ public class AnswerController {
     Question question = questionService.getOrCreateById(answer.getAnswerPk().getQuestionId());
     Boolean enabled = question.getEnabled();
     if (Objects.equals(enabled, true)) {
+      answerRepository.findById(answer.getAnswerPk());
+      // Since we are persisting a non hibernate managed entity in a
+      // transactional context; ensures if there already is one in the DB,
+      // it will be in the entityManager so that the save() can merge it correctly
       simpMessageSendingOperations.convertAndSendToUser(
           user.getUsername(), "/topic/answer", answerRepository.save(answer));
     }

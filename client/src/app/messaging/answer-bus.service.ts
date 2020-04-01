@@ -11,6 +11,7 @@ import { tap } from "rxjs/operators";
 @Injectable()
 export class AnswerBusService {
   private loadedFirstAnswer: boolean;
+  private loadedFirstQuestion: boolean;
   private readonly answerSender: JSONMessageSender;
 
   private questionsCache: { [questionId: number]: Question } = {};
@@ -26,6 +27,10 @@ export class AnswerBusService {
 
   getLoadedFirstAnswer() {
     return this.loadedFirstAnswer;
+  }
+
+  getLoadedFirstQuestion() {
+    return this.loadedFirstQuestion;
   }
 
   listenForQuestionsAndAnswers() {
@@ -50,7 +55,10 @@ export class AnswerBusService {
           this.messageBusService.topicWatcher("question"),
           this.messageBusService.userTopicWatcher("question")
         )
-          .pipe(mapMessageTo<Question>())
+          .pipe(
+            tap(() => (this.loadedFirstQuestion = true)),
+            mapMessageTo<Question>()
+          )
           .subscribe(questions =>
             questions.forEach(question => {
               this.questionsCache[question.id] = question;
