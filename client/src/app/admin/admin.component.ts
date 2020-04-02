@@ -114,7 +114,7 @@ export class AdminComponent implements OnInit {
       formatLabel("Family: ", recoveryRequest.user?.family?.name),
       formatLabel("User Comment: ", recoveryRequest.userComment),
       "   ######### Requesting Device #########",
-      ...recoveryRequest.deviceInfos?.map(deviceInfo => [
+      ...(recoveryRequest.deviceInfos || []).map(deviceInfo => [
         formatTimestamp("Device-Info Created At: ", deviceInfo?.createdAt),
         formatTimestamp(" Last Log In: ", deviceInfo?.lastLogIn),
         formatLabel("  InetAddress: ", deviceInfo?.inetAddress),
@@ -126,7 +126,7 @@ export class AdminComponent implements OnInit {
         formatLabel("     User-Agent: ", deviceInfo?.userAgent)
       ]),
       "   ######### Requested User's Other Devices #########",
-      ...recoveryRequest.usersOtherDeviceInfos?.map(deviceInfo => [
+      ...(recoveryRequest.usersOtherDeviceInfos || []).map(deviceInfo => [
         formatTimestamp("Device-Info Created At: ", deviceInfo?.createdAt),
         formatTimestamp(" Last Log In: ", deviceInfo?.lastLogIn),
         formatLabel("  InetAddress: ", deviceInfo?.inetAddress),
