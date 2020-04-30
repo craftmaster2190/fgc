@@ -44,7 +44,7 @@
     "deep-equal": "2.0.1",
     "fingerprintjs2": "2.1.0",
     "is-ua-webview": "1.0.1",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "moment": "2.24.0",
     "popper.js": "1.16.1",
     "rxjs": "6.5.4",
